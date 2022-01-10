@@ -7,8 +7,8 @@
   <Version>1.0.0.0</Version>
   <ProviderName>SmartDev</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="luckycloud"/>
-  <Description DefaultValue="Outlook addin to interact with luckycloud "/>
+  <DisplayName DefaultValue="Seafile"/>
+  <Description DefaultValue="Outlook addin to interact with seafile "/>
   <IconUrl DefaultValue="https://localhost:3000/assets/seafile-icon-64.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/seafile-icon-128.png"/>
   <!-- <SupportUrl DefaultValue="https://www.contoso.com/help"/> -->
@@ -249,7 +249,7 @@
         <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="GroupLabel" DefaultValue="luckycloud"/>
+        <bt:String id="GroupLabel" DefaultValue="SEAFILE"/>
         <bt:String id="UploadAttachment.Label" DefaultValue="Upload File"/>
         <bt:String id="Attach.Label" DefaultValue="Attach"/>
 
@@ -259,10 +259,10 @@
         <bt:String id="menuItem3ReadLabel" DefaultValue="Settings"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="UploadAttachment.Tooltip" DefaultValue="Upload files from local machine to luckycloud"/>
-        <bt:String id="Attach.Tooltip" DefaultValue="Attach file from your luckycloud reposit"/>
+        <bt:String id="UploadAttachment.Tooltip" DefaultValue="Upload files from local machine to Seafile"/>
+        <bt:String id="Attach.Tooltip" DefaultValue="Attach file from your Seafile reposit"/>
         <bt:String id="OptionButton.Tooltip" DefaultValue="Options"/>
-        <bt:String id="menuItem1ReadSupertipDescription" DefaultValue="Login to your luckycloud server"/>
+        <bt:String id="menuItem1ReadSupertipDescription" DefaultValue="Login to your seafile server"/>
         <bt:String id="menuItem2ReadSupertipDescription" DefaultValue="Share files"/>
         <bt:String id="menuItem3ReadSupertipDescription" DefaultValue="Config your settings"/>
       </bt:LongStrings>

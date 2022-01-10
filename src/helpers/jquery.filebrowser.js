@@ -8,6 +8,7 @@ const { retrieveToken, retriveSeafileEnv } = require("./addin-config");
     this.upload = upload;
     this.error = error;
   }
+  $("div.toolbar ul.labels li.download").toggleClass("disabled", $(".ui-dialog li.file.selected").length != 1);
 
   Uploader.prototype.process = function process(event, path) {
     var defered = $.Deferred();
@@ -322,6 +323,10 @@ const { retrieveToken, retriveSeafileEnv } = require("./addin-config");
       }
     }
     function click(e) {
+      setTimeout(() => {
+        $("div.toolbar ul.labels li.download").toggleClass("disabled", $(".ui-dialog li.file.selected").length != 1);
+      }, 300);
+
       if (!$(e.target).closest("." + cls).length) {
         $(".browser-widget").removeClass("selected");
       }
@@ -948,6 +953,7 @@ const { retrieveToken, retriveSeafileEnv } = require("./addin-config");
             $toolbar.find(".up").toggleClass("disabled", new_path == settings.root);
             $toolbar.find(".back").toggleClass("disabled", paths.length == 1);
             $toolbar.find(".upload").toggleClass("disabled", new_path == settings.root);
+            $toolbar.find(".download").toggleClass("disabled", $(".ui-dialog li.file.selected").length != 1);
             path = new_path;
             // don't break old API. promise based and callback should both work
             var result = settings.dir(path, process);
