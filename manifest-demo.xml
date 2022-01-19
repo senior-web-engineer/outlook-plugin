@@ -9,8 +9,8 @@
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="luckycloud"/>
   <Description DefaultValue="Outlook addin to interact with luckycloud "/>
-  <IconUrl DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/seafile-icon-64.png"/>
-  <HighResolutionIconUrl DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/seafile-icon-128.png"/>
+  <IconUrl DefaultValue="https://outlook.lc-testing.de/addin/assets/seafile-icon-64.png"/>
+  <HighResolutionIconUrl DefaultValue="https://outlook.lc-testing.de/addin/assets/seafile-icon-128.png"/>
   <!-- <SupportUrl DefaultValue="https://www.contoso.com/help"/> -->
   <!-- <AppDomains>
     <AppDomain>https://www.contoso.com</AppDomain>
@@ -26,7 +26,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://demo99.luckycloud-pro.de/addin/taskpane.html"/>
+        <SourceLocation DefaultValue="https://outlook.lc-testing.de/addin/taskpane.html"/>
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -223,30 +223,30 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="upload-icon-16x16" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/upload-icon-16.png"/>
-        <bt:Image id="upload-icon-32x32" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/upload-icon-32.png"/>
-        <bt:Image id="upload-icon-80x80" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/upload-icon-80.png"/>
+        <bt:Image id="upload-icon-16x16" DefaultValue="https://outlook.lc-testing.de/addin/assets/upload-icon-16.png"/>
+        <bt:Image id="upload-icon-32x32" DefaultValue="https://outlook.lc-testing.de/addin/assets/upload-icon-32.png"/>
+        <bt:Image id="upload-icon-80x80" DefaultValue="https://outlook.lc-testing.de/addin/assets/upload-icon-80.png"/>
 
-        <bt:Image id="attach-icon-16x16" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/attach-icon-16.png"/>
-        <bt:Image id="attach-icon-32x32" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/attach-icon-32.png"/>
-        <bt:Image id="attach-icon-80x80" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/attach-icon-80.png"/>
+        <bt:Image id="attach-icon-16x16" DefaultValue="https://outlook.lc-testing.de/addin/assets/attach-icon-16.png"/>
+        <bt:Image id="attach-icon-32x32" DefaultValue="https://outlook.lc-testing.de/addin/assets/attach-icon-32.png"/>
+        <bt:Image id="attach-icon-80x80" DefaultValue="https://outlook.lc-testing.de/addin/assets/attach-icon-80.png"/>
 
-        <bt:Image id="seafile-icon-16x16" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/seafile-icon-16.png"/>
-        <bt:Image id="seafile-icon-32x32" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/seafile-icon-32.png"/>
-        <bt:Image id="seafile-icon-80x80" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/seafile-icon-80.png"/>
-        <bt:Image id="login-icon-16x16" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/login-icon-16.png"/>
-        <bt:Image id="login-icon-32x32" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/login-icon-32.png"/>
-        <bt:Image id="login-icon-80x80" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/login-icon-80.png"/>
-        <bt:Image id="share-icon-16x16" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/share-icon-16.png"/>
-        <bt:Image id="share-icon-32x32" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/share-icon-32.png"/>
-        <bt:Image id="share-icon-80x80" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/share-icon-80.png"/>
-        <bt:Image id="setting-icon-16x16" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/setting-icon-16.png"/>
-        <bt:Image id="setting-icon-32x32" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/setting-icon-32.png"/>
-        <bt:Image id="setting-icon-80x80" DefaultValue="https://demo99.luckycloud-pro.de/addin/assets/setting-icon-80.png"/>
+        <bt:Image id="seafile-icon-16x16" DefaultValue="https://outlook.lc-testing.de/addin/assets/seafile-icon-16.png"/>
+        <bt:Image id="seafile-icon-32x32" DefaultValue="https://outlook.lc-testing.de/addin/assets/seafile-icon-32.png"/>
+        <bt:Image id="seafile-icon-80x80" DefaultValue="https://outlook.lc-testing.de/addin/assets/seafile-icon-80.png"/>
+        <bt:Image id="login-icon-16x16" DefaultValue="https://outlook.lc-testing.de/addin/assets/login-icon-16.png"/>
+        <bt:Image id="login-icon-32x32" DefaultValue="https://outlook.lc-testing.de/addin/assets/login-icon-32.png"/>
+        <bt:Image id="login-icon-80x80" DefaultValue="https://outlook.lc-testing.de/addin/assets/login-icon-80.png"/>
+        <bt:Image id="share-icon-16x16" DefaultValue="https://outlook.lc-testing.de/addin/assets/share-icon-16.png"/>
+        <bt:Image id="share-icon-32x32" DefaultValue="https://outlook.lc-testing.de/addin/assets/share-icon-32.png"/>
+        <bt:Image id="share-icon-80x80" DefaultValue="https://outlook.lc-testing.de/addin/assets/share-icon-80.png"/>
+        <bt:Image id="setting-icon-16x16" DefaultValue="https://outlook.lc-testing.de/addin/assets/setting-icon-16.png"/>
+        <bt:Image id="setting-icon-32x32" DefaultValue="https://outlook.lc-testing.de/addin/assets/setting-icon-32.png"/>
+        <bt:Image id="setting-icon-80x80" DefaultValue="https://outlook.lc-testing.de/addin/assets/setting-icon-80.png"/>
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="Commands.Url" DefaultValue="https://demo99.luckycloud-pro.de/addin/commands.html"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://demo99.luckycloud-pro.de/addin/taskpane.html"/>
+        <bt:Url id="Commands.Url" DefaultValue="https://outlook.lc-testing.de/addin/commands.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://outlook.lc-testing.de/addin/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="luckycloud"/>
