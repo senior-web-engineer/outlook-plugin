@@ -5,8 +5,9 @@ const {
   getItemsInDirectory,
   getSeafileLibraries,
   downloadFile,
+  advancedDownloadFile,
 } = require("../helpers/seafile-api");
-const { retrieveToken, retriveSeafileEnv } = require("../helpers/addin-config");
+const { retrieveToken, retriveSeafileEnv, getDefaultPassword, getShareOption } = require("../helpers/addin-config");
 
 // The Office initialize function must be run each time a new page is loaded.
 var dirmap = {};
@@ -15,6 +16,12 @@ Office.initialize = function (reason) {
   var env = retriveSeafileEnv();
 
   jQuery(document).ready(function () {
+    var inputPrompt = document.createElement("iframe");
+    inputPrompt.style.display = "none";
+    document.body.appendChild(inputPrompt);
+    window.prompt = inputPrompt.contentWindow.prompt;
+    window.alert = inputPrompt.contentWindow.alert;
+
     var uploadFilebtn = document.getElementById("uploadFilebtn");
     var globalrepos = null;
     var browse = $("#browser").dialog({
@@ -98,13 +105,35 @@ Office.initialize = function (reason) {
                 repo = getRepofrompath(path);
 
                 relativePath = getRelativepath(path);
-                downloadFile(token, env, repo, relativePath, function (link) {
+
+                const shareOption = getShareOption();
+                let password = null,
+                  expire_days = null;
+                if (shareOption === "always_default") {
+                  password = getDefaultPassword();
+                  expire_days = parseInt(window.prompt("Please input expire days", "10"));
+                  if (!expire_days || isNaN(expire_days)) return;
+                } else if (shareOption === "ask_for_password") {
+                  password = window.prompt("Please input password");
+                  if (!password) return;
+                } else {
+                  password = window.prompt("Please input password");
+                  if (!password) return;
+                  expire_days = parseInt(window.prompt("Please input expire days", "10"));
+                  if (!expire_days || isNaN(expire_days)) return;
+                }
+
+                advancedDownloadFile(token, env, repo, relativePath, password, expire_days, function (response) {
                   $(".loader").hide();
-                  Office.context.ui.messageParent(
-                    JSON.stringify({
-                      downloadLink: link,
-                    })
-                  );
+                  if (response.error_msg) {
+                    window.alert(response.error_msg);
+                  } else {
+                    Office.context.ui.messageParent(
+                      JSON.stringify({
+                        downloadLink: response.link,
+                      })
+                    );
+                  }
                 });
               },
             };

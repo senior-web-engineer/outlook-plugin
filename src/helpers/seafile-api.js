@@ -157,3 +157,44 @@ export function downloadFile(token, env, repo, path, callback) {
     if (callback) callback(response);
   });
 }
+
+export function advancedDownloadFile(
+  token,
+  env,
+  repo,
+  path,
+  password = null,
+  expire_days = null,
+  callback = function () {}
+) {
+  var settings = {
+    url: "https://demo99.luckycloud-pro.de/addin/seafileAPI.php",
+    method: "POST",
+    timeout: 0,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: JSON.stringify({
+      method: "POST",
+      url: env + "/api/v2.1/share-links/",
+      headers: {
+        Authorization: "Token " + token,
+        Accept: "application/json; charset=utf-8; indent=4",
+        "Content-Type": "application/json",
+      },
+      body: {
+        repo_id: repo.id,
+        path: path,
+        password,
+        expire_days,
+        permissions: {
+          can_download: true,
+        },
+      },
+    }),
+  };
+
+  $.ajax(settings).done(function (response) {
+    if (callback) callback(response);
+  });
+}

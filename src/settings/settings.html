@@ -41,37 +41,44 @@
         <div class="side-content" id="general">
             <h6>Default password</h6>
             <div class="form-check">
-                <input class="form-check-input" name="general" type="radio" id="without_password" value="1" checked>
+                <input class="form-check-input" name="general" type="radio" id="without_password" value="1" />
                 <label class="form-check-label" for="without_password">
                     Without password
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" name="general" type="radio" id="with_password" value="2">
+                <input class="form-check-input" name="general" type="radio" id="with_password" value="2" />
                 <label class="form-check-label" for="with_password">
                     With password
                 </label>
+                <input class="form-control" name="default_password" id="default_password" />
+            </div>
+            <div class="form-group mt-5">
+                <button class="btn btn-success" id="update_default_password">Apply</button>
             </div>
         </div>
         <div class="side-content hide" id="shares">
             <h6>Set individual settings for every email</h6>
             <div class="form-check">
-                <input class="form-check-input" name="shares" type="radio" id="default_setting" value="1" checked>
-                <label class="form-check-label" for="default_setting">
+                <input class="form-check-input" name="shares" type="radio" id="always_default" value="always_default">
+                <label class="form-check-label" for="always_default">
                     Always use default settings
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" name="shares" type="radio" id="ask_for_password" value="2">
+                <input class="form-check-input" name="shares" type="radio" id="ask_for_password" value="ask_for_password">
                 <label class="form-check-label" for="ask_for_password">
                     Only ask for password
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" name="shares" type="radio" id="ask_every_time" value="2">
+                <input class="form-check-input" name="shares" type="radio" id="ask_every_time" value="ask_every_time">
                 <label class="form-check-label" for="ask_every_time">
                     Ask every time
                 </label>
+            </div>
+            <div class="form-group mt-5">
+                <button class="btn btn-success" id="update_share_option">Apply</button>
             </div>
         </div>
     </div>

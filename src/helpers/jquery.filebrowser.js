@@ -1,5 +1,5 @@
-const { downloadFile } = require("./seafile-api");
-const { retrieveToken, retriveSeafileEnv } = require("./addin-config");
+const { advancedDownloadFile } = require("./seafile-api");
+const { retrieveToken, retriveSeafileEnv, getDefaultPassword, getShareOption } = require("./addin-config");
 
 (function ($, undefined) {
   "use strict";
@@ -423,16 +423,7 @@ const { retrieveToken, retriveSeafileEnv } = require("./addin-config");
       });
     }
     function trigger_rename($li) {
-      if (!$li.is(".new, .rename")) {
-        var name = $li.find("span").text();
-        $("<textarea>" + name + "</textarea>")
-          .appendTo($li)
-          .focus()
-          .select();
-        $li.addClass("rename");
-      } else {
-        $li.find("textarea").focus().select();
-      }
+      return;
     }
     function is_file_drop(event) {
       if (event.originalEvent) {
@@ -488,25 +479,8 @@ const { retrieveToken, retriveSeafileEnv } = require("./addin-config");
       var was_selecting = false;
       var context_menu_object;
       var context_menu = {
-        li: {
-          // 'rename': trigger_rename,
-          // 'delete': function($li) {
-          //     $.when.apply($, $content.find('li.selected').map(function() {
-          //         var name = $(this).find('span').text();
-          //         return settings.remove(self.join(path, name));
-          //     })).then(refresh_same);
-          // }
-        },
-        content: {
-          // 'new': {
-          //     'directory': function($li) {
-          //         self.create('Directory');
-          //     },
-          //     'file': function($li) {
-          //         self.create('File');
-          //     }
-          // }
-        },
+        li: {},
+        content: {},
       };
       $toolbar
         .on("click.browse", "li", function () {
@@ -743,12 +717,7 @@ const { retrieveToken, retriveSeafileEnv } = require("./addin-config");
           $content.remove();
         },
         _rename: function (src, dest) {
-          var same = same_root(self, src, dest);
-          if (!same) {
-            return $.when(settings.rename(src, dest));
-          } else {
-            return $.when();
-          }
+          return;
         },
         _create: function (type, path) {
           return $.when(settings.create(type, path));
@@ -887,13 +856,34 @@ const { retrieveToken, retriveSeafileEnv } = require("./addin-config");
             const env = retriveSeafileEnv();
             const relativePath = getRelativepath(path);
 
-            downloadFile(token, env, repo, relativePath, function (link) {
+            const shareOption = getShareOption();
+            let password = null,
+              expire_days = null;
+            if (shareOption === "always_default") {
+              password = getDefaultPassword();
+              expire_days = parseInt(window.prompt("Please input expire days", "10"));
+              if (!expire_days || isNaN(expire_days)) return;
+            } else if (shareOption === "ask_for_password") {
+              password = window.prompt("Please input password");
+              if (!password) return;
+            } else {
+              password = window.prompt("Please input password");
+              if (!password) return;
+              expire_days = parseInt(window.prompt("Please input expire days", "10"));
+              if (!expire_days || isNaN(expire_days)) return;
+            }
+
+            advancedDownloadFile(token, env, repo, relativePath, password, expire_days, function (response) {
               $(".loader").hide();
-              Office.context.ui.messageParent(
-                JSON.stringify({
-                  downloadLink: link,
-                })
-              );
+              if (response.error_msg) {
+                window.alert(response.error_msg);
+              } else {
+                Office.context.ui.messageParent(
+                  JSON.stringify({
+                    downloadLink: response.link,
+                  })
+                );
+              }
             });
           } catch (error) {
             jQuery(".loader").hide();

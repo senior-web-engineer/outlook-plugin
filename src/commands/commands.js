@@ -8,7 +8,7 @@ const { getConfig, setConfig } = require("../helpers/addin-config");
 /* global global, Office, self, window */
 
 var config;
-var loginEvent;
+var loginEvent, attachEvent, uploadEvent, settingsEvent;
 var loginDialog, attachDialog, uploadDialog, settingsDialog;
 
 Office.onReady(() => {
@@ -44,7 +44,7 @@ function Attach(event) {
 
 function login(event) {
   loginEvent = event;
-  //Not Configured yet, display Login PopUp
+
   var url = new URI("login.html").absoluteTo(window.location).toString();
   var dialogOptions = { width: 25, height: 50, displayInIframe: true };
 
@@ -57,6 +57,8 @@ function login(event) {
 }
 
 function loadUploadPage(event) {
+  uploadEvent = event;
+
   var url = new URI("uploadAttachment.html").absoluteTo(window.location).toString();
   var dialogOptions = { width: 40, height: 60, displayInIframe: true };
 
@@ -69,6 +71,8 @@ function loadUploadPage(event) {
 }
 
 function loadAttachPage(event) {
+  attachEvent = event;
+
   var url = new URI("downLoadfile.html").absoluteTo(window.location).toString();
   var dialogOptions = { width: 40, height: 60, displayInIframe: true };
 
@@ -124,12 +128,18 @@ function receiveMessage(message) {
     if (uploadDialog) {
       uploadDialog.close();
       uploadDialog = null;
+      uploadEvent.completed();
+      uploadEvent = null;
     }
     if (attachDialog) {
       attachDialog.close();
       attachDialog = null;
+      attachEvent.completed();
+      attachEvent = null;
     }
     if (settingsDialog) {
+      settingsEvent.completed();
+      settingsEvent = null;
       settingsDialog.close();
       settingsDialog = null;
     }
@@ -137,6 +147,8 @@ function receiveMessage(message) {
 }
 
 function loadSettingsPage(event) {
+  settingsEvent = event;
+
   var url = new URI("settings.html").absoluteTo(window.location).toString();
   var dialogOptions = { width: 40, height: 60, displayInIframe: true };
 
@@ -157,21 +169,28 @@ function settingsPage(event) {
   }
 }
 
-function dialogClosed(message) {
+function dialogClosed(event) {
   if (loginDialog) {
-    loginDialog = null;
     loginEvent.completed();
     loginEvent = null;
+    loginDialog.close();
+    loginDialog = null;
   }
   if (uploadDialog) {
+    uploadEvent.completed();
+    uploadEvent = null;
     uploadDialog.close();
     uploadDialog = null;
   }
   if (attachDialog) {
+    attachEvent.completed();
+    attachEvent = null;
     attachDialog.close();
     attachDialog = null;
   }
   if (settingsDialog) {
+    settingsEvent.completed();
+    settingsEvent = null;
     settingsDialog.close();
     settingsDialog = null;
   }
