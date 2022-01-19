@@ -1,7 +1,7 @@
 import { retrieveToken, retriveSeafileEnv } from "./addin-config";
 export function getToken(env, user, password, callback) {
   $.ajax({
-    url: "https://demo99.luckycloud-pro.de/addin/seafileAPI.php",
+    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
     method: "POST",
     timeout: 0,
     headers: {
@@ -35,7 +35,7 @@ export function getToken(env, user, password, callback) {
 }
 export function getSeafileLibraries(token, env, callback) {
   $.ajax({
-    url: "https://demo99.luckycloud-pro.de/addin/seafileAPI.php",
+    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
     method: "POST",
     timeout: 0,
     headers: {
@@ -61,7 +61,7 @@ export function getItemsInDirectory(token, env, repo, path, currentEnv, callback
   if (path == "/") console.log("getting info for repo ", repo["name"]);
 
   var settings = {
-    url: "https://demo99.luckycloud-pro.de/addin/seafileAPI.php",
+    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
     method: "POST",
     timeout: 0,
     headers: {
@@ -89,7 +89,7 @@ export function getItemsInDirectory(token, env, repo, path, currentEnv, callback
 
 export function getUploadLink(token, env, repo, path, callback) {
   var settings = {
-    url: "https://demo99.luckycloud-pro.de/addin/seafileAPI.php",
+    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
     method: "POST",
     timeout: 0,
     headers: {
@@ -121,7 +121,7 @@ export function uploadFile(token, env, uploadPath, selectedFile, callback) {
   form.append("method", "GET");
 
   var settings = {
-    url: "https://demo99.luckycloud-pro.de/addin/seafileAPI.php",
+    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
     method: "POST",
     timeout: 0,
     processData: false,
@@ -137,7 +137,7 @@ export function uploadFile(token, env, uploadPath, selectedFile, callback) {
 
 export function downloadFile(token, env, repo, path, callback) {
   var settings = {
-    url: "https://demo99.luckycloud-pro.de/addin/seafileAPI.php",
+    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
     method: "POST",
     timeout: 0,
     headers: {
@@ -168,7 +168,7 @@ export function advancedDownloadFile(
   callback = function () {}
 ) {
   var settings = {
-    url: "https://demo99.luckycloud-pro.de/addin/seafileAPI.php",
+    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
     method: "POST",
     timeout: 0,
     headers: {
