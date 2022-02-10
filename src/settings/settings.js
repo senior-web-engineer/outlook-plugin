@@ -6,7 +6,14 @@ const {
   getSeafileLibraries,
   downloadFile,
 } = require("../helpers/seafile-api");
-const { getShareOption, setShareOption, getDefaultPassword, setDefaultPassword } = require("../helpers/addin-config");
+const {
+  getShareOption,
+  setShareOption,
+  getDefaultPassword,
+  setDefaultPassword,
+  getDefaultExpireDate,
+  setDefaultExpireDate,
+} = require("../helpers/addin-config");
 
 (function () {
   "use strict";
@@ -34,6 +41,14 @@ const { getShareOption, setShareOption, getDefaultPassword, setDefaultPassword }
         $("#without_password").prop("checked", true);
         $("#default_password").val("");
       }
+      const defaultExpireDate = getDefaultExpireDate();
+      if (defaultExpireDate) {
+        $("#with_expire").prop("checked", true);
+        $("#default_expire").val(defaultExpireDate);
+      } else {
+        $("#without_expire").prop("checked", true);
+        $("#default_expire").val("");
+      }
     });
   };
 
@@ -56,6 +71,10 @@ const { getShareOption, setShareOption, getDefaultPassword, setDefaultPassword }
     let password = $("#default_password").val();
     if ($("#without_password").prop("checked")) password = null;
     setDefaultPassword(password);
+
+    let expire_date = $("#default_expire").val();
+    if ($("#without_expire").prop("checked")) expire_date = null;
+    setDefaultExpireDate(expire_date);
   }
 
   function updateShareOption() {

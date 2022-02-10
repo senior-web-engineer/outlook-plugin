@@ -1,5 +1,11 @@
-const { advancedDownloadFile } = require("./seafile-api");
-const { retrieveToken, retriveSeafileEnv, getDefaultPassword, getShareOption } = require("./addin-config");
+const { advancedDownloadFile, getSharedLink } = require("./seafile-api");
+const {
+  retrieveToken,
+  retriveSeafileEnv,
+  getDefaultPassword,
+  getShareOption,
+  getDefaultExpireDate,
+} = require("./addin-config");
 
 (function ($, undefined) {
   "use strict";
@@ -848,7 +854,6 @@ const { retrieveToken, retriveSeafileEnv, getDefaultPassword, getShareOption } =
             return path.substring(path.indexOf("/"));
           }
           try {
-            jQuery(".loader").show();
             const filename = selected_files[0].getElementsByTagName("span")[0].innerText;
             const path = window.browse.join(window.browse.path(), filename);
             const repo = getRepofrompath(path);
@@ -861,27 +866,43 @@ const { retrieveToken, retriveSeafileEnv, getDefaultPassword, getShareOption } =
               expire_days = null;
             if (shareOption === "always_default") {
               password = getDefaultPassword();
-              expire_days = parseInt(window.prompt("Please input expire days", "10"));
-              if (!expire_days || isNaN(expire_days)) return;
+              expire_days = getDefaultExpireDate();
             } else if (shareOption === "ask_for_password") {
               password = window.prompt("Please input password");
               if (!password) return;
+              expire_days = getDefaultExpireDate();
             } else {
               password = window.prompt("Please input password");
               if (!password) return;
               expire_days = parseInt(window.prompt("Please input expire days", "10"));
-              if (!expire_days || isNaN(expire_days)) return;
+              if (isNaN(expire_days)) return;
+              if (expire_days <= 0) expire_days = null;
             }
 
-            advancedDownloadFile(token, env, repo, relativePath, password, expire_days, function (response) {
-              $(".loader").hide();
-              if (response.error_msg) {
-                window.alert(response.error_msg);
+            jQuery(".loader").show();
+            getSharedLink(token, env, repo, relativePath, function (res) {
+              if (res.error_msg || res.length <= 0) {
+                advancedDownloadFile(token, env, repo, relativePath, password, expire_days, function (response) {
+                  $(".loader").hide();
+                  if (response.error_msg) {
+                    window.alert(response.error_msg);
+                  } else {
+                    Office.context.ui.messageParent(
+                      JSON.stringify({
+                        downloadLink: response.link + "\n",
+                      })
+                    );
+                  }
+                });
               } else {
                 Office.context.ui.messageParent(
                   JSON.stringify({
-                    downloadLink: response.link,
+                    downloadLink: res[0].link + "\n",
                   })
+                );
+                $(".loader").hide();
+                window.alert(
+                  "A download link has already been created for this file. The existing download link has been inserted."
                 );
               }
             });

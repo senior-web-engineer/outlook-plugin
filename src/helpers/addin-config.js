@@ -47,6 +47,21 @@ export function setDefaultPassword(password = null, callback = function () {}) {
   Office.context.roamingSettings.saveAsync(callback);
 }
 
+export function getDefaultExpireDate() {
+  const is_expire_date_set = Office.context.roamingSettings.get("is_expire_date_set");
+  return is_expire_date_set === "true" ? decryptKey(Office.context.roamingSettings.get("default_expire_date")) : null;
+}
+
+export function setDefaultExpireDate(expire_date = null, callback = function () {}) {
+  if (expire_date === null || expire_date <= 0) {
+    Office.context.roamingSettings.set("is_expire_date_set", "false");
+  } else {
+    Office.context.roamingSettings.set("is_expire_date_set", "true");
+    Office.context.roamingSettings.set("default_expire_date", encryptKey(expire_date));
+  }
+  Office.context.roamingSettings.saveAsync(callback);
+}
+
 export function getShareOption() {
   const option = Office.context.roamingSettings.get("share_option");
   if (!option || option === undefined) return "always_default";

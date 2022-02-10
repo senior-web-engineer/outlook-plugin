@@ -198,3 +198,30 @@ export function advancedDownloadFile(
     if (callback) callback(response);
   });
 }
+
+export function getSharedLink(token, env, repo, path, callback) {
+  var settings = {
+    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
+    method: "POST",
+    timeout: 0,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: JSON.stringify({
+      method: "GET",
+      url: env + `/api/v2.1/share-links/?repo_id=${repo["id"]}&path=${encodeURIComponent(path)}`,
+      headers: {
+        Authorization: "Token " + token,
+        Accept: "application/json",
+      },
+    }),
+  };
+
+  $.ajax(settings)
+    .done(function (response) {
+      if (callback) callback(response);
+    })
+    .fail((err) => {
+      if (callback) callback([]);
+    });
+}

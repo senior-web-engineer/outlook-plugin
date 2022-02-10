@@ -53,6 +53,21 @@
                 </label>
                 <input class="form-control" name="default_password" id="default_password" />
             </div>
+
+            <h6>Default Expire Date</h6>
+            <div class="form-check">
+                <input class="form-check-input" name="general_expire" type="radio" id="without_expire" value="1" />
+                <label class="form-check-label" for="without_expire">
+                    Without expire date
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" name="general_expire" type="radio" id="with_expire" value="2" />
+                <label class="form-check-label" for="with_expire">
+                    With expire date
+                </label>
+                <input class="form-control" type="number" name="default_expire" id="default_expire" />
+            </div>
             <div class="form-group mt-5">
                 <button class="btn btn-success" id="update_default_password">Apply</button>
             </div>

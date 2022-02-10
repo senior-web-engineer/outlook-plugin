@@ -6,8 +6,15 @@ const {
   getSeafileLibraries,
   downloadFile,
   advancedDownloadFile,
+  getSharedLink,
 } = require("../helpers/seafile-api");
-const { retrieveToken, retriveSeafileEnv, getDefaultPassword, getShareOption } = require("../helpers/addin-config");
+const {
+  retrieveToken,
+  retriveSeafileEnv,
+  getDefaultPassword,
+  getShareOption,
+  getDefaultExpireDate,
+} = require("../helpers/addin-config");
 
 // The Office initialize function must be run each time a new page is loaded.
 var dirmap = {};
@@ -99,7 +106,6 @@ Office.initialize = function (reason) {
           if (type == "li") {
             return {
               "Get Download Link": function ($li) {
-                $(".loader").show();
                 filename = $li.find("span").text();
                 path = browse.join(browse.path(), filename);
                 repo = getRepofrompath(path);
@@ -111,27 +117,43 @@ Office.initialize = function (reason) {
                   expire_days = null;
                 if (shareOption === "always_default") {
                   password = getDefaultPassword();
-                  expire_days = parseInt(window.prompt("Please input expire days", "10"));
-                  if (!expire_days || isNaN(expire_days)) return;
+                  expire_days = getDefaultExpireDate();
                 } else if (shareOption === "ask_for_password") {
                   password = window.prompt("Please input password");
                   if (!password) return;
+                  expire_days = getDefaultExpireDate();
                 } else {
                   password = window.prompt("Please input password");
                   if (!password) return;
                   expire_days = parseInt(window.prompt("Please input expire days", "10"));
-                  if (!expire_days || isNaN(expire_days)) return;
+                  if (isNaN(expire_days)) return;
+                  if (expire_days <= 0) expire_days = null;
                 }
 
-                advancedDownloadFile(token, env, repo, relativePath, password, expire_days, function (response) {
-                  $(".loader").hide();
-                  if (response.error_msg) {
-                    window.alert(response.error_msg);
+                $(".loader").show();
+                getSharedLink(token, env, repo, relativePath, function (res) {
+                  if (res.error_msg || res.length <= 0) {
+                    advancedDownloadFile(token, env, repo, relativePath, password, expire_days, function (response) {
+                      $(".loader").hide();
+                      if (response.error_msg) {
+                        window.alert(response.error_msg);
+                      } else {
+                        Office.context.ui.messageParent(
+                          JSON.stringify({
+                            downloadLink: response.link + "\n",
+                          })
+                        );
+                      }
+                    });
                   } else {
                     Office.context.ui.messageParent(
                       JSON.stringify({
-                        downloadLink: response.link,
+                        downloadLink: res[0].link + "\n",
                       })
+                    );
+                    $(".loader").hide();
+                    window.alert(
+                      "A download link has already been created for this file. The existing download link has been inserted."
                     );
                   }
                 });
