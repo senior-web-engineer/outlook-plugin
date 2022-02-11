@@ -10,11 +10,11 @@
 #  stage: test
 #include:
 #- template: Security/SAST.gitlab-ci.yml
-image: node:latest
+image: debian:latest
 
 variables:
-    USER: luckycloudbox
-    SERVER_IP: luckycloudbox/lcbox
+    USER: root
+    SERVER_IP: 78.47.35.181
 
 before_script:
   - apt-get update
@@ -28,7 +28,8 @@ stage_deploy:
     paths:
       - build/
   script:
-    - ssh-add <(echo "$DEPLOY_KEY")
+    #- ssh-add <(echo "$DEPLOY_KEY")
+    - echo "$DEPLOY_KEY" | tr -d '\r' | ssh-add -
     - ssh -p22 USER@SERVER_IP "mkdir htdocs/wp-content/themes/_tmp"
     - scp -P22 -r build/* USER@SERVER_IP:htdocs/wp-content/themes/_tmp
     - ssh -p22 USER@SERVER_IP "mv htdocs/wp-content/themes/live htdocs/wp-content/themes/_old && mv htdocs/wp-content/themes/_tmp htdocs/wp-content/themes/live"
