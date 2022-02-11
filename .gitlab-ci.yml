@@ -29,8 +29,11 @@ stage_deploy:
       - build/
   script:
     #- ssh-add <(echo "$DEPLOY_KEY")
+    - mkdir public
+    - touch public/index.html
+    - echo "<h1>New deployment<h1>" >> public/index.html
     - echo "$DEPLOY_KEY" | tr -d '\r' | ssh-add -
-    - ssh -p22 USER@SERVER_IP "mkdir htdocs/wp-content/themes/_tmp"
-    - scp -P22 -r build/* USER@SERVER_IP:htdocs/wp-content/themes/_tmp
-    - ssh -p22 USER@SERVER_IP "mv htdocs/wp-content/themes/live htdocs/wp-content/themes/_old && mv htdocs/wp-content/themes/_tmp htdocs/wp-content/themes/live"
-    - ssh -p22 USER@SERVER_IP "rm -rf htdocs/wp-content/themes/_old"
+    - ssh -p22 $USER@$SERVER_IP "mkdir htdocs/wp-content/themes/_tmp"
+    - scp -P22 -r build/* $USER@$SERVER_IP:htdocs/wp-content/themes/_tmp
+    - ssh -p22 $USER@$SERVER_IP "mv htdocs/wp-content/themes/live htdocs/wp-content/themes/_old && mv htdocs/wp-content/themes/_tmp htdocs/wp-content/themes/live"
+    - ssh -p22 $USER@$SERVER_IP "rm -rf htdocs/wp-content/themes/_old"
