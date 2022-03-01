@@ -1,11 +1,3 @@
-const { advancedDownloadFile, getSharedLink } = require("./seafile-api");
-const {
-  retrieveToken,
-  retriveSeafileEnv,
-  getDefaultPassword,
-  getShareOption,
-  getDefaultExpireDate,
-} = require("./addin-config");
 
 (function ($, undefined) {
   "use strict";
@@ -14,7 +6,7 @@ const {
     this.upload = upload;
     this.error = error;
   }
-  $("div.toolbar ul.labels li.download").toggleClass("disabled", $(".ui-dialog li.file.selected").length != 1);
+  $("div.toolbar ul.labels li.download").toggleClass("disabled", $("div.content li.selected").length < 1);
 
   Uploader.prototype.process = function process(event, path) {
     var defered = $.Deferred();
@@ -138,8 +130,10 @@ const {
       init: $.noop,
       item_class: $.noop,
       rename_delay: 300,
-      dbclick_delay: 2000,
+      dbclick_delay: 800,
       open: $.noop,
+      downloadfrommenu: $.noop,
+      refresh: $.noop,
       rename: $.noop,
       create: $.noop,
       remove: $.noop,
@@ -152,6 +146,7 @@ const {
         return {};
       },
       refresh_timer: 100,
+      view_style : "grid"
     },
     strings: {
       toolbar: {
@@ -160,6 +155,8 @@ const {
         refresh: "refresh",
         upload: "upload",
         download: "download",
+        grid : "grid",
+        list : "list"
       },
     },
     escape_regex: function (str) {
@@ -211,6 +208,7 @@ const {
         var $li = $content.find("li");
         if (!e.ctrlKey) {
           $li.removeClass("selected");
+          $li.find("input").prop("checked", false);
           selected[settings.name] = [];
         }
         var selection_rect = $selection[0].getBoundingClientRect();
@@ -223,6 +221,7 @@ const {
             rect.right - rect.width < selection_rect.right
           );
         });
+        $selected.find("input").prop("checked", true);
         $selected.addClass("selected").each(function () {
           selected[settings.name].push(self.join(path, $(this).text()));
         });
@@ -293,6 +292,7 @@ const {
             if (e.which >= 37 && e.which <= 40) {
               if (!e.ctrlKey) {
                 $content.find("li").removeClass("selected");
+                $content.find("li input").prop("checked", false);
               }
               if (!$active.length) {
                 $active = $content.find("li:eq(0)").addClass("active");
@@ -330,7 +330,7 @@ const {
     }
     function click(e) {
       setTimeout(() => {
-        $("div.toolbar ul.labels li.download").toggleClass("disabled", $(".ui-dialog li.file.selected").length != 1);
+        $("div.toolbar ul.labels li.download").toggleClass("disabled", $("div.content li.selected").length < 1);
       }, 300);
 
       if (!$(e.target).closest("." + cls).length) {
@@ -519,16 +519,20 @@ const {
             var filename = self.join(path, name);
             if ($li.hasClass("directory")) {
               $li.removeClass("selected");
+              $li.find("input").prop("checked", false);
               self.show(filename);
             } else if ($li.hasClass("file")) {
-              settings.open(filename);
+              settings.open($li, filename);
             }
+          } else {
+
           }
         })
         .on("click.browse", "ul:not(.menu) > li", function (e) {
           if (!selection) {
             var $target = $(e.target);
             var $this = $(this);
+            var $checkbox = $this.find("input");
             var name = $this.find("span").text();
             var filename = self.join(path, name);
             if ($target.is("span")) {
@@ -545,20 +549,28 @@ const {
               click_time = new Date().getTime();
             }
             if (!e.ctrlKey) {
-              $this.siblings().removeClass("selected");
+              if (settings.view_style == "grid") {
+                $this.siblings().removeClass("selected");
+                $this.siblings().find("input").prop("checked", false);
+              }
             }
-            if (!$target.is("textarea")) {
-              $content.find(".active").removeClass("active");
+            if ((settings.view_style == "grid" && !$target.is("textarea")) || (settings.view_style == "list" && $target.is("input")) ) {
+              $content.find(".active").removeClass("active");              
               $this.toggleClass("selected").addClass("active");
+              
               if ($this.hasClass("selected")) {
+                $checkbox.prop("checked", true);
                 if (!e.ctrlKey) {
                   selected[settings.name] = [];
                 }
                 selected[settings.name].push(filename);
-              } else if (e.ctrlKey) {
-                selected[settings.name] = selected[settings.name].filter(is(filename));
               } else {
-                selected[settings.name] = [];
+                $checkbox.prop("checked", false);
+                if (e.ctrlKey) {
+                  selected[settings.name] = selected[settings.name].filter(is(filename));
+                } else {
+                  selected[settings.name] = [];
+                }
               }
             }
           }
@@ -573,14 +585,18 @@ const {
           }
         })
         .on("contextmenu", function (e) {
-          if (settings.contextmenu && !e.ctrlKey && self.path() != "/") {
+         
+          if (settings.contextmenu && !e.ctrlKey && settings.page_name == "settings" ) {
             hide_menus();
             context_menu_object = { target: $(e.target) };
-            if (!context_menu_object.target.is("textarea")) {
-              var $li = context_menu_object.target.closest("li");
+            context_menu_object = { target: $('div.content li.selected.active')};
+            
+            if (!$(e.target).is("textarea") && $(e.target).hasClass("directory")) {
+              var $li = $(e.target).closest("li");
               context_menu_object.type = $li.length ? "li" : "content";
 
-              if (!(context_menu_object.type == "li" && $li.hasClass("directory"))) {
+              // if (!(context_menu_object.type == "li" && $li.hasClass("directory"))) {
+              // if (context_menu_object.type == "li") {
                 context_menu_object.menu = $.extend(
                   context_menu[context_menu_object.type],
                   settings.menu(context_menu_object.type) || {}
@@ -592,8 +608,34 @@ const {
                   left: e.pageX,
                   top: e.pageY,
                 });
-              }
             }
+            
+          }
+          if (settings.contextmenu && !e.ctrlKey && ((self.path() != "/" && settings.page_name !="settings")) ) {
+            hide_menus();
+            context_menu_object = { target: $(e.target) };
+            context_menu_object = { target: $('div.content li.selected')};
+
+            if (!$(e.target).is("textarea")) {
+              var $li = $(e.target).closest("li");
+              context_menu_object.type = $li.length ? "li" : "content";
+
+              // if (!(context_menu_object.type == "li" && $li.hasClass("directory"))) {
+              // if (context_menu_object.type == "li") {
+                context_menu_object.menu = $.extend(
+                  context_menu[context_menu_object.type],
+                  settings.menu(context_menu_object.type) || {}
+                );
+                var $menu = make_menu(context_menu_object.menu).appendTo("body");
+                $menu.menu();
+                var offset = $content.offset();
+                $menu.css({
+                  left: e.pageX,
+                  top: e.pageY,
+                });
+            }
+
+
           }
           return false;
         });
@@ -603,8 +645,9 @@ const {
         self.addClass("selected");
         var $target = $(e.target);
         if (!was_selecting) {
-          if (!e.ctrlKey && !$target.is(".content li") && !$target.closest(".toolbar").length) {
+          if (!e.ctrlKey && !$target.is(".content li") && !$target.closest(".toolbar").length && !$target.is(".content li input") )  {
             $content.find("li").removeClass("selected");
+            $content.find("li input").prop("checked" , false)
             selected[settings.name] = [];
           }
         }
@@ -814,102 +857,122 @@ const {
           return self;
         },
         refresh: function () {
-          $content.addClass("hidden");
-          var timer = $.Deferred();
-          var callback = $.Deferred();
-          if (settings.refresh_timer) {
-            setTimeout(timer.resolve.bind(timer), settings.refresh_timer);
-          } else {
-            timer.resolve();
-          }
-          self.show(path, {
-            force: true,
-            push: false,
-            callback: function () {
-              callback.resolve();
-            },
+          $('div.toolbar li.refresh').toggleClass("disabled");
+          $('div.toolbar li.grid').toggleClass("disabled");
+          $('div.toolbar li.list').toggleClass("disabled");
+          settings.refresh(path, function(){
+            $content.addClass("hidden");
+            var timer = $.Deferred();
+            var callback = $.Deferred();
+            if (settings.refresh_timer) {
+              setTimeout(timer.resolve.bind(timer), settings.refresh_timer);
+            } else {
+              timer.resolve();
+            }
+            self.show(path, {
+              force: true,
+              push: false,
+              callback: function () {
+                callback.resolve();
+              },
+            });
+            $.when(timer, callback).then(function () {
+              $content.removeClass("hidden");
+            });
+
+            $('div.toolbar li.refresh').toggleClass("disabled");
+            $('div.toolbar li.grid').toggleClass("disabled");
+            $('div.toolbar li.list').toggleClass("disabled");
+            
           });
-          $.when(timer, callback).then(function () {
-            $content.removeClass("hidden");
-          });
+
         },
         upload: function () {
           document.getElementById("uploadFilebtn").click();
         },
         download: function () {
-          const selected_files = document
-            .getElementsByClassName("ui-dialog")[0]
-            .getElementsByClassName("file selected");
-          if (selected_files.length != 1) return;
+          settings.downloadfrommenu($('div.content li.selected'));
+          // const selected_files = document
+          //   .getElementsByClassName("ui-dialog")[0]
+          //   .getElementsByClassName("file selected");
+          // if (selected_files.length != 1) return;
 
-          function getRepofrompath(path) {
-            path = path.substring(1);
-            let reponame = path.substring(0, path.indexOf("/"));
-            for (let repo of window.globalrepos) {
-              if (repo["name"] == reponame) return repo;
-            }
-          }
-          function getRelativepath(path) {
-            path = path.substring(1);
-            return path.substring(path.indexOf("/"));
-          }
-          try {
-            const filename = selected_files[0].getElementsByTagName("span")[0].innerText;
-            const path = window.browse.join(window.browse.path(), filename);
-            const repo = getRepofrompath(path);
-            const token = retrieveToken();
-            const env = retriveSeafileEnv();
-            const relativePath = getRelativepath(path);
+          // function getRepofrompath(path) {
+          //   path = path.substring(1);
+          //   let reponame = path.substring(0, path.indexOf("/"));
+          //   for (let repo of window.globalrepos) {
+          //     if (repo["name"] == reponame) return repo;
+          //   }
+          // }
+          // function getRelativepath(path) {
+          //   path = path.substring(1);
+          //   return path.substring(path.indexOf("/"));
+          // }
+          // try {
+          //   const filename = selected_files[0].getElementsByTagName("span")[0].innerText;
+          //   const path = window.browse.join(window.browse.path(), filename);
+          //   const repo = getRepofrompath(path);
+          //   const token = retrieveToken();
+          //   const env = retriveSeafileEnv();
+          //   const relativePath = getRelativepath(path);
 
-            const shareOption = getShareOption();
-            let password = null,
-              expire_days = null;
-            if (shareOption === "always_default") {
-              password = getDefaultPassword();
-              expire_days = getDefaultExpireDate();
-            } else if (shareOption === "ask_for_password") {
-              password = window.prompt("Please input password");
-              if (!password) return;
-              expire_days = getDefaultExpireDate();
-            } else {
-              password = window.prompt("Please input password");
-              if (!password) return;
-              expire_days = parseInt(window.prompt("Please input expire days", "10"));
-              if (isNaN(expire_days)) return;
-              if (expire_days <= 0) expire_days = null;
-            }
+          //   const shareOption = getShareOption();
+          //   let password = null,
+          //     expire_days = null;
+          //   if (shareOption === "always_default") {
+          //     password = getDefaultPassword();
+          //     expire_days = getDefaultExpireDate();
+          //   } else if (shareOption === "ask_for_password") {
+          //     password = window.prompt("Please input password");
+          //     if (!password) return;
+          //     expire_days = getDefaultExpireDate();
+          //   } else {
+          //     password = window.prompt("Please input password");
+          //     if (!password) return;
+          //     expire_days = parseInt(window.prompt("Please input expire days", "10"));
+          //     if (isNaN(expire_days)) return;
+          //     if (expire_days <= 0) expire_days = null;
+          //   }
 
-            jQuery(".loader").show();
-            getSharedLink(token, env, repo, relativePath, function (res) {
-              if (res.error_msg || res.length <= 0) {
-                advancedDownloadFile(token, env, repo, relativePath, password, expire_days, function (response) {
-                  $(".loader").hide();
-                  if (response.error_msg) {
-                    window.alert(response.error_msg);
-                  } else {
-                    Office.context.ui.messageParent(
-                      JSON.stringify({
-                        downloadLink: response.link + "\n",
-                      })
-                    );
-                  }
-                });
-              } else {
-                Office.context.ui.messageParent(
-                  JSON.stringify({
-                    downloadLink: res[0].link + "\n",
-                  })
-                );
-                $(".loader").hide();
-                window.alert(
-                  "A download link has already been created for this file. The existing download link has been inserted."
-                );
-              }
-            });
-          } catch (error) {
-            jQuery(".loader").hide();
-            console.log(error);
-          }
+          //   jQuery(".loader").show();
+          //   getSharedLink(token, env, repo, relativePath, function (res) {
+          //     if (res.error_msg || res.length <= 0) {
+          //       advancedDownloadFile(token, env, repo, relativePath, password, expire_days, function (response) {
+          //         $(".loader").hide();
+          //         if (response.error_msg) {
+          //           window.alert(response.error_msg);
+          //         } else {
+          //           Office.context.ui.messageParent(
+          //             JSON.stringify({
+          //               downloadLink: response.link + "\n",
+          //             })
+          //           );
+          //         }
+          //       });
+          //     } else {
+          //       Office.context.ui.messageParent(
+          //         JSON.stringify({
+          //           downloadLink: res[0].link + "\n",
+          //         })
+          //       );
+          //       $(".loader").hide();
+          //       window.alert(
+          //         "A download link has already been created for this file. The existing download link has been inserted."
+          //       );
+          //     }
+          //   });
+          // } catch (error) {
+          //   jQuery(".loader").hide();
+          //   console.log(error);
+          // }
+        },
+        grid: function(){
+          settings.view_style = "grid"
+          self.refresh()
+        },
+        list: function(){
+          settings.view_style = "list"
+          self.refresh()
         },
         show: function (new_path, options) {
           function process(content) {
@@ -925,7 +988,7 @@ const {
               $ul.empty();
               current_content.dirs.forEach(function (dir) {
                 var cls = settings.item_class(new_path, dir);
-                var $li = $('<li class="directory"><span>' + dir + "</span></li>")
+                var $li = $('<li class="directory ' + settings.view_style + '"><input type="checkbox" /><span>' + dir + "</span></li>")
                   .appendTo($ul)
                   .attr("draggable", true);
                 if (cls) {
@@ -933,7 +996,7 @@ const {
                 }
               });
               current_content.files.forEach(function (file) {
-                var $li = $('<li class="file"><span>' + file + "</span></li>")
+                var $li = $('<li class="file ' + settings.view_style + '"><input type="checkbox" /><span>' + file + "</span></li>")
                   .appendTo($ul)
                   .attr("draggable", true);
                 if (file.match(".")) {
@@ -964,7 +1027,7 @@ const {
             $toolbar.find(".up").toggleClass("disabled", new_path == settings.root);
             $toolbar.find(".back").toggleClass("disabled", paths.length == 1);
             $toolbar.find(".upload").toggleClass("disabled", new_path == settings.root);
-            $toolbar.find(".download").toggleClass("disabled", $(".ui-dialog li.file.selected").length != 1);
+            $toolbar.find(".download").toggleClass("disabled", $("div.content li.selected").length < 1);
             path = new_path;
             // don't break old API. promise based and callback should both work
             var result = settings.dir(path, process);

@@ -72,3 +72,53 @@ export function setShareOption(val = "always_default", callback = function () {}
   Office.context.roamingSettings.set("share_option", val);
   Office.context.roamingSettings.saveAsync(callback);
 }
+
+export function getdownloadLinkOption() {
+  const option = Office.context.roamingSettings.get("downloadlink_option");
+  if (!option || option === undefined) return 1;
+  return option;
+}
+
+export function setdownloadLinkOption(val = 1, callback = function () {}) {
+  Office.context.roamingSettings.set("downloadlink_option", val);
+  Office.context.roamingSettings.saveAsync(callback);
+}
+
+
+export function dataurltoFile(url, filename, mimeType){
+  if (url.indexOf("base64") == -1) {
+    url = `data:${mimeType};base64,${url}`;
+  }
+  return (fetch(url)
+      .then(function(res){return res.arrayBuffer();})
+      .then(function(buf){return new File([buf], filename,{type:mimeType});})
+  );
+}
+
+export function getDefaultAttachmentPath(){
+  return {
+    defaultLibraryname: Office.context.roamingSettings.get("defaultLibraryname") ? Office.context.roamingSettings.get("defaultLibraryname"): undefined,
+    defaultPathname   :  Office.context.roamingSettings.get("defaultPathname") ? Office.context.roamingSettings.get("defaultPathname"): undefined,
+    repo_id : Office.context.roamingSettings.get("repo_id") ? Office.context.roamingSettings.get("repo_id"): undefined,
+  }  
+}
+export function getLinkText(){
+  return Office.context.roamingSettings.get("link_text")?Office.context.roamingSettings.get("link_text"): "Download Link";
+}
+export function setLinkText(text, callback=function(){} ) {
+  Office.context.roamingSettings.set("link_text", text);
+  Office.context.roamingSettings.saveAsync(callback);
+}
+export function setDefaultAttachmentPath(defaultLibraryname, defaultPathname = "/", repo_id, callback=function(){}){
+  Office.context.roamingSettings.set("defaultLibraryname", defaultLibraryname);
+  Office.context.roamingSettings.set("defaultPathname", defaultPathname);
+  Office.context.roamingSettings.set("repo_id", repo_id);
+  Office.context.roamingSettings.saveAsync(callback);
+}
+
+export function randomString(length, chars) {
+  var result = '';
+  for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+  return result;
+}
+

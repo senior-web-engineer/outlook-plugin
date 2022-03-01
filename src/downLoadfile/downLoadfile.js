@@ -13,7 +13,7 @@ const {
   retriveSeafileEnv,
   getDefaultPassword,
   getShareOption,
-  getDefaultExpireDate,
+  getDefaultExpireDate,  
 } = require("../helpers/addin-config");
 
 // The Office initialize function must be run each time a new page is loaded.
@@ -21,6 +21,7 @@ var dirmap = {};
 Office.initialize = function (reason) {
   var token = retrieveToken();
   var env = retriveSeafileEnv();
+
 
   jQuery(document).ready(function () {
     var inputPrompt = document.createElement("iframe");
@@ -45,7 +46,7 @@ Office.initialize = function (reason) {
         relativePath = getRelativepath(path);
 
         getUploadLink(token, env, repo, relativePath, function (uploadPath) {
-          uploadFile(token, env, uploadPath, selectedFile, function (response) {
+          uploadFile(token, env, uploadPath, relativePath, selectedFile, function (response) {
             $(".loader").hide();
             path = browse.join(browse.path(), selectedFile.name);
             browse.create("file", path);
@@ -57,6 +58,7 @@ Office.initialize = function (reason) {
       window.globalrepos = repos;
       globalrepos = repos;
       for (let repo of repos) {
+        if ( repo.encrypted ) continue;
         dirmap[repo["name"]] = {};
         getItemsInDirectory(token, env, repo, "/", dirmap[repo["name"]], initRepoMap);
       }
@@ -75,10 +77,13 @@ Office.initialize = function (reason) {
         }
       }
     }
-
     function getRepofrompath(path) {
       path = path.substring(1);
-      let reponame = path.substring(0, path.indexOf("/"));
+			let reponame = "";
+			if (path.indexOf("/") < 0)
+				reponame = path;
+			 else reponame= path.substring(0, path.indexOf("/"));
+       
       for (let repo of globalrepos) {
         if (repo["name"] == reponame) return repo;
       }
@@ -88,7 +93,29 @@ Office.initialize = function (reason) {
       path = path.substring(1);
       return path.substring(path.indexOf("/"));
     }
+    function refreshRepoMap(repo, detail, path, currentEnv, callback) {
+      // Adds new direcotry/file to the currentEnv
+      for (let item of detail) {
+        if (typeof currentEnv[item["name"]] === "object" || typeof currentEnv[item["name"]] === "string") continue;
+        if (item.type == "dir") {          
+          currentEnv[item["name"]] = {};
+        } else {
+          currentEnv[item["name"]] = "";
+        }
+      }
+      // Remove delted file or directory from currentEnv      
+      for (key in currentEnv){
+        let flag = false;
+        for (let item of detail) {
+          if (item["name"] == key) {
+            flag = true; break;
+          }
+        }
+        if (!flag) currentEnv[key] = undefined;
+      }
 
+      if (callback) callback();
+    }
     function drawRootDirectory() {
       function get(path) {
         var current = dirmap;
@@ -98,6 +125,77 @@ Office.initialize = function (reason) {
         return current;
       }
 
+      function performDownload($li, dblclick) {
+		    let  alertcnt = 0;
+        for (let i = 0; i< $li.length; i++) {			
+		      const $element = $($li[i]);
+		      // if ($element.hasClass("directory")) continue;
+
+          filename = $element.find("span").text();
+          path = browse.join(browse.path(), filename);
+          repo = getRepofrompath(path);
+  
+          const relativePath = getRelativepath(path);
+  
+          const shareOption = getShareOption();
+          let password = null,
+            expire_days = null;
+          if (shareOption === "always_default") {
+            password = getDefaultPassword();
+            expire_days = getDefaultExpireDate();
+          } else if (shareOption === "ask_for_password") {
+            password = window.prompt("Please input password");
+            if (!password) return;
+            expire_days = getDefaultExpireDate();
+          } else {
+            password = window.prompt("Please input password");
+            if (!password) return;
+            expire_days = parseInt(window.prompt("Please input expire days", "10"));
+            if (isNaN(expire_days)) return;
+            if (expire_days <= 0) expire_days = null;
+          }
+  
+          $(".loader").show();
+          getSharedLink(token, env, repo, relativePath, function (res) {
+            if (res.error_msg || res.length <= 0) {
+              advancedDownloadFile(token, env, repo, relativePath, password, expire_days, function (response) {
+                $(".loader").hide();
+                if (response.error_msg) {
+                  window.alert(response.error_msg);
+                } else {
+                  var message = {
+                    downloadLink: response.link,
+                    filename : relativePath
+                  }
+					        if (dblclick) message.action = "close";
+                  Office.context.ui.messageParent(
+                    JSON.stringify(message)
+                  );
+                }
+
+              });
+            } else {
+
+              var message = {
+                downloadLink: res[0].link,
+                filename : relativePath
+              }
+				      if (dblclick) message.action = "close";
+              Office.context.ui.messageParent(
+                JSON.stringify(message)
+              );
+              $(".loader").hide();
+              if (alertcnt == 0) {				  
+              window.alert(
+                "A download link has already been created for this file. The existing download link has been inserted."
+              );
+              alertcnt++;
+              }		  
+            }
+          });
+
+        }
+      }
       browse.browse({
         root: "/",
         separator: "/",
@@ -105,59 +203,7 @@ Office.initialize = function (reason) {
         menu: function (type) {
           if (type == "li") {
             return {
-              "Get Download Link": function ($li) {
-                filename = $li.find("span").text();
-                path = browse.join(browse.path(), filename);
-                repo = getRepofrompath(path);
-
-                relativePath = getRelativepath(path);
-
-                const shareOption = getShareOption();
-                let password = null,
-                  expire_days = null;
-                if (shareOption === "always_default") {
-                  password = getDefaultPassword();
-                  expire_days = getDefaultExpireDate();
-                } else if (shareOption === "ask_for_password") {
-                  password = window.prompt("Please input password");
-                  if (!password) return;
-                  expire_days = getDefaultExpireDate();
-                } else {
-                  password = window.prompt("Please input password");
-                  if (!password) return;
-                  expire_days = parseInt(window.prompt("Please input expire days", "10"));
-                  if (isNaN(expire_days)) return;
-                  if (expire_days <= 0) expire_days = null;
-                }
-
-                $(".loader").show();
-                getSharedLink(token, env, repo, relativePath, function (res) {
-                  if (res.error_msg || res.length <= 0) {
-                    advancedDownloadFile(token, env, repo, relativePath, password, expire_days, function (response) {
-                      $(".loader").hide();
-                      if (response.error_msg) {
-                        window.alert(response.error_msg);
-                      } else {
-                        Office.context.ui.messageParent(
-                          JSON.stringify({
-                            downloadLink: response.link + "\n",
-                          })
-                        );
-                      }
-                    });
-                  } else {
-                    Office.context.ui.messageParent(
-                      JSON.stringify({
-                        downloadLink: res[0].link + "\n",
-                      })
-                    );
-                    $(".loader").hide();
-                    window.alert(
-                      "A download link has already been created for this file. The existing download link has been inserted."
-                    );
-                  }
-                });
-              },
+              "Get Download Link": performDownload,
             };
           } else {
             return {
@@ -215,9 +261,16 @@ Office.initialize = function (reason) {
           delete parent[m[2]];
           parent[dest.replace(/.*\//, "")] = content;
         },
-        open: function (filename) {
+        downloadfrommenu: function($li){
+          console.log('clicked download button from menu');
+          performDownload($li);
+        },
+        open: function ($li, filename) {
           var file = get(filename);
           if (typeof file == "string") {
+            console.log('file double clicked here');
+            performDownload($li, true);
+
           } else {
             throw new Error("Invalid filename");
           }
@@ -225,6 +278,42 @@ Office.initialize = function (reason) {
         on_change: function () {
           $("#path").val(this.path());
         },
+        refresh: function(path, callback) {
+          console.log(path);
+          $('.loader').show();
+          if (path == "/") {
+            getSeafileLibraries(token, env, function (repos) {
+              globalrepos = repos;
+              // Adds new repo to dirmap 
+              for (let repo of repos) {
+                if ( repo.encrypted ) continue;
+                if (typeof dirmap[repo["name"]] === 'object' || typeof dirmap[repo["name"]] === 'string') continue;
+                dirmap[repo["name"]] = {}
+                getItemsInDirectory(token, env, repo, "/", dirmap[repo["name"]], refreshRepoMap);
+              }
+              // Remove deleted repos from dirmap
+              for (let key in dirmap){
+                let flag = false;
+                for (let repo of repos) {
+                  if (repo["name"] == key) { flag = true; break;}
+                }
+                if (!flag) dirmap[key] = undefined;
+              }
+              console.log('dir map', dirmap);
+              
+              $('.loader').hide();
+              if (callback) callback();
+
+            });
+          } else {
+            if (path[path.length-1] !="/") path = path + "/";
+            let repo = getRepofrompath(path);
+            let relativePath = getRelativepath(path);
+            let current_env = get(path);
+            getItemsInDirectory(token, env, repo, relativePath, current_env, refreshRepoMap, callback);
+            $('.loader').hide();
+          }
+        }
       });
     }
 
@@ -238,5 +327,7 @@ Office.initialize = function (reason) {
         currentEnv = currentEnv[dir];
       }
     }
+
+
   });
 };

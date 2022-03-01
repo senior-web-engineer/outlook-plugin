@@ -24,8 +24,9 @@ module.exports = async (env, options) => {
       login: "./src/settings/login.js",
       filebrowser: "./src/helpers/jquery.filebrowser.js",
       downloadFile : "./src/downLoadfile/downLoadfile.js",
-      uploadAttachment: "./src/uploadAttachment/uploadAttachment.js",      
-      settings: "./src/settings/settings.js"
+      uploadFile: "./src/uploadFile/uploadFile.js",      
+      selectDefaultPath: "./src/selectDefaultPath/selectDefaultPath.js",
+      settings: "./src/settings/settings.js",
     },
     output: {
       devtoolModuleFilenameTemplate: "webpack:///[resource-path]?[loaders]",
@@ -100,6 +101,30 @@ module.exports = async (env, options) => {
             from: "assets/attach-icon-*",
             to: "assets/[name][ext][query]",
           },
+          {
+            from: "assets/grid-icon-*",
+            to: "assets/[name][ext][query]",
+          },
+          {
+            from: "assets/list-icon-*",
+            to: "assets/[name][ext][query]",
+          },
+          {
+            from: "assets/upload-icon.png",
+            to: "assets/upload-icon.png",
+          },
+          {
+            from: "assets/download-icon.png",
+            to: "assets/download-icon.png",
+          },
+          {
+            from: "assets/grid-icon.png",
+            to: "assets/grid-icon.png",
+          },
+          {
+            from: "assets/list-icon.png",
+            to: "assets/list-icon.png",
+          },
           // {
           //   from: "./src/settings/login.js",
           //   to: "./settings/login.js",
@@ -128,9 +153,9 @@ module.exports = async (env, options) => {
         chunks: ["polyfill", "login"],
       }),
       new HtmlWebpackPlugin({
-        filename: "uploadAttachment.html",
-        template: "./src/uploadAttachment/uploadAttachment.html",
-        chunks: ["polyfill","filebrowser", "uploadAttachment",  ],
+        filename: "uploadFile.html",
+        template: "./src/uploadFile/uploadFile.html",
+        chunks: ["polyfill","filebrowser", "uploadFile",  ],
       }),
       new HtmlWebpackPlugin({
         filename: "downLoadfile.html",
@@ -140,7 +165,12 @@ module.exports = async (env, options) => {
       new HtmlWebpackPlugin({
         filename: "settings.html",
         template: "./src/settings/settings.html",
-        chunks: ["polyfill", "settings"],
+        chunks: ["polyfill", "filebrowser", "settings"],
+      }),
+      new HtmlWebpackPlugin({
+        filename: "selectDefaultPath.html",
+        template: "./src/selectDefaultPath/selectDefaultPath.html",
+        chunks: ["polyfill", "filebrowser", "selectDefaultPath"],
       }),
       
     ],

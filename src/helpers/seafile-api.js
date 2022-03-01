@@ -1,4 +1,3 @@
-import { retrieveToken, retriveSeafileEnv } from "./addin-config";
 export function getToken(env, user, password, callback) {
   $.ajax({
     url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
@@ -57,9 +56,11 @@ export function getSeafileLibraries(token, env, callback) {
       console.log("error while getting libraries ", error);
     });
 }
-export function getItemsInDirectory(token, env, repo, path, currentEnv, callback) {
-  if (path == "/") console.log("getting info for repo ", repo["name"]);
-
+export function getItemsInDirectory(token, env, repo, path, currentEnv, callback1, callback2=null) {
+  // if (path == "/") console.log("getting info for repo ", repo["name"]);
+  if (path !="/") {
+    if (path[path.length-1] !="/") path = path + "/";
+  }
   var settings = {
     url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
     method: "POST",
@@ -78,9 +79,11 @@ export function getItemsInDirectory(token, env, repo, path, currentEnv, callback
   };
 
   $.ajax(settings)
-    .done(function (response) {
-      if (path == "/") console.log("response for repo ", repo["name"], response);
-      if (callback) callback(repo, response, path, currentEnv);
+    .done(function (response) {      
+      if (callback1) {
+        if (callback2) callback1(repo, response, path, currentEnv, callback2);
+        else callback1(repo, response, path, currentEnv);
+      }
     })
     .fail(function (error) {
       console.log("error while getting items in direcotry ", repo["name"], path, error);
@@ -105,16 +108,17 @@ export function getUploadLink(token, env, repo, path, callback) {
   };
 
   $.ajax(settings).done(function (response) {
-    console.log("here is the token and env", token, env);
     console.log("upload Link", response);
     if (callback) callback(response);
+  }).fail((err) => {
+    console.log(err);
   });
 }
 
-export function uploadFile(token, env, uploadPath, selectedFile, callback) {
+export function uploadFile(token, env, uploadPath, relativePath,  selectedFile, callback) {
   var form = new FormData();
   form.append("file", selectedFile, selectedFile.name);
-  form.append("parent_dir", "/");
+  form.append("parent_dir", relativePath);
   form.append("replace", "1");
   form.append("token", token);
   form.append("url", uploadPath);

@@ -55,6 +55,22 @@
               <Group id="msgReadGroup">
                 <Label resid="GroupLabel"/>
                 <Control xsi:type="Button" id="msgReadOpenPaneButton">
+                  <Label resid="UploadFile.Label"/>
+                  <Supertip>
+                    <Title resid="UploadFile.Label"/>
+                    <Description resid="UploadFile.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="upload-icon-16x16"/>
+                    <bt:Image size="32" resid="upload-icon-32x32"/>
+                    <bt:Image size="80" resid="upload-icon-80x80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>uploadfileFromLocal</FunctionName>
+                  </Action>
+                </Control>
+
+                <Control xsi:type="Button" id="uploadAttachmentButton">
                   <Label resid="UploadAttachment.Label"/>
                   <Supertip>
                     <Title resid="UploadAttachment.Label"/>
@@ -66,9 +82,10 @@
                     <bt:Image size="80" resid="upload-icon-80x80"/>
                   </Icon>
                   <Action xsi:type="ExecuteFunction">
-                    <FunctionName>uploadattachment</FunctionName>
+                    <FunctionName>uploadAttachmentPage</FunctionName>
                   </Action>
                 </Control>
+
                 <Control xsi:type="Menu" id="OptionMenuButton">
                   <Label resid="Options.Label"/>
                   <Supertip>
@@ -96,7 +113,7 @@
                         <FunctionName>login</FunctionName>
                       </Action>
                     </Item>
-                    <Item id="ShareButton">
+                    <!-- <Item id="ShareButton">
                       <Label resid="menuItem2ReadLabel" />
                       <Supertip>
                         <Title resid="menuItem2ReadLabel" />
@@ -108,9 +125,9 @@
                         <bt:Image size="80" resid="share-icon-80x80" />
                       </Icon>
                       <Action xsi:type="ExecuteFunction">
-                        <FunctionName>uploadattachment</FunctionName>
+                        <FunctionName>uploadfileFromLocal</FunctionName>
                       </Action>
-                    </Item>
+                    </Item> -->
                     <Item id="SettingsButton">
                       <Label resid="menuItem3ReadLabel" />
                       <Supertip>
@@ -150,7 +167,7 @@
                     <bt:Image size="80" resid="attach-icon-80x80"/>
                   </Icon>
                   <Action xsi:type="ExecuteFunction">
-                    <FunctionName>Attach</FunctionName>
+                    <FunctionName>downLoadfromServer</FunctionName>
                   </Action>
                 </Control>
                 <Control xsi:type="Menu" id="OptionMenuButton_compose">
@@ -180,7 +197,7 @@
                         <FunctionName>login</FunctionName>
                       </Action>
                     </Item>
-                    <Item id="ShareButton_compose">
+                    <!-- <Item id="ShareButton_compose">
                       <Label resid="menuItem2ReadLabel" />
                       <Supertip>
                         <Title resid="menuItem2ReadLabel" />
@@ -194,7 +211,7 @@
                       <Action xsi:type="ExecuteFunction">
                         <FunctionName>Attach</FunctionName>
                       </Action>
-                    </Item>
+                    </Item> -->
                     <Item id="SettingsButton_compose">
                       <Label resid="menuItem3ReadLabel" />
                       <Supertip>
@@ -250,20 +267,22 @@
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GroupLabel" DefaultValue="luckycloud"/>
-        <bt:String id="UploadAttachment.Label" DefaultValue="Upload File"/>
+        <bt:String id="UploadFile.Label" DefaultValue="Upload File"/>
+        <bt:String id="UploadAttachment.Label" DefaultValue="Upload Attachment"/>
         <bt:String id="Attach.Label" DefaultValue="Attach"/>
 
         <bt:String id="Options.Label" DefaultValue="Options"/>
         <bt:String id="menuItem1ReadLabel" DefaultValue="Login"/>
-        <bt:String id="menuItem2ReadLabel" DefaultValue="Shares"/>
+        <!-- <bt:String id="menuItem2ReadLabel" DefaultValue="Shares"/> -->
         <bt:String id="menuItem3ReadLabel" DefaultValue="Settings"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="UploadAttachment.Tooltip" DefaultValue="Upload files from local machine to luckycloud"/>
+        <bt:String id="UploadFile.Tooltip" DefaultValue="Upload files from local machine to luckycloud"/>
+        <bt:String id="UploadAttachment.Tooltip" DefaultValue="Upload attachment from mailbox to luckycloud"/>
         <bt:String id="Attach.Tooltip" DefaultValue="Attach file from your luckycloud reposit"/>
         <bt:String id="OptionButton.Tooltip" DefaultValue="Options"/>
         <bt:String id="menuItem1ReadSupertipDescription" DefaultValue="Login to your luckycloud server"/>
-        <bt:String id="menuItem2ReadSupertipDescription" DefaultValue="Share files"/>
+        <!-- <bt:String id="menuItem2ReadSupertipDescription" DefaultValue="Share files"/> -->
         <bt:String id="menuItem3ReadSupertipDescription" DefaultValue="Config your settings"/>
       </bt:LongStrings>
     </Resources>

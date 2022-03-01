@@ -7,6 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="Description" content="Enter your description here" />
     <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">    
+    <link href="../helpers/jquery.filebrowser.css" rel="stylesheet"/>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="settings.css">
@@ -16,6 +19,7 @@
     <title>Settings</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
 </head>
@@ -37,9 +41,9 @@
             </li>
         </ul>
     </div>
-    <div class="content">
+    <div class="main">
         <div class="side-content" id="general">
-            <h6>Default password</h6>
+            <h5>Default password</h5>
             <div class="form-check">
                 <input class="form-check-input" name="general" type="radio" id="without_password" value="1" />
                 <label class="form-check-label" for="without_password">
@@ -51,10 +55,11 @@
                 <label class="form-check-label" for="with_password">
                     With password
                 </label>
+                <span class="ast">*This field is required</span>
                 <input class="form-control" name="default_password" id="default_password" />
             </div>
-
-            <h6>Default Expire Date</h6>
+            <br>
+            <h5>Default Expire Date</h5>
             <div class="form-check">
                 <input class="form-check-input" name="general_expire" type="radio" id="without_expire" value="1" />
                 <label class="form-check-label" for="without_expire">
@@ -66,14 +71,74 @@
                 <label class="form-check-label" for="with_expire">
                     With expire date
                 </label>
+                <span class="ast">*This field is required</span>
                 <input class="form-control" type="number" name="default_expire" id="default_expire" />
             </div>
+            <br>
+
+
+            <h5>Download Link Format</h5>
+
+            <div class="h-text">
+                <h6>Link Text</h6><input class="form-control"  id="link_text" value="Download Link" />
+            </div>
+
+            <div class="h-text">
+                <h6>Link Setting</h6>
+                <select id="download_link" name="download_link">
+                    <option value="1" selected>Filename (Test.docx)</option>
+                    <option value="2" >Text (Download Link)</option>
+                    <option value="3" >Text : Filename (Download Link : Test.docx)</option>
+                    <option value="4" >Text : Url (Download Link : https://storage.luckcloud.de/f/abcdefg)</option>
+                </select>
+            </div>
+            <br>
+            <h5>Default Attachments Library Path</h5>
+            <div class="form-check">
+                <input class="form-check-input" name="general_attachment_path" type="radio" id="without_path" value="1" />
+                <label class="form-check-label" for="without_path">
+                    Without default Library&Path
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" name="general_attachment_path" type="radio" id="with_path" value="2" />
+                <label class="form-check-label" for="with_path">
+                    With default Library&Path
+                </label>
+                <div class="button-browse-serverfiles">
+                    <button class="btn btn-info" id="select_attachment_path">Select Path</button>
+                    <!-- <div class="loader"></div> -->
+                    <div id="browser"></div>  
+                </div>
+                <div class="h-text">
+                    <h6>Default Library</h6>
+                    <span class="ast">*This field is required</span>
+                    <input class="form-control" disabled name="defaultLibraryname" id="defaultLibraryname" />                    
+                </div>
+                <div class="h-text">
+                    <h6>Default Path</h6>
+                    <span class="ast">*This field is required</span>
+                    <input class="form-control" disabled name="defaultPathname" id="defaultPathname" />
+                </div>
+                <div class="h-text repo_id">
+                    <h6>Repo ID</h6><input class="form-control" disabled name="repo_id" id="repo_id" />
+                </div>
+
+            </div>
+            <div class="alert alert-success" id="success-alert">
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                <strong>Success! </strong> Your settings has been saved successfully.
+            </div>
+
             <div class="form-group mt-5">
-                <button class="btn btn-success" id="update_default_password">Apply</button>
+                <button class="btn btn-success" id="update_general_options">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Apply
+                </button>
             </div>
         </div>
         <div class="side-content hide" id="shares">
-            <h6>Set individual settings for every email</h6>
+            <h5>Set individual settings for every email</h5>
             <div class="form-check">
                 <input class="form-check-input" name="shares" type="radio" id="always_default" value="always_default">
                 <label class="form-check-label" for="always_default">
@@ -92,10 +157,20 @@
                     Ask every time
                 </label>
             </div>
+            <div class="alert alert-success" id="success-alert">
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                <strong>Success! </strong> Your settings has been saved successfully.
+            </div>
+
             <div class="form-group mt-5">
-                <button class="btn btn-success" id="update_share_option">Apply</button>
+                <button class="btn btn-success" id="update_share_option">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Apply
+                </button>
             </div>
         </div>
+
+          
     </div>
 </body>
 
