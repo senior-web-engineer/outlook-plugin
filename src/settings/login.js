@@ -20,6 +20,9 @@ const { getConfig, setConfig, retriveSeafileEnv, retrieveToken } = require("../h
 
         // Validation rules
         rules: {
+          membership_option : {
+            required: true,
+          },
           seafile_env: {
             required: true,
           },
@@ -31,8 +34,19 @@ const { getConfig, setConfig, retriveSeafileEnv, retrieveToken } = require("../h
           },
         },
       });
-      $("#seafile_env").change(function () {
-        console.log("changed");
+      $('#membership_option').change(function(){
+        var selected = $(this).val();
+        if (selected == "home") {
+          $('div.seafile_env').hide();
+          $('#seafile_env').val("https://sync.luckycloud.de");
+        } else if (selected == "business") {
+          $('div.seafile_env').hide();
+          $('#seafile_env').val("https://storage.luckycloud.de");
+        } else if (selected == "enterprise") {
+          $('div.seafile_env').show();
+          $('#seafile_env').val("");
+        }
+
       });
       $("#seafile_loginbutton").click(function () {
         if (validator && validator.form() !== true) return false;

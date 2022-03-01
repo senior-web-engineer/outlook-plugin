@@ -4,46 +4,30 @@ const {
   uploadFile,
   getItemsInDirectory,
   getSeafileLibraries,
-  downloadFile,
-  advancedDownloadFile,
-  getSharedLink,
+  downloadFile,  
 } = require("../helpers/seafile-api");
-const {
-  retrieveToken,
-  retriveSeafileEnv,
-  getDefaultPassword,
-  getShareOption,
-  getDefaultExpireDate,  
-} = require("../helpers/addin-config");
+const { retrieveToken, retriveSeafileEnv } = require("../helpers/addin-config");
 
 // The Office initialize function must be run each time a new page is loaded.
-var dirmap = {};
 Office.initialize = function (reason) {
   var token = retrieveToken();
-  var env = retriveSeafileEnv();
-
+  var env = retriveSeafileEnv();   
 
   jQuery(document).ready(function () {
-    var inputPrompt = document.createElement("iframe");
-    inputPrompt.style.display = "none";
-    document.body.appendChild(inputPrompt);
-    window.prompt = inputPrompt.contentWindow.prompt;
-    window.alert = inputPrompt.contentWindow.alert;
-
+    var dirmap = {};
     var uploadFilebtn = document.getElementById("uploadFilebtn");
     var globalrepos = null;
     var browse = $("#browser").dialog({
       width: 600,
       height: 480,
     });
-    window.browse = browse;
     uploadFilebtn.onchange = function (e) {
       if (uploadFilebtn.files.length > 0) {
         $(".loader").show();
         const selectedFile = uploadFilebtn.files[0];
         path = browse.path() + "/";
         repo = getRepofrompath(path);
-        relativePath = getRelativepath(path);
+        const relativePath = getRelativepath(path);
 
         getUploadLink(token, env, repo, relativePath, function (uploadPath) {
           uploadFile(token, env, uploadPath, relativePath, selectedFile, function (response) {
@@ -55,28 +39,31 @@ Office.initialize = function (reason) {
       }
     };
     getSeafileLibraries(token, env, function (repos) {
-      window.globalrepos = repos;
       globalrepos = repos;
       for (let repo of repos) {
         if ( repo.encrypted ) continue;
         dirmap[repo["name"]] = {};
         getItemsInDirectory(token, env, repo, "/", dirmap[repo["name"]], initRepoMap);
       }
+
       $(".loader").hide();
+      console.log("here is the directory map", dirmap);
       drawRootDirectory();
     });
 
     function initRepoMap(repo, detail, path, currentEnv) {
-      console.log("here is the detail of repo or directory", detail);
+      // Adds new direcotry/file to the currentEnv
       for (let item of detail) {
-        if (item.type == "dir") {
+        if (item.type == "dir") {          
           currentEnv[item["name"]] = {};
           getItemsInDirectory(token, env, repo, path + item["name"] + "/", currentEnv[item["name"]], initRepoMap);
         } else {
           currentEnv[item["name"]] = "";
         }
       }
+
     }
+
     function getRepofrompath(path) {
       path = path.substring(1);
 			let reponame = "";
@@ -87,6 +74,7 @@ Office.initialize = function (reason) {
       for (let repo of globalrepos) {
         if (repo["name"] == reponame) return repo;
       }
+      
     }
 
     function getRelativepath(path) {
@@ -116,6 +104,7 @@ Office.initialize = function (reason) {
 
       if (callback) callback();
     }
+
     function drawRootDirectory() {
       function get(path) {
         var current = dirmap;
@@ -125,86 +114,29 @@ Office.initialize = function (reason) {
         return current;
       }
 
-      function performDownload($li, dblclick) {
-		    let  alertcnt = 0;
-        for (let i = 0; i< $li.length; i++) {			
-		      const $element = $($li[i]);
-		      // if ($element.hasClass("directory")) continue;
-
-          filename = $element.find("span").text();
-          path = browse.join(browse.path(), filename);
-          repo = getRepofrompath(path);
-  
-          const relativePath = getRelativepath(path);
-  
-          const shareOption = getShareOption();
-          let password = null,
-            expire_days = null;
-          if (shareOption === "always_default") {
-            password = getDefaultPassword();
-            expire_days = getDefaultExpireDate();
-          } else if (shareOption === "ask_for_password") {
-            password = window.prompt("Please input password");
-            if (!password) return;
-            expire_days = getDefaultExpireDate();
-          } else {
-            password = window.prompt("Please input password");
-            if (!password) return;
-            expire_days = parseInt(window.prompt("Please input expire days", "10"));
-            if (isNaN(expire_days)) return;
-            if (expire_days <= 0) expire_days = null;
-          }
-  
-          $(".loader").show();
-          getSharedLink(token, env, repo, relativePath, function (res) {
-            if (res.error_msg || res.length <= 0) {
-              advancedDownloadFile(token, env, repo, relativePath, password, expire_days, function (response) {
-                $(".loader").hide();
-                if (response.error_msg) {
-                  window.alert(response.error_msg);
-                } else {
-                  var message = {
-                    downloadLink: response.link,
-                    filename : relativePath
-                  }
-					        if (dblclick) message.action = "close";
-                  Office.context.ui.messageParent(
-                    JSON.stringify(message)
-                  );
-                }
-
-              });
-            } else {
-
-              var message = {
-                downloadLink: res[0].link,
-                filename : relativePath
-              }
-				      if (dblclick) message.action = "close";
-              Office.context.ui.messageParent(
-                JSON.stringify(message)
-              );
-              $(".loader").hide();
-              if (alertcnt == 0) {				  
-              window.alert(
-                "A download link has already been created for this file. The existing download link has been inserted."
-              );
-              alertcnt++;
-              }		  
-            }
-          });
-
-        }
-      }
       browse.browse({
         root: "/",
         separator: "/",
         contextmenu: true,
         menu: function (type) {
           if (type == "li") {
-            return {
-              "Get Download Link": performDownload,
-            };
+            // return {
+            //   "Get Download Link": function ($li) {
+            //     $(".loader").show();
+            //     filename = $li.find("span").text();
+            //     path = browse.join(browse.path(), filename);
+            //     repo = getRepofrompath(path);
+            //     relativePath = getRelativepath(path);
+            //     downloadFile(repo, relativePath, function (link) {
+            //       $(".loader").hide();
+            //       Office.context.ui.messageParent(
+            //         JSON.stringify({
+            //           downloadLink: link,
+            //         })
+            //       );
+            //     });
+            //   },
+            // };
           } else {
             return {
               "Upload File": function () {
@@ -261,16 +193,9 @@ Office.initialize = function (reason) {
           delete parent[m[2]];
           parent[dest.replace(/.*\//, "")] = content;
         },
-        downloadfrommenu: function($li){
-          console.log('clicked download button from menu');
-          performDownload($li);
-        },
-        open: function ($li, filename) {
+        open: function (filename) {
           var file = get(filename);
           if (typeof file == "string") {
-            console.log('file double clicked here');
-            performDownload($li, true);
-
           } else {
             throw new Error("Invalid filename");
           }
@@ -300,10 +225,8 @@ Office.initialize = function (reason) {
                 if (!flag) dirmap[key] = undefined;
               }
               console.log('dir map', dirmap);
-              
               $('.loader').hide();
               if (callback) callback();
-
             });
           } else {
             if (path[path.length-1] !="/") path = path + "/";
@@ -314,6 +237,7 @@ Office.initialize = function (reason) {
             $('.loader').hide();
           }
         }
+
       });
     }
 
@@ -327,7 +251,5 @@ Office.initialize = function (reason) {
         currentEnv = currentEnv[dir];
       }
     }
-
-
   });
 };

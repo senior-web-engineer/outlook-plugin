@@ -219,13 +219,6 @@
 .ui-dialog-titlebar {
   display: none;
 }
-.ui-dialog {
-  position: relative !important;
-  height: auto !important;
-  width: auto !important;
-  top: 0px !important;
-  left: 0px !important;
-}
 .text-center {
   text-align: center;
 }
@@ -234,4 +227,77 @@
 }
 .browser-widget ul:not(.ui-menu) li.download::before {
   background: transparent url(assets/download-icon.png) no-repeat;
+}
+
+.browser-widget div.toolbar  ul:not(.ui-menu) li.grid{
+  visibility: hidden;
+}
+.browser-widget div.toolbar  ul:not(.ui-menu) li.grid::before {
+  background: url(assets/grid-icon-32.png) no-repeat;
+  visibility: visible;
+}
+
+.browser-widget  div.toolbar  ul:not(.ui-menu) li.list {
+  visibility: hidden;
+}
+.browser-widget div.toolbar ul:not(.ui-menu) li.list::before {
+  background: url(assets/list-icon-32.png) no-repeat;
+  visibility: visible;
+}
+
+
+.browser-widget div.content ul:not(.ui-menu) > li.grid {
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  padding-top: 32px;
+  text-align: center;
+  margin: 5px;
+  word-break: break-word;
+  vertical-align: top;
+  width: 60px;
+}
+.browser-widget div.content ul:not(.ui-menu) > li.grid::before{
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  text-align: center;
+  background-clip: content-box;
+  content: "";
+  position: absolute;
+  top: 0;
+  margin: auto;
+  left: 0;
+  right: 0;
+}
+.browser-widget div.content ul:not(.ui-menu) > li.list {
+  display: block;
+  padding-left: 70px;
+  width: 205px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  text-align: left;
+}
+.browser-widget div.content ul:not(.ui-menu) > li.list::before {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    background-clip: content-box;
+    content: "";
+    position: absolute;
+    top: 50%;
+    margin: auto;
+    left: 25px;
+    transform: translateY(-50%);
+    right: auto;
+}
+.browser-widget div.content ul:not(.ui-menu) > li.grid input{
+  display: none;
+}
+
+.browser-widget div.content ul:not(.ui-menu) > li.list input{
+  display: inline-block;
+  left: 0px;
+  position: absolute;
 }

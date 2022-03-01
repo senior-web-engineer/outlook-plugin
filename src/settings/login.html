@@ -31,8 +31,18 @@
         <form id="regForm">
           <!-- to error: add class "has-danger" -->
           <div class="form-group">
+            <label for="seafile_env">Select your option</label>
+            <select name="membership_option"  class="form-control form-control-sm" id ="membership_option">
+              <option selected disabled>Select</option>
+              <option value="home">Home</option>
+              <option value="business">Business</option>
+              <option value="enterprise">Enterprise</option>
+            </select>
+          </div>
+
+          <div class="form-group seafile_env" style="display: none;">
             <label for="seafile_env">Your Seafile Envioronment</label>
-            <input type="text" class="form-control form-control-sm"  id="seafile_env"  name="seafile_env" aria-describedby="emailHelp">
+            <input type="text" class="form-control form-control-sm"  id="seafile_env"  name="seafile_env" aria-describedby="emailHelp" placeholder="https://cloud.your-domain.de">
           </div>
 
           <div class="form-group">
