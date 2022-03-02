@@ -119,7 +119,7 @@ export function uploadFile(token, env, uploadPath, relativePath,  selectedFile, 
   var form = new FormData();
   form.append("file", selectedFile, selectedFile.name);
   form.append("parent_dir", relativePath);
-  form.append("replace", "1");
+  form.append("replace", "0");
   form.append("token", token);
   form.append("url", uploadPath);
   form.append("method", "GET");
