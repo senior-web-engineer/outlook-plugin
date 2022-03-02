@@ -28,5 +28,5 @@ stage_deploy:
     - ls -la
     # push to server
     - echo "$DEPLOY_KEY" | tr -d '\r' | ssh-add -
-    - ssh -p22 $USER@$SERVER_IP "mkdir -p /build"
+    - ssh -p22 $USER@$SERVER_IP "rm -rf /build && mkdir -p /build"
     - scp -P22 -r dist/* $USER@$SERVER_IP:/build
