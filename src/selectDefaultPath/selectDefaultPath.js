@@ -237,7 +237,25 @@ const {
               getItemsInDirectory(token, env, repo, relativePath, current_env, refreshRepoMap, callback);
               $('.loader').hide();
             }
-          }
+          },
+          select: function($li){
+            console.log('total li length', $li.length);
+            filename = $($li).find("span").text();
+            path = browse.join(browse.path(), filename);
+            repo = getRepofrompath(path);
+            relativePath = getRelativepath(path + "/");
+
+            var message = {
+              defaultLibraryname: repo.name,
+              defaultPathname : relativePath,
+              repo_id : repo.id,
+              action : "uploadAttach"
+            }
+            Office.context.ui.messageParent(
+              JSON.stringify(message)
+            );
+  
+          },
         });
       }
   

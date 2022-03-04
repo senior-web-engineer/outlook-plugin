@@ -149,6 +149,16 @@ div.main {
     position: inherit !important;
 }
 
+.browser-widget ul:not(.ui-menu) > li.select::before{
+  background: transparent url(assets/select-icon-32.png) no-repeat;
+}
+#browser div.toolbar ul.labels li.select { 
+  display: inline-block;
+}
+div.content li.file {
+  display: none !important;
+}
+
 #browser div.toolbar ul.labels li.upload, #browser div.toolbar ul.labels li.download, #browser div.toolbar ul.labels li.grid, #browser div.toolbar ul.labels li.list{
   display: none;
 } 

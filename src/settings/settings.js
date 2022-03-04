@@ -174,7 +174,6 @@ Office.initialize = function (reason) {
 						//Disable Button until the user select the path.
 						$('#select_attachment_path').addClass('disabled')
 
-
 						console.log('total li length', $li.length);
 						filename = $($li).find("span").text();
 						path = browse.join(browse.path(), filename);
@@ -255,6 +254,24 @@ Office.initialize = function (reason) {
 			  },
 			  on_change: function () {
 				$("#path").val(this.path());
+			  },
+			  select: function($li){
+				  $('#select_attachment_path').addClass('disabled')
+
+				  console.log('total li length', $li.length);
+				  filename = $($li).find("span").text();
+				  path = browse.join(browse.path(), filename);
+				  repo = getRepofrompath(path);
+				  relativePath = getRelativepath(path + "/");
+
+				  $('#defaultLibraryname').val(repo.name);
+				  $('#defaultPathname').val(relativePath);
+				  $('#repo_id').val(repo.id);
+
+				  //Enable the button and hide dialog
+				  $('#select_attachment_path').removeClass('disabled');
+				  $('.ui-dialog').toggle();
+
 			  },
 			  refresh: function(path, callback) {
 				console.log(path);

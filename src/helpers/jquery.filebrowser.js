@@ -7,6 +7,7 @@
     this.error = error;
   }
   $("div.toolbar ul.labels li.download").toggleClass("disabled", $("div.content li.selected").length < 1);
+  $("div.toolbar ul.labels li.select").toggleClass("disabled", $("div.content li.selected").length !== 1);
 
   Uploader.prototype.process = function process(event, path) {
     var defered = $.Deferred();
@@ -156,7 +157,8 @@
         upload: "upload",
         download: "download",
         grid : "grid",
-        list : "list"
+        list : "list",
+        select: "select"
       },
     },
     escape_regex: function (str) {
@@ -331,6 +333,7 @@
     function click(e) {
       setTimeout(() => {
         $("div.toolbar ul.labels li.download").toggleClass("disabled", $("div.content li.selected").length < 1);
+        $("div.toolbar ul.labels li.select").toggleClass("disabled", $("div.content li.selected").length !== 1);
       }, 300);
 
       if (!$(e.target).closest("." + cls).length) {
@@ -860,6 +863,7 @@
           $('div.toolbar li.refresh').toggleClass("disabled");
           $('div.toolbar li.grid').toggleClass("disabled");
           $('div.toolbar li.list').toggleClass("disabled");
+          $('div.toolbar li.select').toggleClass("disabled");
           settings.refresh(path, function(){
             $content.addClass("hidden");
             var timer = $.Deferred();
@@ -883,7 +887,7 @@
             $('div.toolbar li.refresh').toggleClass("disabled");
             $('div.toolbar li.grid').toggleClass("disabled");
             $('div.toolbar li.list').toggleClass("disabled");
-            
+            $('div.toolbar li.select').toggleClass("disabled");
           });
 
         },
@@ -892,80 +896,7 @@
         },
         download: function () {
           settings.downloadfrommenu($('div.content li.selected'));
-          // const selected_files = document
-          //   .getElementsByClassName("ui-dialog")[0]
-          //   .getElementsByClassName("file selected");
-          // if (selected_files.length != 1) return;
-
-          // function getRepofrompath(path) {
-          //   path = path.substring(1);
-          //   let reponame = path.substring(0, path.indexOf("/"));
-          //   for (let repo of window.globalrepos) {
-          //     if (repo["name"] == reponame) return repo;
-          //   }
-          // }
-          // function getRelativepath(path) {
-          //   path = path.substring(1);
-          //   return path.substring(path.indexOf("/"));
-          // }
-          // try {
-          //   const filename = selected_files[0].getElementsByTagName("span")[0].innerText;
-          //   const path = window.browse.join(window.browse.path(), filename);
-          //   const repo = getRepofrompath(path);
-          //   const token = retrieveToken();
-          //   const env = retriveSeafileEnv();
-          //   const relativePath = getRelativepath(path);
-
-          //   const shareOption = getShareOption();
-          //   let password = null,
-          //     expire_days = null;
-          //   if (shareOption === "always_default") {
-          //     password = getDefaultPassword();
-          //     expire_days = getDefaultExpireDate();
-          //   } else if (shareOption === "ask_for_password") {
-          //     password = window.prompt("Please input password");
-          //     if (!password) return;
-          //     expire_days = getDefaultExpireDate();
-          //   } else {
-          //     password = window.prompt("Please input password");
-          //     if (!password) return;
-          //     expire_days = parseInt(window.prompt("Please input expire days", "10"));
-          //     if (isNaN(expire_days)) return;
-          //     if (expire_days <= 0) expire_days = null;
-          //   }
-
-          //   jQuery(".loader").show();
-          //   getSharedLink(token, env, repo, relativePath, function (res) {
-          //     if (res.error_msg || res.length <= 0) {
-          //       advancedDownloadFile(token, env, repo, relativePath, password, expire_days, function (response) {
-          //         $(".loader").hide();
-          //         if (response.error_msg) {
-          //           window.alert(response.error_msg);
-          //         } else {
-          //           Office.context.ui.messageParent(
-          //             JSON.stringify({
-          //               downloadLink: response.link + "\n",
-          //             })
-          //           );
-          //         }
-          //       });
-          //     } else {
-          //       Office.context.ui.messageParent(
-          //         JSON.stringify({
-          //           downloadLink: res[0].link + "\n",
-          //         })
-          //       );
-          //       $(".loader").hide();
-          //       window.alert(
-          //         "A download link has already been created for this file. The existing download link has been inserted."
-          //       );
-          //     }
-          //   });
-          // } catch (error) {
-          //   jQuery(".loader").hide();
-          //   console.log(error);
-          // }
-        },
+        },        
         grid: function(){
           settings.view_style = "grid"
           self.refresh()
@@ -973,6 +904,9 @@
         list: function(){
           settings.view_style = "list"
           self.refresh()
+        },
+        select: function(){
+          settings.select($('div.content li.directory.selected.active'));
         },
         show: function (new_path, options) {
           function process(content) {
@@ -1028,6 +962,7 @@
             $toolbar.find(".back").toggleClass("disabled", paths.length == 1);
             $toolbar.find(".upload").toggleClass("disabled", new_path == settings.root);
             $toolbar.find(".download").toggleClass("disabled", $("div.content li.selected").length < 1);
+            $toolbar.find(".select").toggleClass("disabled", $("div.content li.selected").length !==1);
             path = new_path;
             // don't break old API. promise based and callback should both work
             var result = settings.dir(path, process);

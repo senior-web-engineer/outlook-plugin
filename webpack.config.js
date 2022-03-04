@@ -110,6 +110,10 @@ module.exports = async (env, options) => {
             to: "assets/[name][ext][query]",
           },
           {
+            from: "assets/select-icon-*",
+            to: "assets/[name][ext][query]",
+          },
+          {
             from: "assets/upload-icon.png",
             to: "assets/upload-icon.png",
           },
