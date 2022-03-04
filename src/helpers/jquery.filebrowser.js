@@ -147,7 +147,7 @@
         return {};
       },
       refresh_timer: 100,
-      view_style : "grid"
+      view_style : "list"
     },
     strings: {
       toolbar: {
