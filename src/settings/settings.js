@@ -329,17 +329,18 @@ Office.initialize = function (reason) {
 		function updateGeneralOptions() {
 
 		  let password = $("#default_password").val();
+		  let validate_flag = true;
 		  if ($("#without_password").prop("checked")) password = null;
 	  
 		  if ( $('#with_password').prop("checked") && $('#default_password').val() == "") 
 		  {
 			  $('#default_password').parent().find(".ast").show();
-			  return;
+			  validate_flag = false;
 		  }
 		  if ( $('#with_expire').prop("checked") && $('#default_expire').val() == "")
 		  {
 			$('#default_expire').parent().find(".ast").show();			
-			return;
+			validate_flag = false;
 		  }
 
 		  if ($('#with_path').prop("checked")) {
@@ -356,10 +357,14 @@ Office.initialize = function (reason) {
 			  flag = true;
 
 			}
-			if (flag) return;
+			if (flag) validate_flag = false;
+
 		  }
 
-
+		  if (!validate_flag){
+			$(window).scrollTop(0);
+			return;
+		  }
 
 		  $('button#update_general_options span').show();
 		  setDefaultPassword(password, function(res){
