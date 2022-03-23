@@ -125,6 +125,14 @@ module.exports = async (env, options) => {
             from: "assets/list-icon.png",
             to: "assets/list-icon.png",
           },
+          {
+            from: "assets/logo.svg",
+            to: "assets/logo.svg",
+          },
+          {
+            from: "assets/login_*",
+            to: "assets/[name][ext][query]",
+          },
           // {
           //   from: "./src/settings/login.js",
           //   to: "./settings/login.js",

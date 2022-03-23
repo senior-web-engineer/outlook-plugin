@@ -17,7 +17,30 @@ const { getConfig, setConfig, retriveSeafileEnv, retrieveToken } = require("../h
       var validator = $("#regForm").validate({
         // Validate only visible fields
         ignore: ":hidden",
-
+        highlight: function(element, errorClass, validClass) {
+          let validflag = true;
+          $('#regForm .error').each(function(){
+            if ($(this).text() != '') {
+              validflag = false; return false;
+            }
+          });
+          if ( validflag )
+            $('#seafile_loginbutton').addClass('active');
+          else 
+            $('#seafile_loginbutton').removeClass('active');
+        },
+        unhighlight: function(element, errorClass, validClass) {
+          let validflag = true;
+          $('#regForm .error').each(function(){
+            if ($(this).text() != '') {
+              validflag = false; return false;
+            }
+          });
+          if ( validflag )
+            $('#seafile_loginbutton').addClass('active');
+          else 
+            $('#seafile_loginbutton').removeClass('active');
+        },
         // Validation rules
         rules: {
           membership_option : {
@@ -34,8 +57,9 @@ const { getConfig, setConfig, retriveSeafileEnv, retrieveToken } = require("../h
           },
         },
       });
-      $('#membership_option').change(function(){
+      $(document).on('change','#membership_option', function(){
         var selected = $(this).val();
+        console.log('clicked');
         if (selected == "home") {
           $('div.seafile_env').hide();
           $('#seafile_env').val("https://sync.luckycloud.de");
@@ -46,8 +70,8 @@ const { getConfig, setConfig, retriveSeafileEnv, retrieveToken } = require("../h
           $('div.seafile_env').show();
           $('#seafile_env').val("");
         }
-
       });
+
       $("#seafile_loginbutton").click(function () {
         if (validator && validator.form() !== true) return false;
         console.log("login button clicked");
@@ -62,15 +86,24 @@ const { getConfig, setConfig, retriveSeafileEnv, retrieveToken } = require("../h
           if (error) {
             console.log("error");
             btn.prop("disabled", false);
-            btn.html(`Log in`);
             $(".alert").hide();
             $(".alert-danger").show();
+            btn.html(
+            `<button type="button" class="" id="seafile_loginbutton">
+              <i class="login-background"></i>
+              Log in
+            </button>`);
+
           } else {
             $(".alert").hide();
             $(".alert-success").show();
             Office.context.ui.messageParent(JSON.stringify(config));
             btn.prop("disabled", false);
-            btn.html(`Log in`);
+            btn.html(
+              `<button type="button" class="" id="seafile_loginbutton">
+                <i class="login-background"></i>
+                Log in
+              </button>`);
           }
         });
       });

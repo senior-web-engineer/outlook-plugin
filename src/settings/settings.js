@@ -353,29 +353,26 @@ Office.initialize = function (reason) {
 			  setDefaultExpireDate(expire_date, function(res){
 				if (res.status == "succeeded") {
 				  let downloadlink_option = $('select#download_link').val();
-				  setdownloadLinkOption(downloadlink_option, function(res){
-					if (res.status == "succeeded") {
-						console.log($('#defaultLibraryname').val());
-						console.log($('#defaultPathname').val());
-						console.log($('#repo_id').val());
-						
-					 let with_path = $('#with_path').prop("checked");
-					  setDefaultAttachmentPath(with_path? $('#defaultLibraryname').val(): null, with_path? $('#defaultPathname').val(): null, with_path? $('#repo_id').val() :null, function(res){
-						setLinkText($('#link_text').val(), function(res){
-							$('button#update_general_options span').hide();	  
-							$(".alert-success").fadeTo(2000, 500).slideUp(500, function() {
-							  $(".alert-success").slideUp(500);
+				  	setdownloadLinkOption(downloadlink_option, function(res){
+						if (res.status == "succeeded") {
+							console.log($('#defaultLibraryname').val());
+							console.log($('#defaultPathname').val());
+							console.log($('#repo_id').val());
+							
+						let with_path = $('#with_path').prop("checked");
+						setDefaultAttachmentPath(with_path? $('#defaultLibraryname').val(): null, with_path? $('#defaultPathname').val(): null, with_path? $('#repo_id').val() :null, function(res){
+							setLinkText($('#link_text').val(), function(res){
+								$('button#update_general_options span').hide();	  
+								$(".alert-success").fadeTo(2000, 500).slideUp(500, function() {
+								$(".alert-success").slideUp(500);
+								});
+								$(".ast").hide();
 							});
-							$(".ast").hide();
-						});
-
-
-					  });
-
-	  
-					}
-				  });
+						});	  
+						}
+					});
 				}
+				
 			  });
 			}
 		  });
