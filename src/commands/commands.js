@@ -168,6 +168,7 @@ function receiveMessage(message) {
     } else {
       text = `<div><a href=${message.downloadLink}>${link_text} : ${message.downloadLink}</a></br></div>`
     }
+    statusUpdate("attach-icon-16", "Link has been inserted.");
     addTextToBody(text, "attach-icon-16");
     if (message.action == "close") dialogClosed();
   } else if (message && message.action == "uploadAttach" ) {

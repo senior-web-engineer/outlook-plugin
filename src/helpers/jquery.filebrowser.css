@@ -301,3 +301,6 @@
   left: 0px;
   position: absolute;
 }
+#browser div.toolbar ul.labels li.select{
+  display: none;
+}

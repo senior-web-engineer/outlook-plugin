@@ -331,6 +331,7 @@
     function click(e) {
       setTimeout(() => {
         $("div.toolbar ul.labels li.download").toggleClass("disabled", $("div.content li.selected").length < 1);
+        $("div.toolbar ul.labels li.select").toggleClass("disabled", $("div.content li.selected").length !== 1);
       }, 300);
 
       if (!$(e.target).closest("." + cls).length) {

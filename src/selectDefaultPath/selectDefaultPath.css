@@ -33,3 +33,13 @@
 .browser-widget .content ul:not(.ui-menu) li.selected.active::after {
   background: #0b93d5;
 }
+.browser-widget ul:not(.ui-menu) > li.select::before{
+  background: transparent url(assets/select-icon-32.png) no-repeat;
+}
+#browser div.toolbar ul.labels li.select { 
+  display: inline-block;
+}
+div.content li.file {
+  display: none !important;
+}
+

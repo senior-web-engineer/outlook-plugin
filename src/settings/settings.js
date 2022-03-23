@@ -174,7 +174,6 @@ Office.initialize = function (reason) {
 						//Disable Button until the user select the path.
 						$('#select_attachment_path').addClass('disabled')
 
-
 						console.log('total li length', $li.length);
 						filename = $($li).find("span").text();
 						path = browse.join(browse.path(), filename);
