@@ -70,7 +70,7 @@ module.exports = async (env, options) => {
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: "assets/icon-*",
+            from: "assets/icon*",
             to: "assets/[name][ext][query]",
           },
           {
@@ -92,10 +92,6 @@ module.exports = async (env, options) => {
           {
             from: "assets/setting-icon-*",
             to: "assets/[name][ext][query]",
-          },
-          {
-            from: "assets/icons.svg",
-            to: "assets/icons.svg",
           },
           {
             from: "assets/attach-icon-*",

@@ -266,7 +266,7 @@ function loadSettingsPage(event) {
   settingsEvent = event;
 
   var url = new URI("settings.html").absoluteTo(window.location).toString();
-  var dialogOptions = { width: 40, height: 70, displayInIframe: true };
+  var dialogOptions = { width: 60, height: 70, displayInIframe: true };
 
   Office.context.ui.displayDialogAsync(url, dialogOptions, function (result) {
     settingsDialog = result.value;

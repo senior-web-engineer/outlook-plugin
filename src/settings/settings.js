@@ -11,6 +11,8 @@ const {
   retriveSeafileEnv,
   getShareOption,
   setShareOption,
+  getEmailSetting,
+  setEmailSetting,
   getDefaultPassword,
   setDefaultPassword,
   getDefaultExpireDate,
@@ -32,65 +34,164 @@ Office.initialize = function (reason) {
     var token = retrieveToken();
     var env = retriveSeafileEnv();
 	jQuery(document).ready(function(){
+
+		jQuery('div.custom_green_white_select>div, div.custom_email_settings>div').click(function(){
+			$(this).siblings().removeClass('active');
+			$(this).addClass('active');
+		});
+
+
+
 		$(".alert").hide();
 		$(".ast").hide();
+		$('.field-group button span').hide();
+		var emailsetting = getEmailSetting();
 
-		jQuery(".sidebar-item").click(function (event) {
-		  event.preventDefault();
-		  $(".sidebar-item").removeClass("active");
-		  $(this).addClass("active");
-		  var target = $(this).attr("data-target");
-		  $(".side-content").addClass("hide");
-		  $(`#${target}`).removeClass("hide");
-		});
+		if ( typeof emailsetting !== 'object' ) {
+			emailsetting = {};
+		}
+
+		////////////////////Password Settings///////////////////////////
+		if (getEmailSetting("password")== "ask_every_time") {
+			$('#password_content div.ask_every_time').addClass('active');
+			emailsetting["password"] = "ask_every_time";
+		} else {
+			$('#password_content div.always_default').addClass('active');
+			emailsetting["password"] = "always_default";
+		}
   
-		const shareOption = getShareOption();
-		jQuery(`#${shareOption}`).prop("checked", true);
-  
-		const defaultPassword = getDefaultPassword();
+		var defaultPassword = getDefaultPassword();
 		if (defaultPassword) {
-		  $("#with_password").prop("checked", true);
-		  $("#default_password").val(defaultPassword);
+			$('.custom_with_password').addClass('active');
+			$('div.custom_with_password input').val(defaultPassword);
 		} else {
-		  $("#without_password").prop("checked", true);
-		  $("#default_password").val("");
+			$('.custom_without_password').addClass('active');
 		}
-		const defaultExpireDate = getDefaultExpireDate();
+
+		jQuery("button.update_password_settings").on("click", function(){
+			defaultPassword = $('.custom_without_password').hasClass('active') ? "" : $('div.custom_with_password input').val();
+			emailsetting["password"] = $('#password_content div.always_default').hasClass('active') ? "always_default" : "ask_every_time";
+			if ($('div.custom_with_password').hasClass('active') && !defaultPassword ) {
+				$('div.custom_with_password div.error span').show();
+				return;
+			}
+			$('.update_password_settings').find('span').show();
+			setDefaultPassword(defaultPassword, function(res){
+				if (res.status == "succeeded") {					
+					setEmailSetting( emailsetting, function(res){						
+						if (res.status == "succeeded" ) {
+							$('.update_password_settings').find('span').hide();
+							$("#password_content .alert-success").fadeTo(2000, 500).slideUp(500, function() {
+								$("#password_content .alert-success").slideUp(500);
+							});
+						}
+
+					});
+
+				}
+			});
+		});
+
+
+
+
+		//////////////////////Expire date settings /////////////////////////
+		var defaultExpireDate = getDefaultExpireDate();
 		if (defaultExpireDate) {
-		  $("#with_expire").prop("checked", true);
-		  $("#default_expire").val(defaultExpireDate);
+			$('.custom_with_expire').addClass('active');
+			$('.custom_with_expire input').val(defaultExpireDate);
 		} else {
-		  $("#without_expire").prop("checked", true);
-		  $("#default_expire").val("");
+			$('.custom_without_expire_date').addClass('active');
 		}
-  
-		const defaultdownloadLinkoption = getdownloadLinkOption();
-		$('#download_link option[value="' + defaultdownloadLinkoption + '"]').prop('selected', true);    
-  
-
-		const defaultAttachmentOption = getDefaultAttachmentPath();
-		if (defaultAttachmentOption.repo_id == undefined) {
-			$('#without_path').prop('checked', true);
+		if (getEmailSetting("expire_date")== "ask_every_time") {
+			$('#expire_date_content div.ask_every_time').addClass('active');
+			emailsetting["expire_date"] = "ask_every_time";
 		} else {
-			$('#with_path').prop('checked', true);
+			$('#expire_date_content div.always_default').addClass('active');
+			emailsetting["expire_date"] = "always_default";
 		}
-		$('#defaultLibraryname').val(defaultAttachmentOption.defaultLibraryname);
-		$('#defaultPathname').val(defaultAttachmentOption.defaultPathname);
-		$('#repo_id').val(defaultAttachmentOption.repo_id);
-
-		const link_text = getLinkText();
-		$('#link_text').val(link_text);
-
-
-		$('#select_attachment_path').click(function(){ 
-
-			if ($('.ui-dialog').length == 0) {
-				var browse = jQuery("#browser").dialog();
-				$('.ui-dialog').appendTo('.button-browse-serverfiles');
-			} else {
-				$('.ui-dialog').toggle();
+		function isInt(value) {
+			return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
+		}
+		jQuery("button.update_expire_date_settings").on("click", function(){
+			defaultExpireDate = $('.custom_without_expire_date').hasClass('active') ? "" : $('div.custom_with_expire input').val();
+			emailsetting["expire_date"] = $('#expire_date_content div.ask_every_time').hasClass('active') ? "ask_every_time" : "always_default";
+			if ($('div.custom_with_expire').hasClass('active') && !defaultExpireDate) {
+				$('div.custom_with_expire div.error span').text("*This field is required");
+				$('div.custom_with_expire div.error span').show();
+				return;
+			}
+			if ($('div.custom_with_expire').hasClass('active') && !isInt(defaultExpireDate) ) {
+				$('div.custom_with_expire div.error span').text("*This field should be a numnber format");
+				$('div.custom_with_expire div.error span').show();
+				return;
 			}
 
+			$('.update_expire_date_settings').find('span').show();
+			setDefaultExpireDate(defaultExpireDate, function(res){
+				if (res.status == "succeeded") {					
+					setEmailSetting( emailsetting, function(res){						
+						if (res.status == "succeeded" ) {
+							$('.update_expire_date_settings').find('span').hide();
+							$("#expire_date_content .alert-success").fadeTo(2000, 500).slideUp(500, function() {
+								$("#expire_date_content .alert-success").slideUp(500);
+							});
+						}
+					});
+				}
+			});
+
+
+		});
+		var defaultAttachmentOption = getDefaultAttachmentPath();
+		console.log('default attachmentPath ');
+		console.log(defaultAttachmentOption);
+
+		if ( !defaultAttachmentOption["defaultLibraryname"] || !defaultAttachmentOption["defaultPathname"] || !defaultAttachmentOption["repo_id"] ) {
+			$('.custom_without_path').addClass("active");
+		} else {
+			$('.custom_with_path').addClass("active");
+		}
+
+		if (getEmailSetting("attachment_path")== "ask_every_time") {
+			$('#attachment_path_content div.ask_every_time').addClass('active');
+			emailsetting["attachment_path"] = "ask_every_time";
+		} else {
+			$('#attachment_path_content div.always_default').addClass('active');
+			emailsetting["attachment_path"] = "always_default";
+		}
+
+		jQuery("button.update_attachment_path_settings").on("click", function(){
+			if ($('.custom_with_path').hasClass("active") && ( !defaultAttachmentOption["defaultLibraryname"] || !defaultAttachmentOption["defaultPathname"] || !defaultAttachmentOption["repo_id"] ) ){
+				$('.custom_with_path').find("span").text("*You need to select a library&path");
+				$('.filebrowser_container').css('margin-top', '50px');
+				$('.custom_with_path').find("span").show();
+				return;
+			}
+			emailsetting["attachment_path"] = $('#attachment_path_content div.ask_every_time').hasClass("active") ? "ask_every_time": "always_default";
+			$('.update_attachment_path_settings').find('span').show();
+			setDefaultAttachmentPath( defaultAttachmentOption["defaultLibraryname"] , defaultAttachmentOption["defaultPathname"], defaultAttachmentOption["repo_id"], function(res){
+				if (res.status == "succeeded") {
+					setEmailSetting( emailsetting, function(res){						
+						if (res.status == "succeeded" ) {
+							$('.update_attachment_path_settings').find('span').hide();
+							$("#attachment_path_content .alert-success").fadeTo(2000, 500).slideUp(500, function() {
+								$("#attachment_path_content .alert-success").slideUp(500);
+							});
+						}
+
+					});
+				}
+			});
+		});
+
+		$('#select_attachment_path, div.custom_with_path').click(function(){ 
+			if ($('.ui-dialog').length == 0) {
+				var browse = jQuery("#browser").dialog();
+				$('.ui-dialog').appendTo('.filebrowser_container');
+			} else {
+				$('.ui-dialog').show();
+			}
 
 		  getSeafileLibraries(token, env, function (repos) {
 			window.globalrepos = repos;
@@ -180,9 +281,16 @@ Office.initialize = function (reason) {
 						repo = getRepofrompath(path);
 						relativePath = getRelativepath(path + "/");
 
-						$('#defaultLibraryname').val(repo.name);
-						$('#defaultPathname').val(relativePath);
-						$('#repo_id').val(repo.id);
+						defaultAttachmentOption["defaultLibraryname"] = repo.name;
+						defaultAttachmentOption["defaultPathname"] = relativePath;
+						defaultAttachmentOption["repo_id"]  = repo.id;
+						console.log('new defaultAttachmentOption');
+						console.log(defaultAttachmentOption);
+						$('.filebrowser_container').css('margin-top', '0px');
+						$('.custom_with_path').find("span").hide();
+						// $('#defaultLibraryname').val(repo.name);
+						// $('#defaultPathname').val(relativePath);
+						// $('#repo_id').val(repo.id);
 
 						//Enable the button and hide dialog
 						$('#select_attachment_path').removeClass('disabled');
@@ -293,18 +401,71 @@ Office.initialize = function (reason) {
   
 		});
 
+		var defaultdownloadLinkoption = getdownloadLinkOption();
+		switch(defaultdownloadLinkoption) {
+			case "1":
+				$('#option_filename').prop("checked", true);
+				break;
+			case "2":
+				$('#option_text').prop("checked", true);
+				break;
+			case "3":
+				$('#option_text_filename').prop("checked", true);
+				break;
+			case "4":
+				$('#option_text_link').prop("checked", true);
+				break;
+			default:
+				$('#option_filename').prop("checked", true);
+				break;
+		}
+
+		var link_text = getLinkText();
+		$('.download_link_text input').val(link_text);
+
+		$('button.update_link_text_settings').on("click", function(){
+			
+			if ( $('#option_filename').prop("checked") ) defaultdownloadLinkoption = "1";
+			if ( $('#option_text').prop("checked") ) defaultdownloadLinkoption = "2";
+			if ( $('#option_text_filename').prop("checked") ) defaultdownloadLinkoption = "3";
+			if ( $('#option_text_link').prop("checked") ) defaultdownloadLinkoption = "4";
+
+			$('button.update_link_text_settings span').show();
+			setLinkText(defaultdownloadLinkoption,  function(res){
+				if (res.status == "succeeded") { 
+					setdownloadLinkOption(defaultdownloadLinkoption, function(res){
+						if (res.status == "succeeded") { 
+							$('button.update_link_text_settings span').hide();	  
+							$("#link_text_content .alert-success").fadeTo(2000, 500).slideUp(500, function() {
+								$("#link_text_content .alert-success").slideUp(500);
+							});
+						}
+					});
+				}
+
+				$(".ast").hide();
+			});
+		});
+
+
+
+
+
+
 		$(".alert").hide();
 		jQuery(".sidebar-item").click(function (event) {
-		  event.preventDefault();
-		  $(".sidebar-item").removeClass("active");
-		  $(this).addClass("active");
-		  var target = $(this).attr("data-target");
-		  $(".side-content").addClass("hide");
-		  $(`#${target}`).removeClass("hide");
-		});
+			event.preventDefault();
+			$(".sidebar-item").removeClass("active");
+			$(this).addClass("active");
+			var target = $(this).attr("data-target");
+			$(".side-content").addClass("hide");
+			$(`#${target}`).removeClass("hide");
+		  });
+
 		$('button#update_general_options span').hide();
 		$('button#update_share_option span').hide();
 	
+
 		jQuery("button#update_general_options").on("click", updateGeneralOptions);
 		jQuery("button#update_share_option").on("click", updateShareOption);
 	
@@ -363,7 +524,7 @@ Office.initialize = function (reason) {
 							setLinkText($('#link_text').val(), function(res){
 								$('button#update_general_options span').hide();	  
 								$(".alert-success").fadeTo(2000, 500).slideUp(500, function() {
-								$(".alert-success").slideUp(500);
+									$(".alert-success").slideUp(500);
 								});
 								$(".ast").hide();
 							});

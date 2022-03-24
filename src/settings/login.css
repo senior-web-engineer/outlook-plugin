@@ -69,7 +69,7 @@ form .error {
 }
 #regForm div.form-group input{
     border-radius: 20px;
-    height: 35px;
+    height: 40px;
     padding: 8px 16px;
 }
 /* The container must be positioned relative: */
@@ -114,10 +114,10 @@ form .error {
   
   /* style the items (options), including the selected item: */
   .select-items div,.select-selected {
-	color: #212529;
-	padding: 8px 16px;
-	border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
-	cursor: pointer;
+    color: #212529;
+    padding: 8px 16px;
+    border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+    cursor: pointer;
   }
   
   /* Style items (options): */
@@ -142,7 +142,7 @@ form .error {
   }
   
   .select-items div:hover, .same-as-selected {
-	background-color: rgba(0, 0, 0, 0.1);
+	  background-color: rgba(0, 0, 0, 0.1);
   }
   .select-selected:before {
     position: absolute;
@@ -162,7 +162,7 @@ form .error {
 }
 .select-items div {
     border-bottom: 1px solid #F4F5F7;
-	height: 37px;
+	  height: 40px;
 }
 #seafile_loginbutton i {
   width: 30px;

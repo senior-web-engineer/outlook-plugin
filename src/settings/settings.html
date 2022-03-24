@@ -27,22 +27,208 @@
 <body>
     <div class="sidebar">
         <ul>
+
             <li>
-                <a href="#" class="sidebar-item active" data-target="general">
-                    <span class="icon"><i class="fas fa-home"></i></span>
+                <a href="#" class="sidebar-item active" data-target="password_content">
+                    <span class="icon"></span>
+                    <span class="item">Password</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="sidebar-item" data-target="expire_date_content">
+                    <span class="icon"></span>
+                    <span class="item">Expire date</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="sidebar-item" data-target="attachment_path_content">
+                    <span class="icon"></span>
+                    <span class="item">Attachments Path</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="sidebar-item" data-target="link_text_content">
+                    <span class="icon"></span>
+                    <span class="item">Link Text</span>
+                </a>
+            </li>
+            <!-- <li>
+                <a href="#" class="sidebar-item " data-target="general">
+                    <span class="icon"></span>
                     <span class="item">General</span>
                 </a>
             </li>
             <li>
                 <a href="#" class="sidebar-item" data-target="shares">
-                    <span class="icon"><i class="fas fa-user-friends"></i></span>
+                    <span class="icon"></span>
                     <span class="item">Shares</span>
                 </a>
-            </li>
+            </li> -->
         </ul>
     </div>
     <div class="main">
-        <div class="side-content" id="general">
+        <div class="side-content" id="password_content">
+            <div class="field-group">
+                <h5 class="green">Default</h5>
+                <h5 >password</h5>
+                <div class="custom_green_white_select">
+                    <div class="custom_without_password">
+                        without password
+                    </div>
+                    <div class="custom_with_password">
+                        with password
+                        <input type="password">
+                        <div class="error">
+                            <span class="ast" style="display: none;">*This field is required</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="field-group">
+                <h5 class="green">Set individual settings</h5>
+                <h5 >for every email</h5>
+                <div class="custom_email_settings">
+                    <div class="always_default">
+                        Always use default settings
+                    </div>
+                    <div class="ask_every_time">
+                        Ask every time
+                    </div>
+                </div>
+            </div>
+            <div class="field-group alert alert-success" style="display: none;">
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                <strong>Success! </strong> Your settings has been saved successfully.
+            </div>
+            <div class="field-group">                
+                <button class="apply update_password_settings">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Apply
+                </button>
+            </div>
+
+        </div>
+        <div class="side-content hide" id="expire_date_content">
+            <div class="field-group">
+                <h5 class="green">Default</h5>
+                <h5 >expire date</h5>
+                <div class="custom_green_white_select">
+                    <div class="custom_without_expire_date">
+                        without expire date
+                    </div>
+                    <div class="custom_with_expire">
+                        with expire date
+                        <input type="text">
+                        <div class="error">
+                            <span class="ast" style="display: none;">*This field is required</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="field-group">
+                <h5 class="green">Set individual settings</h5>
+                <h5 >for every email</h5>
+                <div class="custom_email_settings">
+                    <div class="always_default">
+                        Always use default settings
+                    </div>
+                    <div class="ask_every_time">
+                        Ask every time
+                    </div>
+                </div>
+            </div>
+            <div class="field-group alert alert-success" style="display: none;">
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                <strong>Success! </strong> Your settings has been saved successfully.
+            </div>
+            <div class="field-group">
+                <button class="apply update_expire_date_settings">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Apply
+                </button>
+            </div>
+        </div>
+        <div class="side-content hide" id="attachment_path_content">
+            <div class="field-group">
+                <h5 class="green">Default</h5>
+                <h5 >attachments library path</h5>
+                <div class="custom_green_white_select">
+                    <div class="custom_without_path">
+                        without default path
+                    </div>
+                    <div class="custom_with_path ">
+                        select library & path
+                        <div class="error">
+                            <span class="ast" style="display: none;">*You need to select a library&path</span>
+                        </div>                        
+                    </div>
+                </div>
+                <div class="filebrowser_container">
+                    <div id="browser"></div>
+                </div>
+            </div>
+
+
+            <div class="field-group">
+                <h5 class="green">Set individual settings</h5>
+                <h5 >for every email</h5>
+                <div class="custom_email_settings">
+                    <div class="always_default">
+                        Always use default settings
+                    </div>
+                    <div class="ask_every_time">
+                        Ask every time
+                    </div>
+                </div>
+            </div>
+            <div class="field-group alert alert-success" style="display: none;">
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                <strong>Success! </strong> Your settings has been saved successfully.
+            </div>
+            <div class="field-group">
+                <button class="apply update_attachment_path_settings">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Apply
+                </button>
+            </div>
+        </div>
+        <div class="side-content hide" id="link_text_content">
+            <div class="field-group">
+                <h5 class="green">Download</h5>
+                <h5 >link text</h5>
+                <div class="download_link_text">
+                    <input type="text">
+                </div>
+                <label class="radio_option_container">Myfile.docx
+                    <input type="radio" name="download_link_option" id="option_filename">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="radio_option_container">My Download link
+                    <input type="radio" checked="checked" name="download_link_option" id="option_text">
+                    <span class="checkmark"></span>
+                </label>
+                  <label class="radio_option_container"> My Download link: MyFile.docx
+                    <input type="radio" name="download_link_option" id="option_text_filename">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="radio_option_container"> My Download link:https://sync.luckycloud.fe/f/198968e3e669473f8545/
+                    <input type="radio" name="download_link_option" id="option_text_link">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div class="field-group alert alert-success" style="display: none;">
+                <button type="button" class="close" data-dismiss="alert">x</button>
+                <strong>Success! </strong> Your settings has been saved successfully.
+            </div>
+            <div class="field-group">
+                <button class="apply update_link_text_settings">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Apply
+                </button>
+            </div>
+        </div>
+
+        <div class="side-content hide" id="general">
             <h5>Default password</h5>
             <div class="form-check">
                 <input class="form-check-input" name="general" type="radio" id="without_password" value="1" />
@@ -105,10 +291,10 @@
                 <label class="form-check-label" for="with_path">
                     With default Library&Path
                 </label>
-                <div class="button-browse-serverfiles">
+                <div class="filebrowser_container1">
                     <button class="btn btn-info" id="select_attachment_path">Select Path</button>
                     <!-- <div class="loader"></div> -->
-                    <div id="browser"></div>  
+                    <div id="browser1"></div>  
                 </div>
                 <div class="h-text">
                     <h6>Default Library</h6>
@@ -170,7 +356,7 @@
             </div>
         </div>
 
-          
+        
     </div>
 </body>
 

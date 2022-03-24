@@ -33,42 +33,57 @@ export function retrieveToken() {
 }
 
 export function getDefaultPassword() {
-  const is_password_set = Office.context.roamingSettings.get("is_password_set");
-  return is_password_set === "true" ? decryptKey(Office.context.roamingSettings.get("default_password")) : null;
+  const password = Office.context.roamingSettings.get("default_password");
+  if (password) return decryptKey(password);
+  else return "";
+
 }
 
 export function setDefaultPassword(password = null, callback = function () {}) {
-  if (password === null || password.length <= 0) {
-    Office.context.roamingSettings.set("is_password_set", "false");
-  } else {
-    Office.context.roamingSettings.set("is_password_set", "true");
-    Office.context.roamingSettings.set("default_password", encryptKey(password));
-  }
+  Office.context.roamingSettings.set("default_password", encryptKey(password));
   Office.context.roamingSettings.saveAsync(callback);
 }
 
 export function getDefaultExpireDate() {
-  const is_expire_date_set = Office.context.roamingSettings.get("is_expire_date_set");
-  return is_expire_date_set === "true" ? decryptKey(Office.context.roamingSettings.get("default_expire_date")) : null;
+  const default_expire_date =  Office.context.roamingSettings.get("default_expire_date");
+  if (default_expire_date) return decryptKey(default_expire_date);
+  else return "";
 }
 
-export function setDefaultExpireDate(expire_date = null, callback = function () {}) {
-  if (expire_date === null || expire_date <= 0) {
-    Office.context.roamingSettings.set("is_expire_date_set", "false");
-  } else {
-    Office.context.roamingSettings.set("is_expire_date_set", "true");
-    Office.context.roamingSettings.set("default_expire_date", encryptKey(expire_date));
-  }
+export function setDefaultExpireDate(expire_date = "", callback = function () {}) {
+  Office.context.roamingSettings.set("default_expire_date", encryptKey(expire_date));
   Office.context.roamingSettings.saveAsync(callback);
 }
 
-export function getShareOption() {
-  const option = Office.context.roamingSettings.get("share_option");
-  if (!option || option === undefined) return "always_default";
-  return option;
+
+export function getEmailSetting(key = "" ){
+  const option = Office.context.roamingSettings.get("email_setting");
+  if (key) {
+    if (option && option[key]) return option[key];
+    else return "always_default";
+  } else {
+    return option;
+  }
+}
+export function setEmailSetting(val = "", callback = function () {}) {
+  // val = "always_default"
+  Office.context.roamingSettings.set("email_setting", val);
+  Office.context.roamingSettings.saveAsync(callback);
 }
 
-export function setShareOption(val = "always_default", callback = function () {}) {
+export function getShareOption(key = "") {
+  const option = Office.context.roamingSettings.get("share_option");
+  if (key !="") {
+    if (option && option[key]) return option[key];
+    else return "always_default";
+  } else {
+    return option;
+  }
+  // if (!option || option === undefined) return "always_default";
+  // return option;
+}
+export function setShareOption(val = "", callback = function () {}) {
+  // val = "always_default"
   Office.context.roamingSettings.set("share_option", val);
   Office.context.roamingSettings.saveAsync(callback);
 }
@@ -97,17 +112,10 @@ export function dataurltoFile(url, filename, mimeType){
 
 export function getDefaultAttachmentPath(){
   return {
-    defaultLibraryname: Office.context.roamingSettings.get("defaultLibraryname") ? Office.context.roamingSettings.get("defaultLibraryname"): undefined,
-    defaultPathname   :  Office.context.roamingSettings.get("defaultPathname") ? Office.context.roamingSettings.get("defaultPathname"): undefined,
-    repo_id : Office.context.roamingSettings.get("repo_id") ? Office.context.roamingSettings.get("repo_id"): undefined,
+    defaultLibraryname: Office.context.roamingSettings.get("defaultLibraryname") ? Office.context.roamingSettings.get("defaultLibraryname"): "",
+    defaultPathname   :  Office.context.roamingSettings.get("defaultPathname") ? Office.context.roamingSettings.get("defaultPathname"): "",
+    repo_id : Office.context.roamingSettings.get("repo_id") ? Office.context.roamingSettings.get("repo_id"): "",
   }  
-}
-export function getLinkText(){
-  return Office.context.roamingSettings.get("link_text")?Office.context.roamingSettings.get("link_text"): "Download Link";
-}
-export function setLinkText(text, callback=function(){} ) {
-  Office.context.roamingSettings.set("link_text", text);
-  Office.context.roamingSettings.saveAsync(callback);
 }
 export function setDefaultAttachmentPath(defaultLibraryname, defaultPathname = "/", repo_id, callback=function(){}){
   Office.context.roamingSettings.set("defaultLibraryname", defaultLibraryname);
@@ -115,6 +123,15 @@ export function setDefaultAttachmentPath(defaultLibraryname, defaultPathname = "
   Office.context.roamingSettings.set("repo_id", repo_id);
   Office.context.roamingSettings.saveAsync(callback);
 }
+
+export function getLinkText(){
+  return Office.context.roamingSettings.get("link_text")?Office.context.roamingSettings.get("link_text"): "Download Link";
+}
+export function setLinkText(text, callback=function(){} ) {
+  Office.context.roamingSettings.set("link_text", text);
+  Office.context.roamingSettings.saveAsync(callback);
+}
+
 
 export function randomString(length, chars) {
   var result = '';
