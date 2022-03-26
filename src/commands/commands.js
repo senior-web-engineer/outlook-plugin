@@ -61,7 +61,7 @@ function loadUploadFilePage(event) {
   uploadEvent = event;
 
   var url = new URI("uploadFile.html").absoluteTo(window.location).toString();
-  var dialogOptions = { width: 40, height: 60, displayInIframe: true };
+  var dialogOptions = { width: 50, height: 55, displayInIframe: true };
 
   Office.context.ui.displayDialogAsync(url, dialogOptions, function (result) {
     uploadFileDialog = result.value;
@@ -78,7 +78,7 @@ function loadDownloadDialog(event) {
   downloadEvent = event;
 
   var url = new URI("downLoadfile.html").absoluteTo(window.location).toString();
-  var dialogOptions = { width: 40, height: 60, displayInIframe: true };
+  var dialogOptions = { width: 60, height: 40, displayInIframe: true };
 
   Office.context.ui.displayDialogAsync(url, dialogOptions, function (result) {
     downloadDialog = result.value;
@@ -266,7 +266,7 @@ function loadSettingsPage(event) {
   settingsEvent = event;
 
   var url = new URI("settings.html").absoluteTo(window.location).toString();
-  var dialogOptions = { width: 60, height: 70, displayInIframe: true };
+  var dialogOptions = { width: 60, height: 50, displayInIframe: true };
 
   Office.context.ui.displayDialogAsync(url, dialogOptions, function (result) {
     settingsDialog = result.value;
@@ -302,7 +302,7 @@ function uploadAttachmentPage(event) {
         var config = getConfig();
         if (config && config.seafile_env) {
           var url = new URI("selectDefaultPath.html").absoluteTo(window.location).toString();
-          var dialogOptions = { width: 40, height: 60, displayInIframe: true };
+          var dialogOptions = { width: 60, height: 40, displayInIframe: true };
           
           Office.context.ui.displayDialogAsync(url, dialogOptions, function (result) {
             selectAttachFolderDialog = result.value;

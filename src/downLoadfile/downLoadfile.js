@@ -59,6 +59,7 @@ Office.initialize = function (reason) {
       globalrepos = repos;
       for (let repo of repos) {
         if ( repo.encrypted ) continue;
+
         dirmap[repo["name"]] = {};
         getItemsInDirectory(token, env, repo, "/", dirmap[repo["name"]], initRepoMap);
       }

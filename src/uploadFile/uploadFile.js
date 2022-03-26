@@ -3,18 +3,22 @@ const {
   getUploadLink,
   uploadFile,
   getItemsInDirectory,
+  getDirectoryDetail,
   getSeafileLibraries,
-  downloadFile,  
+  downloadFile,    
+  
 } = require("../helpers/seafile-api");
-const { retrieveToken, retriveSeafileEnv } = require("../helpers/addin-config");
+const { retrieveToken, retriveSeafileEnv, retriveUserName} = require("../helpers/addin-config");
 
 // The Office initialize function must be run each time a new page is loaded.
 Office.initialize = function (reason) {
   var token = retrieveToken();
   var env = retriveSeafileEnv();   
+  var username = retriveUserName();
 
   jQuery(document).ready(function () {
     var dirmap = {};
+    var propertymap = {};
     var uploadFilebtn = document.getElementById("uploadFilebtn");
     var globalrepos = null;
     var browse = $("#browser").dialog({
@@ -43,47 +47,48 @@ Office.initialize = function (reason) {
       for (let repo of repos) {
         if ( repo.encrypted ) continue;
         dirmap[repo["name"]] = {};
+        propertymap["/" + repo["name"]] = {
+          owner : repo["owner"],
+          size  : repo["size"],
+          mtime : repo["mtime"]
+        }
         getItemsInDirectory(token, env, repo, "/", dirmap[repo["name"]], initRepoMap);
+
       }
 
       $(".loader").hide();
       console.log("here is the directory map", dirmap);
+      console.log("here is the property map", propertymap);
       drawRootDirectory();
     });
 
     function initRepoMap(repo, detail, path, currentEnv) {
       // Adds new direcotry/file to the currentEnv
       for (let item of detail) {
+        propertymap["/" + repo["name"] + path + item["name"]] = {
+          owner : repo["owner"],
+          size  :  item["size"],
+          mtime : item["mtime"]
+        }
         if (item.type == "dir") {          
           currentEnv[item["name"]] = {};
           getItemsInDirectory(token, env, repo, path + item["name"] + "/", currentEnv[item["name"]], initRepoMap);
+
         } else {
           currentEnv[item["name"]] = "";
         }
       }
 
     }
-
-    function getRepofrompath(path) {
-      path = path.substring(1);
-			let reponame = "";
-			if (path.indexOf("/") < 0)
-				reponame = path;
-			 else reponame= path.substring(0, path.indexOf("/"));
-       
-      for (let repo of globalrepos) {
-        if (repo["name"] == reponame) return repo;
-      }
-      
-    }
-
-    function getRelativepath(path) {
-      path = path.substring(1);
-      return path.substring(path.indexOf("/"));
-    }
     function refreshRepoMap(repo, detail, path, currentEnv, callback) {
       // Adds new direcotry/file to the currentEnv
       for (let item of detail) {
+        propertymap["/" + repo["name"] + path + item["name"]] = {
+          owner : repo["owner"],
+          size  :  item["size"],
+          mtime : item["mtime"]
+        }
+
         if (typeof currentEnv[item["name"]] === "object" || typeof currentEnv[item["name"]] === "string") continue;
         if (item.type == "dir") {          
           currentEnv[item["name"]] = {};
@@ -105,6 +110,25 @@ Office.initialize = function (reason) {
       if (callback) callback();
     }
 
+    function getRepofrompath(path) {
+      path = path.substring(1);
+			let reponame = "";
+			if (path.indexOf("/") < 0)
+				reponame = path;
+			 else reponame= path.substring(0, path.indexOf("/"));
+       
+      for (let repo of globalrepos) {
+        if (repo["name"] == reponame) return repo;
+      }
+      
+    }
+
+    function getRelativepath(path) {
+      path = path.substring(1);
+      return path.substring(path.indexOf("/"));
+    }
+
+
     function drawRootDirectory() {
       function get(path) {
         var current = dirmap;
@@ -118,6 +142,7 @@ Office.initialize = function (reason) {
         root: "/",
         separator: "/",
         contextmenu: true,
+        username: username,
         menu: function (type) {
           if (type == "li") {
             // return {
@@ -154,8 +179,10 @@ Office.initialize = function (reason) {
                 dirs: [],
               };
               Object.keys(dir).forEach(function (key) {
+                const fullpath = ( path == "/" )? path + key : path + "/" + key;
+                result[fullpath] = propertymap[fullpath];
                 if (typeof dir[key] == "string") {
-                  result.files.push(key);
+                  result.files.push(key);                  
                 } else if ($.isPlainObject(dir[key])) {
                   result.dirs.push(key);
                 }
@@ -214,6 +241,11 @@ Office.initialize = function (reason) {
                 if ( repo.encrypted ) continue;
                 if (typeof dirmap[repo["name"]] === 'object' || typeof dirmap[repo["name"]] === 'string') continue;
                 dirmap[repo["name"]] = {}
+                propertymap["/" + repo["name"]] = {
+                  owner : repo["owner"],
+                  size  :  repo["size"],
+                  mtime : repo["mtime"]
+                }
                 getItemsInDirectory(token, env, repo, "/", dirmap[repo["name"]], refreshRepoMap);
               }
               // Remove deleted repos from dirmap
@@ -225,6 +257,7 @@ Office.initialize = function (reason) {
                 if (!flag) dirmap[key] = undefined;
               }
               console.log('dir map', dirmap);
+              console.log('property map', propertymap);
               $('.loader').hide();
               if (callback) callback();
             });

@@ -7,7 +7,12 @@
     this.error = error;
   }
   $("div.toolbar ul.labels li.download").toggleClass("disabled", $("div.content li.selected").length < 1);
-
+  $('div.global-container div.card-title input.search-box').on('keyup', function(){
+    var value = $(this).val().toLowerCase();
+    $('div.content li').filter(function(){
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1 );
+    });
+  });
   Uploader.prototype.process = function process(event, path) {
     var defered = $.Deferred();
     var self = this;
@@ -141,17 +146,19 @@
       exists: $.noop,
       upload: $.noop,
       name: "default",
+      username: "",
       error: $.noop,
       menu: function (type) {
         return {};
       },
       refresh_timer: 100,
-      view_style : "grid"
+      view_style : "list",
+
     },
     strings: {
       toolbar: {
-        back: "back",
-        up: "up",
+        // back: "back",
+        // up: "up",
         refresh: "refresh",
         upload: "upload",
         download: "download",
@@ -466,14 +473,16 @@
       var $toolbar = $('<div class="toolbar"/>').appendTo(self);
       var $adress_bar = $('<div class="adress-bar"></div>').appendTo($toolbar);
       $("<button>Home</button>").addClass("home").appendTo($adress_bar);
+      
       var $tools = $("<ul></ul>").appendTo($toolbar);
       if (settings.labels) {
         $tools.addClass("labels");
       }
       var $adress = $("<input />").appendTo($adress_bar);
+      $('<div></div>').addClass("path-bar").appendTo($adress_bar);
       var toolbar = $.browse.strings.toolbar;
       Object.keys(toolbar).forEach(function (name) {
-        $("<li/>").text(toolbar[name]).addClass(name).appendTo($tools);
+        $("<li/>").addClass(name).appendTo($tools);
       });
       var $content = $("<ul/>").wrap("<div/>").parent().addClass("content").appendTo(self);
       var $ul = $content.find("ul");
@@ -493,12 +502,17 @@
         .on("click.browse", "li", function () {
           var $this = $(this);
           if (!$this.hasClass("disabled")) {
-            var name = $this.text();
-            self[name]();
+            var classList = $this.attr("class");        
+            // Creating class array by splitting class list string
+            var classArr = classList.split(/\s+/);
+            var actionname = classArr[0];
+            self[actionname]();
           }
         })
         .on("click", ".home", function () {
           if (path != settings.root) {
+            console.log('current path');
+            console.log(path);
             self.show(settings.root);
           }
         })
@@ -516,7 +530,7 @@
           var $li = $(this);
           var time = new Date().getTime() - click_time;
           if (time < settings.rename_delay && time < settings.dbclick_delay) {
-            var name = $li.find("span").text();
+            var name = $li.find("span.name").text();
             var filename = self.join(path, name);
             if ($li.hasClass("directory")) {
               $li.removeClass("selected");
@@ -969,13 +983,50 @@
         },
         grid: function(){
           settings.view_style = "grid"
-          self.refresh()
+          $("div.content li").removeClass("list");
+          $("div.content li").addClass("grid");
+          $("div.content div.header").hide();
+          self.show(path);
         },
         list: function(){
-          settings.view_style = "list"
-          self.refresh()
+          settings.view_style = "list";
+          $("div.content li").removeClass("grid");
+          $("div.content li").addClass("list");
+          $("div.content div.header").show();
+          self.show(path);
         },
         show: function (new_path, options) {
+          function bytesToSize(bytes) {
+            if (!bytes) return "";
+            var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            if (bytes == 0) return '0 Byte';
+            var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+          }
+          function timeSince(date) {
+
+            var seconds = Math.floor((new Date() - date) / 1000);
+          
+            var interval = seconds / 31536000;          
+
+            interval = seconds / 2592000;
+            if (interval > 1) {
+                return date.toDateString()
+            }
+            interval = seconds / 86400;
+            if (interval > 1) {
+              return Math.floor(interval) == 1 ? "a day ago" : Math.floor(interval) + " days ago";
+            }
+            interval = seconds / 3600;
+            if (interval > 1) {
+              return Math.floor(interval) == 1 ? "an hour ago" : Math.floor(interval)  + " hours ago";
+            }
+            interval = seconds / 60;
+            if (interval > 1) {
+              return Math.floor(interval) == 1 ? "a minute ago" : Math.floor(interval)  + " minutes ago";
+            }
+            return Math.floor(seconds) == 1 ? "a second ago" : Math.floor(interval)  + " seconds ago";
+          }
           function process(content) {
             if (run) {
               return;
@@ -987,9 +1038,123 @@
             } else {
               current_content = content;
               $ul.empty();
+
+              var $content_header = $('<div class="header"><span class="name header-item"><span>Name</span></span><span class="owner header-item"><span>Owner</span></span><span class="mtime header-item"><span>Changed</span></span><span class="size header-item"><span>Size</span></span></div>')
+              .appendTo($ul);
+
+
+              $('div.content div.header span.header-item span').on('click', function(){
+                $("div.content div.header span.header-item").removeClass("active");
+                $(this).parent().addClass("active");
+              });
+              $('div.content div.header span.header-item.name span').on('click', function(){
+                if ( $(this).hasClass("up") ){
+                  $(this).removeClass("up").addClass("down");
+                } else if ($(this).hasClass("down")) {
+                  $(this).removeClass("down").addClass("up");
+                } else {
+                  $(this).addClass("down");
+                }
+                var $icon = $(this);
+                var ul = $('div.content ul');
+                var listitems = ul.children('li').get();
+                listitems.sort(function(a, b){
+                  var a_text = $(a).find("span.name").text();
+                  var b_text = $(b).find("span.name").text();
+                  if ($icon.hasClass("down"))
+                    return a_text.toUpperCase().localeCompare(b_text.toUpperCase());
+                  else return b_text.toUpperCase().localeCompare(a_text.toUpperCase());
+                });
+                $.each(listitems, function(idx, item) {ul.append(item); });
+
+              });
+
+              $('div.content div.header span.header-item.owner span').on('click', function(){
+                if ( $(this).hasClass("up") ){
+                  $(this).removeClass("up").addClass("down");
+                } else if ($(this).hasClass("down")) {
+                  $(this).removeClass("down").addClass("up");
+                } else {
+                  $(this).addClass("down");
+                }
+                var $icon = $(this);
+                var ul = $('div.content ul');
+                var listitems = ul.children('li').get();
+                listitems.sort(function(a, b){
+                  var a_text = $(a).find("span.owner").text();
+                  var b_text = $(b).find("span.owner").text();
+                  if ($icon.hasClass("down"))
+                    return a_text.toUpperCase().localeCompare(b_text.toUpperCase());
+                  else return b_text.toUpperCase().localeCompare(a_text.toUpperCase());
+                });
+                $.each(listitems, function(idx, item) {ul.append(item); });
+
+              });
+              $('div.content div.header span.header-item.mtime span').on('click', function(){
+                if ( $(this).hasClass("up") ){
+                  $(this).removeClass("up").addClass("down");
+                } else if ($(this).hasClass("down")) {
+                  $(this).removeClass("down").addClass("up");
+                } else {
+                  $(this).addClass("down");
+                }
+                var $icon = $(this);
+                var ul = $('div.content ul');
+                var listitems = ul.children('li').get();
+                listitems.sort(function(a, b){
+                  var a_val = parseInt($(a).find("span.mtime").attr("data-mtime")) ? parseInt($(a).find("span.mtime").attr("data-mtime")) : 0;
+                  var b_val = parseInt($(b).find("span.mtime").attr("data-mtime")) ? parseInt($(b).find("span.mtime").attr("data-mtime")) : 0;
+                  if ($icon.hasClass("down")) {
+                    if (a_val > b_val) return 1;
+                    else if (a_val == b_val) return 0;
+                    else return -1;
+                  } else {
+                    if (a_val > b_val) return -1;
+                    else if (a_val == b_val) return 0;
+                    else return 1;
+                  }
+                });
+                $.each(listitems, function(idx, item) {ul.append(item); });
+
+              });
+
+              $('div.content div.header span.header-item.size span').on('click', function(){
+                if ( $(this).hasClass("up") ){
+                  $(this).removeClass("up").addClass("down");
+                } else if ($(this).hasClass("down")) {
+                  $(this).removeClass("down").addClass("up");
+                } else {
+                  $(this).addClass("down");
+                }
+                var $icon = $(this);
+                var ul = $('div.content ul');
+                var listitems = ul.children('li').get();
+                listitems.sort(function(a, b){
+                  var a_val = parseInt($(a).find("span.size").attr("data-size")) ? parseInt($(a).find("span.size").attr("data-size")) : 0;
+                  var b_val = parseInt($(b).find("span.size").attr("data-size")) ? parseInt($(b).find("span.size").attr("data-size")) : 0;
+                  if ($icon.hasClass("down")) {
+                    if (a_val > b_val) return 1;
+                    else if (a_val == b_val) return 0;
+                    else return -1;
+                  } else {
+                    if (a_val > b_val) return -1;
+                    else if (a_val == b_val) return 0;
+                    else return 1;
+                  }
+
+
+                });
+                $.each(listitems, function(idx, item) {ul.append(item); });
+
+              });
+
+
               current_content.dirs.forEach(function (dir) {
+                var fullpath = (new_path == "/")? new_path + dir : new_path + "/" + dir;
+                var property = current_content[fullpath];
+                property.owner = (property.owner == settings.username ) ? "me" : property.owner;
                 var cls = settings.item_class(new_path, dir);
-                var $li = $('<li class="directory ' + settings.view_style + '"><input type="checkbox" /><span>' + dir + "</span></li>")
+                var $li = $('<li class="directory ' + settings.view_style + '"><input type="checkbox" /><span class="name">' + dir + '</span><span class="owner">' + property.owner + '</span><span class="mtime" data-mtime="' + property.mtime+'">' + timeSince(new Date(property.mtime * 1000)) + '</span><span class="size" data-size="' + property.size + '">' + bytesToSize( property.size ) + '</span></li>')
                   .appendTo($ul)
                   .attr("draggable", true);
                 if (cls) {
@@ -997,7 +1162,9 @@
                 }
               });
               current_content.files.forEach(function (file) {
-                var $li = $('<li class="file ' + settings.view_style + '"><input type="checkbox" /><span>' + file + "</span></li>")
+                var fullpath = (new_path == "/")? new_path + file : new_path + "/" + file;
+                var property = current_content[fullpath];
+                var $li = $('<li class="file ' + settings.view_style + '"><input type="checkbox" /><span class="name">' + file + '</span><span class="owner">' + property.owner + '</span><span class="mtime" data-mtime="' + property.mtime+'">' + timeSince(new Date(property.mtime * 1000)) + '</span><span class="size" data-size="' + property.size + '">' + bytesToSize( property.size ) + '</span></li>')
                   .appendTo($ul)
                   .attr("draggable", true);
                 if (file.match(".")) {
@@ -1038,6 +1205,29 @@
               });
             }
             var run = false;
+            $('div.toolbar div.adress-bar div.path-bar').empty();
+            var folderArrr = path.split("/");
+            for ( var i = 0; i< folderArrr.length; i++ ) {
+              if ( folderArrr[i] ) {
+                if ( i == folderArrr.length - 1 )
+                  $('div.toolbar div.adress-bar div.path-bar').append('<div class="path-button active">' + folderArrr[i]  + '</div><span>></span>');
+                else 
+                  $('div.toolbar div.adress-bar div.path-bar').append('<div class="path-button">' + folderArrr[i]  + '</div><span>></span>');
+              }
+            }
+            $('div.toolbar div.adress-bar div.path-bar div.path-button').on('click', function(){
+              console.log('path button clicked');
+              folderArrr = self.path().split("/");
+              new_path = "";
+              for (var i = 0; i< folderArrr.length; i++) {
+                if (folderArrr[i]) {
+                  new_path = new_path + "/" + folderArrr[i];
+                  if ( folderArrr[i] == $(this).text()) break;
+                }
+              }
+              self.show(new_path);
+            });
+
           }
           return self;
         },

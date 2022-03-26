@@ -29,6 +29,7 @@ export function getToken(env, user, password, callback) {
       }
     })
     .fail(function (error) {
+      console.log('error while get token')
       callback(null, error);
     });
 }
@@ -56,6 +57,38 @@ export function getSeafileLibraries(token, env, callback) {
       console.log("error while getting libraries ", error);
     });
 }
+export function getDirectoryDetail(token, env, repo, path, callback){
+  if (path !="/") {
+    if (path[path.length-1] !="/") path = path + "/";
+  }
+  var settings = {
+    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
+    method: "POST",
+    timeout: 0,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: JSON.stringify({
+      method: "GET",
+      url: encodeURI(env + "/api/v2.1/repos/" + repo["id"] + "/dir/detail/" + (path !== "/" ? "?path=" + path : "")),
+      headers: {
+        Authorization: "Token " + token,
+        Accept: "application/json; indent=4",
+      },
+    }),
+  };
+
+  $.ajax(settings)
+  .done(function (response) {      
+    if (callback) {
+      callback(response);
+    }
+  })
+  .fail(function (error) {
+    console.log("error while getting directory detail", repo["name"], path, error);
+  });
+
+}
 export function getItemsInDirectory(token, env, repo, path, currentEnv, callback1, callback2=null) {
   // if (path == "/") console.log("getting info for repo ", repo["name"]);
   if (path !="/") {
@@ -70,7 +103,7 @@ export function getItemsInDirectory(token, env, repo, path, currentEnv, callback
     },
     data: JSON.stringify({
       method: "GET",
-      url: env + "/api2/repos/" + repo["id"] + "/dir/" + (path !== "/" ? "?p=" + path : ""),
+      url: encodeURI(env + "/api2/repos/" + repo["id"] + "/dir/" + (path !== "/" ? "?p=" + path : "")),
       headers: {
         Authorization: "Token " + token,
         Accept: "application/json; indent=4",
@@ -100,7 +133,7 @@ export function getUploadLink(token, env, repo, path, callback) {
     },
     data: JSON.stringify({
       method: "GET",
-      url: env + "/api2/repos/" + repo["id"] + "/upload-link/" + (path !== "/" ? "?p=" + path : ""),
+      url: encodeURI(env + "/api2/repos/" + repo["id"] + "/upload-link/" + (path !== "/" ? "?p=" + path : "")),
       headers: {
         Authorization: "Token " + token,
       },
@@ -111,7 +144,7 @@ export function getUploadLink(token, env, repo, path, callback) {
     console.log("upload Link", response);
     if (callback) callback(response);
   }).fail((err) => {
-    console.log(err);
+    console.log('error while getUploadLink');
   });
 }
 
@@ -136,7 +169,9 @@ export function uploadFile(token, env, uploadPath, relativePath,  selectedFile, 
 
   $.ajax(settings).done(function (response) {
     if (callback) callback(response);
-  });
+  }).fail((err) => {
+    console.log('error while uploadFile');
+  });;
 }
 
 export function downloadFile(token, env, repo, path, callback) {
@@ -149,7 +184,7 @@ export function downloadFile(token, env, repo, path, callback) {
     },
     data: JSON.stringify({
       method: "GET",
-      url: env + "/api2/repos/" + repo["id"] + "/file/?p=" + path + "&reuse=1",
+      url: encodeURI(env + "/api2/repos/" + repo["id"] + "/file/?p=" + path + "&reuse=1"),
       headers: {
         Authorization: "Token " + token,
         Accept: "application/json; charset=utf-8; indent=4",
@@ -159,7 +194,9 @@ export function downloadFile(token, env, repo, path, callback) {
 
   $.ajax(settings).done(function (response) {
     if (callback) callback(response);
-  });
+  }).fail((err) => {
+    console.log('error while getting downloadFile');
+  });;
 }
 
 export function advancedDownloadFile(
@@ -200,7 +237,9 @@ export function advancedDownloadFile(
 
   $.ajax(settings).done(function (response) {
     if (callback) callback(response);
-  });
+  }).fail((err) => {
+    console.log('error while advancedDownloadFile');
+  });;
 }
 
 export function getSharedLink(token, env, repo, path, callback) {
@@ -213,7 +252,7 @@ export function getSharedLink(token, env, repo, path, callback) {
     },
     data: JSON.stringify({
       method: "GET",
-      url: env + `/api/v2.1/share-links/?repo_id=${repo["id"]}&path=${encodeURIComponent(path)}`,
+      url: encodeURI(env + `/api/v2.1/share-links/?repo_id=${repo["id"]}&path=${encodeURIComponent(path)}`),
       headers: {
         Authorization: "Token " + token,
         Accept: "application/json",
@@ -226,6 +265,7 @@ export function getSharedLink(token, env, repo, path, callback) {
       if (callback) callback(response);
     })
     .fail((err) => {
+      console.log('error while getShareLink')
       if (callback) callback([]);
     });
 }

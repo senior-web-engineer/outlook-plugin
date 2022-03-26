@@ -23,7 +23,9 @@ export function setConfig(config, callback) {
   Office.context.roamingSettings.set("seafile_token", encryptKey(config.seafile_token));
   Office.context.roamingSettings.saveAsync(callback);
 }
-
+export function retriveUserName(){
+  return decryptKey(Office.context.roamingSettings.get("seafile_username"));
+}
 export function retriveSeafileEnv() {
   return decryptKey(Office.context.roamingSettings.get("seafile_env"));
 }

@@ -7,8 +7,12 @@
   <Version>1.0.0.0</Version>
   <ProviderName>SmartDev</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="luckycloud"/>
-  <Description DefaultValue="Outlook addin to interact with luckycloud "/>
+  <DisplayName DefaultValue="luckycloud">
+    <Override Locale="de-lu" Value="german luckycloud"/>
+  </DisplayName>
+  <Description DefaultValue="Outlook addin to interact with luckycloud">
+    <Override Locale="de-lu" Value="german Outlook addin to interact with luckycloud"/>
+  </Description>
   <IconUrl DefaultValue="https://outlook.lc-testing.de/addin/assets/seafile-icon-64.png"/>
   <HighResolutionIconUrl DefaultValue="https://outlook.lc-testing.de/addin/assets/seafile-icon-128.png"/>
   <!-- <SupportUrl DefaultValue="https://www.contoso.com/help"/> -->
