@@ -30,3 +30,4 @@ stage_deploy:
     - echo "$DEPLOY_KEY" | tr -d '\r' | ssh-add -
     - ssh -p22 $USER@$SERVER_IP "rm -rf /build && mkdir -p /build"
     - scp -P22 -r dist/* $USER@$SERVER_IP:/build
+    - ssh -p22 $USER@$SERVER_IP "cp -r /build/* /var/www/html/addin/"
