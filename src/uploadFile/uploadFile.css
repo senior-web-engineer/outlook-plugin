@@ -34,3 +34,7 @@
   top: 0px !important;
   left: 0px !important;
 }
+
+div.toolbar li.download, div.toolbar li.selectDefaultPath{
+  display: none;
+}

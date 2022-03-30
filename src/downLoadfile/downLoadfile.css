@@ -30,3 +30,7 @@
     top: 0px !important;
     left: 0px !important;
   }
+
+  div.toolbar li.upload, div.toolbar li.selectDefaultPath{
+    display: none;
+  }

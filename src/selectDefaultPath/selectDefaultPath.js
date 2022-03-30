@@ -11,6 +11,7 @@ const {
   const {
     retrieveToken,
     retriveSeafileEnv,
+    retriveUserName,
     getDefaultPassword,
     getShareOption,
     getDefaultExpireDate,
@@ -18,10 +19,11 @@ const {
   
   // The Office initialize function must be run each time a new page is loaded.
   var dirmap = {};
+  var propertymap = {};
   Office.initialize = function (reason) {
     var token = retrieveToken();
     var env = retriveSeafileEnv();
-  
+    var username = retriveUserName();
   
     jQuery(document).ready(function () {
       var inputPrompt = document.createElement("iframe");
@@ -44,6 +46,11 @@ const {
         for (let repo of repos) {
           if ( repo.encrypted ) continue;
           dirmap[repo["name"]] = {};
+          propertymap["/" + repo["name"]] = {
+            owner : repo["owner"],
+            size  : repo["size"],
+            mtime : repo["mtime"]
+          }
           getItemsInDirectory(token, env, repo, "/", dirmap[repo["name"]], initRepoMap);
         }
         $(".loader").hide();
@@ -55,6 +62,11 @@ const {
         for (let item of detail) {
           if (item.type == "dir") {
             currentEnv[item["name"]] = {};
+            propertymap["/" + repo["name"] + path + item["name"]] = {
+              owner : repo["owner"],
+              size  :  item["size"],
+              mtime : item["mtime"]
+            }
             getItemsInDirectory(token, env, repo, path + item["name"] + "/", currentEnv[item["name"]], initRepoMap);
           } else {
             currentEnv[item["name"]] = "";
@@ -64,6 +76,11 @@ const {
       function refreshRepoMap(repo, detail, path, currentEnv, callback) {
         // Adds new direcotry/file to the currentEnv
         for (let item of detail) {
+          propertymap["/" + repo["name"] + path + item["name"]] = {
+            owner : repo["owner"],
+            size  :  item["size"],
+            mtime : item["mtime"]
+          }
           if (typeof currentEnv[item["name"]] === "object" || typeof currentEnv[item["name"]] === "string") continue;
           if (item.type == "dir") {          
             currentEnv[item["name"]] = {};
@@ -118,27 +135,27 @@ const {
           page_name: "settings",
           menu: function (type) {
             if (type == "li") {
-              return {
-                "Upload Attachments here": function($li){
+              // return {
+              //   "Upload Attachments here": function($li){
       
-                  console.log('total li length', $li.length);
-                  filename = $($li).find("span").text();
-                  path = browse.join(browse.path(), filename);
-                  repo = getRepofrompath(path);
-                  relativePath = getRelativepath(path + "/");
+              //     console.log('total li length', $li.length);
+              //     filename = $($li).find("span").text();
+              //     path = browse.join(browse.path(), filename);
+              //     repo = getRepofrompath(path);
+              //     relativePath = getRelativepath(path + "/");
       
-                  var message = {
-                    defaultLibraryname: repo.name,
-                    defaultPathname : relativePath,
-                    repo_id : repo.id,
-                    action : "uploadAttach"
-                  }
-                  Office.context.ui.messageParent(
-                    JSON.stringify(message)
-                  );
+              //     var message = {
+              //       defaultLibraryname: repo.name,
+              //       defaultPathname : relativePath,
+              //       repo_id : repo.id,
+              //       action : "uploadAttach"
+              //     }
+              //     Office.context.ui.messageParent(
+              //       JSON.stringify(message)
+              //     );
 
-                },
-              };
+              //   },
+              // };
             }
           },
           dir: function (path) {
@@ -150,8 +167,10 @@ const {
                   dirs: [],
                 };
                 Object.keys(dir).forEach(function (key) {
+                  const fullpath = ( path == "/" )? path + key : path + "/" + key;
+                  result[fullpath] = propertymap[fullpath];
                   if (typeof dir[key] == "string") {
-                    result.files.push(key);
+                    result.files.push(key);                  
                   } else if ($.isPlainObject(dir[key])) {
                     result.dirs.push(key);
                   }
@@ -192,6 +211,23 @@ const {
           downloadfrommenu: function($li){
               console.log('clicked download button from menu');
           },
+          selectDefaultPath: function($li){
+            console.log('total li length', $li.length);
+            filename = $($li).find("span.name").text();
+            path = browse.join(browse.path(), filename);
+            repo = getRepofrompath(path);
+            relativePath = getRelativepath(path + "/");
+
+            var message = {
+              defaultLibraryname: repo.name,
+              defaultPathname : relativePath,
+              repo_id : repo.id,
+              action : "uploadAttach"
+            }
+            Office.context.ui.messageParent(
+              JSON.stringify(message)
+            );
+          },
           open: function ($li, filename) {
             var file = get(filename);
             if (typeof file == "string") {
@@ -214,6 +250,11 @@ const {
                   if ( repo.encrypted ) continue;
                   if (typeof dirmap[repo["name"]] === 'object' || typeof dirmap[repo["name"]] === 'string') continue;
                   dirmap[repo["name"]] = {}
+                  propertymap["/" + repo["name"]] = {
+                    owner : repo["owner"],
+                    size  :  repo["size"],
+                    mtime : repo["mtime"]
+                  }
                   getItemsInDirectory(token, env, repo, "/", dirmap[repo["name"]], refreshRepoMap);
                 }
                 // Remove deleted repos from dirmap

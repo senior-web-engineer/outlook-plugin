@@ -21,19 +21,39 @@ const {
   setdownloadLinkOption,
   getDefaultAttachmentPath,
   setDefaultAttachmentPath,
+  retriveUserName,
   getLinkText,
   setLinkText
 } = require("../helpers/addin-config");
+const {UIStrings} = require("../helpers/UIString.js");
 
 // The Office initialize function must be run each time a new page is loaded.
 var dirmap = {};
+var propertymap = {};
 var globalrepos = null;
   
 Office.initialize = function (reason) {
 
     var token = retrieveToken();
     var env = retriveSeafileEnv();
+	var username = retriveUserName();
 	jQuery(document).ready(function(){
+
+		var myLanguage = Office.context.displayLanguage;
+		console.log(myLanguage);
+		var UIText;
+		UIText = UIStrings.getLocaleStrings(myLanguage, "setting");
+		console.log(UIText);
+		Object.keys(UIText).forEach(function(cssSelector){
+			if (cssSelector == 'placeholder') {
+			  Object.keys(UIText[cssSelector]).forEach(function(key){
+				$(key).attr('placeholder', UIText[cssSelector][key]);
+			  });
+			} else {
+			  $(cssSelector).text(UIText[cssSelector]);
+			}
+			
+		  });
 
 		jQuery('div.custom_green_white_select>div, div.custom_email_settings>div').click(function(){
 			$(this).siblings().removeClass('active');
@@ -44,7 +64,7 @@ Office.initialize = function (reason) {
 
 		$(".alert").hide();
 		$(".ast").hide();
-		$('.field-group button span').hide();
+		$('.field-group button span.spinner-border').hide();
 		var emailsetting = getEmailSetting();
 
 		if ( typeof emailsetting !== 'object' ) {
@@ -75,12 +95,12 @@ Office.initialize = function (reason) {
 				$('div.custom_with_password div.error span').show();
 				return;
 			}
-			$('.update_password_settings').find('span').show();
+			$('.update_password_settings').find('span.spinner-border').show();
 			setDefaultPassword(defaultPassword, function(res){
 				if (res.status == "succeeded") {					
 					setEmailSetting( emailsetting, function(res){						
 						if (res.status == "succeeded" ) {
-							$('.update_password_settings').find('span').hide();
+							$('.update_password_settings').find('span.spinner-border').hide();
 							$("#password_content .alert-success").fadeTo(2000, 500).slideUp(500, function() {
 								$("#password_content .alert-success").slideUp(500);
 							});
@@ -127,12 +147,12 @@ Office.initialize = function (reason) {
 				return;
 			}
 
-			$('.update_expire_date_settings').find('span').show();
+			$('.update_expire_date_settings').find('span.spinner-border').show();
 			setDefaultExpireDate(defaultExpireDate, function(res){
 				if (res.status == "succeeded") {					
 					setEmailSetting( emailsetting, function(res){						
 						if (res.status == "succeeded" ) {
-							$('.update_expire_date_settings').find('span').hide();
+							$('.update_expire_date_settings').find('span.spinner-border').hide();
 							$("#expire_date_content .alert-success").fadeTo(2000, 500).slideUp(500, function() {
 								$("#expire_date_content .alert-success").slideUp(500);
 							});
@@ -143,10 +163,20 @@ Office.initialize = function (reason) {
 
 
 		});
+
+
+		///////////////////////Attachment Path Setting//////////////////////////
 		var defaultAttachmentOption = getDefaultAttachmentPath();
 		console.log('default attachmentPath ');
 		console.log(defaultAttachmentOption);
-
+        var currentAttachmentPath = "";
+		if ( defaultAttachmentOption["defaultLibraryname"] && defaultAttachmentOption["defaultPathname"] ){
+			currentAttachmentPath = "/" + defaultAttachmentOption["defaultLibraryname"] + defaultAttachmentOption["defaultPathname"];
+			if (currentAttachmentPath[currentAttachmentPath.length-1] == "/") {
+				currentAttachmentPath = currentAttachmentPath.substring(0, currentAttachmentPath.length - 1);
+			}
+		}
+		$('.custom_with_path input').val(currentAttachmentPath);
 		if ( !defaultAttachmentOption["defaultLibraryname"] || !defaultAttachmentOption["defaultPathname"] || !defaultAttachmentOption["repo_id"] ) {
 			$('.custom_without_path').addClass("active");
 		} else {
@@ -160,21 +190,32 @@ Office.initialize = function (reason) {
 			$('#attachment_path_content div.always_default').addClass('active');
 			emailsetting["attachment_path"] = "always_default";
 		}
+		jQuery('div.custom_without_path').click(function(){
+			$('.custom_with_path input').val("");
+		});
 
 		jQuery("button.update_attachment_path_settings").on("click", function(){
 			if ($('.custom_with_path').hasClass("active") && ( !defaultAttachmentOption["defaultLibraryname"] || !defaultAttachmentOption["defaultPathname"] || !defaultAttachmentOption["repo_id"] ) ){
-				$('.custom_with_path').find("span").text("*You need to select a library&path");
+				$('.custom_with_path div.error span').text("*You need to select a library&path");
 				$('.filebrowser_container').css('margin-top', '50px');
-				$('.custom_with_path').find("span").show();
+				$('.custom_with_path div.error span').show();
 				return;
 			}
 			emailsetting["attachment_path"] = $('#attachment_path_content div.ask_every_time').hasClass("active") ? "ask_every_time": "always_default";
-			$('.update_attachment_path_settings').find('span').show();
+			console.log('here is the email setting', emailsetting);
+			if ( $('.custom_without_path').hasClass("active") ) {
+				defaultAttachmentOption = {
+					defaultLibraryname : "",
+					defaultPathname : "",
+					repo_id : ""
+				}
+			}
+			$('.update_attachment_path_settings').find('span.spinner-border').show();
 			setDefaultAttachmentPath( defaultAttachmentOption["defaultLibraryname"] , defaultAttachmentOption["defaultPathname"], defaultAttachmentOption["repo_id"], function(res){
 				if (res.status == "succeeded") {
 					setEmailSetting( emailsetting, function(res){						
 						if (res.status == "succeeded" ) {
-							$('.update_attachment_path_settings').find('span').hide();
+							$('.update_attachment_path_settings').find('span.spinner-border').hide();
 							$("#attachment_path_content .alert-success").fadeTo(2000, 500).slideUp(500, function() {
 								$("#attachment_path_content .alert-success").slideUp(500);
 							});
@@ -199,6 +240,11 @@ Office.initialize = function (reason) {
 			for (let repo of repos) {
 			  if ( repo.encrypted ) continue;
 			  dirmap[repo["name"]] = {};
+			  propertymap["/" + repo["name"]] = {
+				owner : repo["owner"],
+				size  : repo["size"],
+				mtime : repo["mtime"]
+			  }
 			  getItemsInDirectory(token, env, repo, "/", dirmap[repo["name"]], initRepoMap);
 			}
 			$(".loader").hide();
@@ -208,6 +254,11 @@ Office.initialize = function (reason) {
 		  function initRepoMap(repo, detail, path, currentEnv) {
 			console.log("here is the detail of repo or directory", detail);
 			for (let item of detail) {
+				propertymap["/" + repo["name"] + path + item["name"]] = {
+					owner : repo["owner"],
+					size  :  item["size"],
+					mtime : item["mtime"]
+				}
 			  if (item.type == "dir") {
 				currentEnv[item["name"]] = {};
 				getItemsInDirectory(token, env, repo, path + item["name"] + "/", currentEnv[item["name"]], initRepoMap);
@@ -219,6 +270,12 @@ Office.initialize = function (reason) {
 		  function refreshRepoMap(repo, detail, path, currentEnv, callback) {
 			// Adds new direcotry/file to the currentEnv
 			for (let item of detail) {
+				propertymap["/" + repo["name"] + path + item["name"]] = {
+					owner : repo["owner"],
+					size  :  item["size"],
+					mtime : item["mtime"]
+				  }
+
 			  if (typeof currentEnv[item["name"]] === "object" || typeof currentEnv[item["name"]] === "string") continue;
 			  if (item.type == "dir") {          
 				currentEnv[item["name"]] = {};
@@ -267,37 +324,16 @@ Office.initialize = function (reason) {
 			  root: "/",
 			  separator: "/",
 			  contextmenu: true,
+			  username: username,
 			  page_name: "settings",
 			  menu: function (type) {
 				if (type == "li") {
-				  return {
-					"Select As Default Path": function($li){
-						//Disable Button until the user select the path.
-						$('#select_attachment_path').addClass('disabled')
+				//   return {
+				// 	"Select As Default Path": function($li){
 
-						console.log('total li length', $li.length);
-						filename = $($li).find("span").text();
-						path = browse.join(browse.path(), filename);
-						repo = getRepofrompath(path);
-						relativePath = getRelativepath(path + "/");
 
-						defaultAttachmentOption["defaultLibraryname"] = repo.name;
-						defaultAttachmentOption["defaultPathname"] = relativePath;
-						defaultAttachmentOption["repo_id"]  = repo.id;
-						console.log('new defaultAttachmentOption');
-						console.log(defaultAttachmentOption);
-						$('.filebrowser_container').css('margin-top', '0px');
-						$('.custom_with_path').find("span").hide();
-						// $('#defaultLibraryname').val(repo.name);
-						// $('#defaultPathname').val(relativePath);
-						// $('#repo_id').val(repo.id);
-
-						//Enable the button and hide dialog
-						$('#select_attachment_path').removeClass('disabled');
-						$('.ui-dialog').toggle();
-
-					},
-				  };
+				// 	},
+				//   };
 				}
 			  },
 			  dir: function (path) {
@@ -309,12 +345,14 @@ Office.initialize = function (reason) {
 					  dirs: [],
 					};
 					Object.keys(dir).forEach(function (key) {
-					  if (typeof dir[key] == "string") {
-						result.files.push(key);
-					  } else if ($.isPlainObject(dir[key])) {
-						result.dirs.push(key);
-					  }
-					});
+						const fullpath = ( path == "/" )? path + key : path + "/" + key;
+						result[fullpath] = propertymap[fullpath];
+						if (typeof dir[key] == "string") {
+						  result.files.push(key);                  
+						} else if ($.isPlainObject(dir[key])) {
+						  result.dirs.push(key);
+						}
+					  });
 					resolve(result);
 				  } else {
 					reject();
@@ -351,6 +389,33 @@ Office.initialize = function (reason) {
 			  downloadfrommenu: function($li){
 				  console.log('clicked download button from menu');
 			  },
+			  selectDefaultPath: function($li){
+				console.log($li);
+				console.log('clicked selectDefaultPath button');
+				//Disable Button until the user select the path.
+				$('#select_attachment_path').addClass('disabled')
+
+				console.log('total li length', $li.length);
+				filename = $($li).find("span.name").text();
+				path = browse.join(browse.path(), filename);
+				repo = getRepofrompath(path);
+				relativePath = getRelativepath(path + "/");
+				$('div.custom_with_path input').val(path);
+				defaultAttachmentOption["defaultLibraryname"] = repo.name;
+				defaultAttachmentOption["defaultPathname"] = relativePath;
+				defaultAttachmentOption["repo_id"]  = repo.id;
+				console.log('new defaultAttachmentOption');
+				console.log(defaultAttachmentOption);
+				$('.filebrowser_container').css('margin-top', '0px');
+				$('.custom_with_path').find("div.error span").hide();
+				// $('#defaultLibraryname').val(repo.name);
+				// $('#defaultPathname').val(relativePath);
+				// $('#repo_id').val(repo.id);
+
+				//Enable the button and hide dialog
+				$('#select_attachment_path').removeClass('disabled');
+				$('.ui-dialog').toggle();
+			  },
 			  open: function ($li, filename) {
 				var file = get(filename);
 				if (typeof file == "string") {
@@ -374,6 +439,11 @@ Office.initialize = function (reason) {
 					  if ( repo.encrypted ) continue;
 					  if (typeof dirmap[repo["name"]] === 'object' || typeof dirmap[repo["name"]] === 'string') continue;
 					  dirmap[repo["name"]] = {}
+					  propertymap["/" + repo["name"]] = {
+						owner : repo["owner"],
+						size  :  repo["size"],
+						mtime : repo["mtime"]
+					  }
 					  getItemsInDirectory(token, env, repo, "/", dirmap[repo["name"]], refreshRepoMap);
 					}
 					// Remove deleted repos from dirmap
@@ -401,7 +471,11 @@ Office.initialize = function (reason) {
   
 		});
 
+
+		///////////////////////Link Text Setting//////////////////////////
 		var defaultdownloadLinkoption = getdownloadLinkOption();
+		console.log('defaultdownloadLinkOption', defaultdownloadLinkoption);
+
 		switch(defaultdownloadLinkoption) {
 			case "1":
 				$('#option_filename').prop("checked", true);
@@ -421,21 +495,32 @@ Office.initialize = function (reason) {
 		}
 
 		var link_text = getLinkText();
+		
+		console.log('link_text', link_text);
 		$('.download_link_text input').val(link_text);
+		$('.download_link_text input').on('keyup', function(){
+			$('label.option_text span.text').text($(this).val());
+			$('label.option_text_filename span.text').text($(this).val() + ": MyFile.docx");
+			$('label.option_text_link span.text').text($(this).val() + ": https://sync.luckycloud.fe/f/198968e3e669473f8545/");
 
-		$('button.update_link_text_settings').on("click", function(){
-			
+		});
+		$('label.option_text span.text').text(link_text);
+		$('label.option_text_filename span.text').text(link_text + ": MyFile.docx");
+		$('label.option_text_link span.text').text(link_text + ": https://sync.luckycloud.fe/f/198968e3e669473f8545/");
+		
+
+		$('button.update_link_text_settings').on("click", function(){			
 			if ( $('#option_filename').prop("checked") ) defaultdownloadLinkoption = "1";
 			if ( $('#option_text').prop("checked") ) defaultdownloadLinkoption = "2";
 			if ( $('#option_text_filename').prop("checked") ) defaultdownloadLinkoption = "3";
 			if ( $('#option_text_link').prop("checked") ) defaultdownloadLinkoption = "4";
-
-			$('button.update_link_text_settings span').show();
-			setLinkText(defaultdownloadLinkoption,  function(res){
+			link_text = $('.download_link_text input').val();
+			$('button.update_link_text_settings span.spinner-border').show();
+			setLinkText(link_text,  function(res){
 				if (res.status == "succeeded") { 
 					setdownloadLinkOption(defaultdownloadLinkoption, function(res){
 						if (res.status == "succeeded") { 
-							$('button.update_link_text_settings span').hide();	  
+							$('button.update_link_text_settings span.spinner-border').hide();	  
 							$("#link_text_content .alert-success").fadeTo(2000, 500).slideUp(500, function() {
 								$("#link_text_content .alert-success").slideUp(500);
 							});
@@ -449,9 +534,6 @@ Office.initialize = function (reason) {
 
 
 
-
-
-
 		$(".alert").hide();
 		jQuery(".sidebar-item").click(function (event) {
 			event.preventDefault();
@@ -462,95 +544,6 @@ Office.initialize = function (reason) {
 			$(`#${target}`).removeClass("hide");
 		  });
 
-		$('button#update_general_options span').hide();
-		$('button#update_share_option span').hide();
-	
-
-		jQuery("button#update_general_options").on("click", updateGeneralOptions);
-		jQuery("button#update_share_option").on("click", updateShareOption);
-	
-		function updateGeneralOptions() {
-
-		  let password = $("#default_password").val();
-		  if ($("#without_password").prop("checked")) password = null;
-	  
-		  if ( $('#with_password').prop("checked") && $('#default_password').val() == "") 
-		  {
-			  $('#default_password').parent().find(".ast").show();
-			  return;
-		  }
-		  if ( $('#with_expire').prop("checked") && $('#default_expire').val() == "")
-		  {
-			$('#default_expire').parent().find(".ast").show();			
-			return;
-		  }
-
-		  if ($('#with_path').prop("checked")) {
-			var flag = false;
-			if ($('#defaultLibraryname').val()=="" )
-			{
-			  $('#defaultLibraryname').parent().find(".ast").show();
-			  flag = true;
-
-			}
-			if ($('#defaultPathname').val()=="" )
-			{
-			  $('#defaultPathname').parent().find(".ast").show();
-			  flag = true;
-
-			}
-			if (flag) return;
-		  }
-
-
-
-		  $('button#update_general_options span').show();
-		  setDefaultPassword(password, function(res){
-			if (res.status == "succeeded") {
-			  let expire_date = $("#default_expire").val();
-			  if ($("#without_expire").prop("checked")) expire_date = null;
-
-			  setDefaultExpireDate(expire_date, function(res){
-				if (res.status == "succeeded") {
-				  let downloadlink_option = $('select#download_link').val();
-				  	setdownloadLinkOption(downloadlink_option, function(res){
-						if (res.status == "succeeded") {
-							console.log($('#defaultLibraryname').val());
-							console.log($('#defaultPathname').val());
-							console.log($('#repo_id').val());
-							
-						let with_path = $('#with_path').prop("checked");
-						setDefaultAttachmentPath(with_path? $('#defaultLibraryname').val(): null, with_path? $('#defaultPathname').val(): null, with_path? $('#repo_id').val() :null, function(res){
-							setLinkText($('#link_text').val(), function(res){
-								$('button#update_general_options span').hide();	  
-								$(".alert-success").fadeTo(2000, 500).slideUp(500, function() {
-									$(".alert-success").slideUp(500);
-								});
-								$(".ast").hide();
-							});
-						});	  
-						}
-					});
-				}
-				
-			  });
-			}
-		  });
-	  
-		}
-	  
-		function updateShareOption() {
-		  $('button#update_share_option span').show();
-		  let option = "always_default";
-		  if ($("#ask_for_password").prop("checked")) option = "ask_for_password";
-		  else if ($("#ask_every_time").prop("checked")) option = "ask_every_time";
-		  setShareOption(option, function(res){
-			$('button#update_share_option span').hide();
-			$(".alert-success").fadeTo(2000, 500).slideUp(500, function() {
-			  $(".alert-success").slideUp(500);
-			});
-		  });
-		}
 	});
 
 };

@@ -42,4 +42,11 @@
 div.content li.file {
   display: none !important;
 }
+.ui-dialog {
+  position: relative !important;
+  height: auto !important;
+  width: auto !important;
+  top: 0px !important;
+  left: 0px !important;
+}
 

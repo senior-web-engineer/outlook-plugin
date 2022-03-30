@@ -274,15 +274,5 @@ Office.initialize = function (reason) {
       });
     }
 
-    function checkDirectoryConfigured(path) {
-      let currentEnv = dirmap;
-      path = path.substring(1);
-
-      while (path.length) {
-        pos = path.indexOf("/");
-        dir = path.substring(0, pos);
-        currentEnv = currentEnv[dir];
-      }
-    }
   });
 };

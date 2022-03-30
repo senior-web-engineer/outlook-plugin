@@ -89,6 +89,7 @@ body {
   position: fixed;
   height: 100%;
   overflow: auto;
+  top: 70px;
 }
 
 .sidebar a {
@@ -121,7 +122,9 @@ body {
 }
 div.main {
   margin-left: 200px;
-  padding: 10px 16px;
+  padding: 70px 16px 10px 16px;
+  position: relative;
+  z-index:  0;
 }
 
 .h-text{
@@ -236,10 +239,10 @@ div.custom_green_white_select>div.active:before, div.custom_email_settings>div.a
   background-color: #42D75F;
   color: white;
 }
-.custom_with_password input:focus-visible, .custom_with_expire input:focus-visible, .download_link_text input:focus-visible {
+.custom_with_password input:focus-visible, .custom_with_expire input:focus-visible, .custom_with_path input:focus-visible, .download_link_text input:focus-visible {
   outline-width: 0px;
 }
-.custom_with_password input, .custom_with_expire input{
+.custom_with_password input, .custom_with_expire input, .custom_with_path input{
   position: absolute;
   left: 65px;
   height: 40px;
@@ -248,7 +251,7 @@ div.custom_green_white_select>div.active:before, div.custom_email_settings>div.a
   padding: 0px 5px;
   z-index: -1;
 }
-.custom_with_password.active input, .custom_with_expire.active input{
+.custom_with_password.active input, .custom_with_expire.active input, .custom_with_path.active input{
   background-color: #42D75F;
   color: white;
   z-index: 1;
@@ -390,4 +393,17 @@ a[data-target="link_text_content"] span.icon {
 div.error{
     position: absolute;
     top: 60px;
+}
+div.logo{
+  position: fixed;
+  width: 100%;
+  height: 70px;
+  z-index: 5;
+  border-bottom: 1px solid #D7D7D8;
+  background-color: white;
+}
+
+div.log img{
+  padding-left: 20px;
+  padding-top: 20px;
 }

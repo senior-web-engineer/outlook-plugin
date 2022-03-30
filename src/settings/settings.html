@@ -25,141 +25,127 @@
 </head>
 
 <body>
+    <div class="logo">
+        <img src="/assets/logo.svg"/>
+    </div>
     <div class="sidebar">
         <ul>
 
             <li>
                 <a href="#" class="sidebar-item active" data-target="password_content">
                     <span class="icon"></span>
-                    <span class="item">Password</span>
+                    <span class="item"></span>
                 </a>
             </li>
             <li>
                 <a href="#" class="sidebar-item" data-target="expire_date_content">
                     <span class="icon"></span>
-                    <span class="item">Expire date</span>
+                    <span class="item"></span>
                 </a>
             </li>
             <li>
                 <a href="#" class="sidebar-item" data-target="attachment_path_content">
                     <span class="icon"></span>
-                    <span class="item">Attachments Path</span>
+                    <span class="item"></span>
                 </a>
             </li>
             <li>
                 <a href="#" class="sidebar-item" data-target="link_text_content">
                     <span class="icon"></span>
-                    <span class="item">Link Text</span>
+                    <span class="item"></span>
                 </a>
             </li>
-            <!-- <li>
-                <a href="#" class="sidebar-item " data-target="general">
-                    <span class="icon"></span>
-                    <span class="item">General</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" class="sidebar-item" data-target="shares">
-                    <span class="icon"></span>
-                    <span class="item">Shares</span>
-                </a>
-            </li> -->
         </ul>
     </div>
     <div class="main">
         <div class="side-content" id="password_content">
             <div class="field-group">
-                <h5 class="green">Default</h5>
-                <h5 >password</h5>
+                <h5 class="green"></h5>
+                <h5 ></h5>
                 <div class="custom_green_white_select">
                     <div class="custom_without_password">
-                        without password
+
                     </div>
                     <div class="custom_with_password">
-                        with password
                         <input type="password">
+                        <span></span>
                         <div class="error">
-                            <span class="ast" style="display: none;">*This field is required</span>
+                            <span class="ast" style="display: none;"></span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="field-group">
-                <h5 class="green">Set individual settings</h5>
-                <h5 >for every email</h5>
+                <h5 class="green"></h5>
+                <h5 ></h5>
                 <div class="custom_email_settings">
                     <div class="always_default">
-                        Always use default settings
                     </div>
                     <div class="ask_every_time">
-                        Ask every time
                     </div>
                 </div>
             </div>
             <div class="field-group alert alert-success" style="display: none;">
                 <button type="button" class="close" data-dismiss="alert">x</button>
-                <strong>Success! </strong> Your settings has been saved successfully.
+                <strong></strong>
             </div>
             <div class="field-group">                
                 <button class="apply update_password_settings">
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    Apply
+                    <span></span>
                 </button>
             </div>
 
         </div>
         <div class="side-content hide" id="expire_date_content">
             <div class="field-group">
-                <h5 class="green">Default</h5>
-                <h5 >expire date</h5>
+                <h5 class="green"></h5>
+                <h5></h5>
                 <div class="custom_green_white_select">
                     <div class="custom_without_expire_date">
-                        without expire date
                     </div>
                     <div class="custom_with_expire">
-                        with expire date
                         <input type="text">
+                        <span></span>
                         <div class="error">
-                            <span class="ast" style="display: none;">*This field is required</span>
+                            <span class="ast" style="display: none;"></span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="field-group">
-                <h5 class="green">Set individual settings</h5>
-                <h5 >for every email</h5>
+                <h5 class="green"></h5>
+                <h5></h5>
                 <div class="custom_email_settings">
                     <div class="always_default">
-                        Always use default settings
                     </div>
                     <div class="ask_every_time">
-                        Ask every time
                     </div>
                 </div>
             </div>
             <div class="field-group alert alert-success" style="display: none;">
                 <button type="button" class="close" data-dismiss="alert">x</button>
-                <strong>Success! </strong> Your settings has been saved successfully.
+                <strong></strong>
             </div>
             <div class="field-group">
                 <button class="apply update_expire_date_settings">
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    Apply
+                    <span></span>
                 </button>
             </div>
         </div>
         <div class="side-content hide" id="attachment_path_content">
             <div class="field-group">
-                <h5 class="green">Default</h5>
-                <h5 >attachments library path</h5>
+                <h5 class="green"></h5>
+                <h5 ></h5>
                 <div class="custom_green_white_select">
                     <div class="custom_without_path">
-                        without default path
                     </div>
-                    <div class="custom_with_path ">
-                        select library & path
+                    <div class="custom_with_path">
+                        <input type="text" readonly>
+                        <span></span>
                         <div class="error">
-                            <span class="ast" style="display: none;">*You need to select a library&path</span>
+                            <span class="ast" style="display: none;"></span>
                         </div>                        
                     </div>
                 </div>
@@ -170,193 +156,65 @@
 
 
             <div class="field-group">
-                <h5 class="green">Set individual settings</h5>
-                <h5 >for every email</h5>
+                <h5 class="green"></h5>
+                <h5></h5>
                 <div class="custom_email_settings">
                     <div class="always_default">
-                        Always use default settings
                     </div>
                     <div class="ask_every_time">
-                        Ask every time
                     </div>
                 </div>
             </div>
             <div class="field-group alert alert-success" style="display: none;">
                 <button type="button" class="close" data-dismiss="alert">x</button>
-                <strong>Success! </strong> Your settings has been saved successfully.
+                <strong></strong>
             </div>
             <div class="field-group">
                 <button class="apply update_attachment_path_settings">
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    Apply
+                    <span></span>
                 </button>
             </div>
         </div>
         <div class="side-content hide" id="link_text_content">
             <div class="field-group">
-                <h5 class="green">Download</h5>
-                <h5 >link text</h5>
+                <h5 class="green"></h5>
+                <h5></h5>
                 <div class="download_link_text">
                     <input type="text">
                 </div>
-                <label class="radio_option_container">Myfile.docx
+                <label class="radio_option_container option_filename">
+                    <span class="text">Myfile.docx</span>
                     <input type="radio" name="download_link_option" id="option_filename">
                     <span class="checkmark"></span>
                 </label>
-                <label class="radio_option_container">My Download link
+                <label class="radio_option_container option_text">
+                    <span class="text"></span>
                     <input type="radio" checked="checked" name="download_link_option" id="option_text">
                     <span class="checkmark"></span>
                 </label>
-                  <label class="radio_option_container"> My Download link: MyFile.docx
+                  <label class="radio_option_container option_text_filename">
+                    <span class="text"></span>
                     <input type="radio" name="download_link_option" id="option_text_filename">
                     <span class="checkmark"></span>
                 </label>
-                <label class="radio_option_container"> My Download link:https://sync.luckycloud.fe/f/198968e3e669473f8545/
+                <label class="radio_option_container option_text_link">
+                    <span class="text"></span> 
                     <input type="radio" name="download_link_option" id="option_text_link">
                     <span class="checkmark"></span>
                 </label>
             </div>
             <div class="field-group alert alert-success" style="display: none;">
                 <button type="button" class="close" data-dismiss="alert">x</button>
-                <strong>Success! </strong> Your settings has been saved successfully.
+                <strong></strong>
             </div>
             <div class="field-group">
                 <button class="apply update_link_text_settings">
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    Apply
+                    <span></span>
                 </button>
             </div>
         </div>
-
-        <div class="side-content hide" id="general">
-            <h5>Default password</h5>
-            <div class="form-check">
-                <input class="form-check-input" name="general" type="radio" id="without_password" value="1" />
-                <label class="form-check-label" for="without_password">
-                    Without password
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" name="general" type="radio" id="with_password" value="2" />
-                <label class="form-check-label" for="with_password">
-                    With password
-                </label>
-                <span class="ast">*This field is required</span>
-                <input class="form-control" name="default_password" id="default_password" />
-            </div>
-            <br>
-            <h5>Default Expire Date</h5>
-            <div class="form-check">
-                <input class="form-check-input" name="general_expire" type="radio" id="without_expire" value="1" />
-                <label class="form-check-label" for="without_expire">
-                    Without expire date
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" name="general_expire" type="radio" id="with_expire" value="2" />
-                <label class="form-check-label" for="with_expire">
-                    With expire date
-                </label>
-                <span class="ast">*This field is required</span>
-                <input class="form-control" type="number" name="default_expire" id="default_expire" />
-            </div>
-            <br>
-
-
-            <h5>Download Link Format</h5>
-
-            <div class="h-text">
-                <h6>Link Text</h6><input class="form-control"  id="link_text" value="Download Link" />
-            </div>
-
-            <div class="h-text">
-                <h6>Link Setting</h6>
-                <select id="download_link" name="download_link">
-                    <option value="1" selected>Filename (Test.docx)</option>
-                    <option value="2" >Text (Download Link)</option>
-                    <option value="3" >Text : Filename (Download Link : Test.docx)</option>
-                    <option value="4" >Text : Url (Download Link : https://storage.luckcloud.de/f/abcdefg)</option>
-                </select>
-            </div>
-            <br>
-            <h5>Default Attachments Library Path</h5>
-            <div class="form-check">
-                <input class="form-check-input" name="general_attachment_path" type="radio" id="without_path" value="1" />
-                <label class="form-check-label" for="without_path">
-                    Without default Library&Path
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" name="general_attachment_path" type="radio" id="with_path" value="2" />
-                <label class="form-check-label" for="with_path">
-                    With default Library&Path
-                </label>
-                <div class="filebrowser_container1">
-                    <button class="btn btn-info" id="select_attachment_path">Select Path</button>
-                    <!-- <div class="loader"></div> -->
-                    <div id="browser1"></div>  
-                </div>
-                <div class="h-text">
-                    <h6>Default Library</h6>
-                    <span class="ast">*This field is required</span>
-                    <input class="form-control" disabled name="defaultLibraryname" id="defaultLibraryname" />                    
-                </div>
-                <div class="h-text">
-                    <h6>Default Path</h6>
-                    <span class="ast">*This field is required</span>
-                    <input class="form-control" disabled name="defaultPathname" id="defaultPathname" />
-                </div>
-                <div class="h-text repo_id">
-                    <h6>Repo ID</h6><input class="form-control" disabled name="repo_id" id="repo_id" />
-                </div>
-
-            </div>
-            <div class="alert alert-success" id="success-alert">
-                <button type="button" class="close" data-dismiss="alert">x</button>
-                <strong>Success! </strong> Your settings has been saved successfully.
-            </div>
-
-            <div class="form-group mt-5">
-                <button class="btn btn-success" id="update_general_options">
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    Apply
-                </button>
-            </div>
-        </div>
-        <div class="side-content hide" id="shares">
-            <h5>Set individual settings for every email</h5>
-            <div class="form-check">
-                <input class="form-check-input" name="shares" type="radio" id="always_default" value="always_default">
-                <label class="form-check-label" for="always_default">
-                    Always use default settings
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" name="shares" type="radio" id="ask_for_password" value="ask_for_password">
-                <label class="form-check-label" for="ask_for_password">
-                    Only ask for password
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" name="shares" type="radio" id="ask_every_time" value="ask_every_time">
-                <label class="form-check-label" for="ask_every_time">
-                    Ask every time
-                </label>
-            </div>
-            <div class="alert alert-success" id="success-alert">
-                <button type="button" class="close" data-dismiss="alert">x</button>
-                <strong>Success! </strong> Your settings has been saved successfully.
-            </div>
-
-            <div class="form-group mt-5">
-                <button class="btn btn-success" id="update_share_option">
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    Apply
-                </button>
-            </div>
-        </div>
-
-        
     </div>
 </body>
 

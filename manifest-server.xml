@@ -8,10 +8,10 @@
   <ProviderName>SmartDev</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="luckycloud">
-    <Override Locale="de-lu" Value="german luckycloud"/>
+    <Override Locale="de-lu" Value="luckycloud"/>
   </DisplayName>
-  <Description DefaultValue="Outlook addin to interact with luckycloud">
-    <Override Locale="de-lu" Value="german Outlook addin to interact with luckycloud"/>
+  <Description DefaultValue="luckycloud Outlook Plugin">
+    <Override Locale="de-lu" Value="luckycloud Outlook Plugin"/>
   </Description>
   <IconUrl DefaultValue="https://outlook.lc-testing.de/addin/assets/seafile-icon-64.png"/>
   <HighResolutionIconUrl DefaultValue="https://outlook.lc-testing.de/addin/assets/seafile-icon-128.png"/>

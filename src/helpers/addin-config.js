@@ -41,7 +41,7 @@ export function getDefaultPassword() {
 
 }
 
-export function setDefaultPassword(password = null, callback = function () {}) {
+export function setDefaultPassword(password = "", callback = function () {}) {
   Office.context.roamingSettings.set("default_password", encryptKey(password));
   Office.context.roamingSettings.saveAsync(callback);
 }
@@ -92,7 +92,7 @@ export function setShareOption(val = "", callback = function () {}) {
 
 export function getdownloadLinkOption() {
   const option = Office.context.roamingSettings.get("downloadlink_option");
-  if (!option || option === undefined) return 1;
+  if (!option || option === undefined) return "1";
   return option;
 }
 

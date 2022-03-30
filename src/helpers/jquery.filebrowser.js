@@ -7,12 +7,14 @@
     this.error = error;
   }
   $("div.toolbar ul.labels li.download").toggleClass("disabled", $("div.content li.selected").length < 1);
+  $("div.toolbar ul.labels li.selectDefaultPath").toggleClass("disabled", $("div.content li.selected").length !== 1 || $("div.content li.selected").hasClass("file"));
   $('div.global-container div.card-title input.search-box').on('keyup', function(){
     var value = $(this).val().toLowerCase();
     $('div.content li').filter(function(){
       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1 );
     });
   });
+  const {UIStrings} = require("../helpers/UIString.js");
   Uploader.prototype.process = function process(event, path) {
     var defered = $.Deferred();
     var self = this;
@@ -159,9 +161,10 @@
       toolbar: {
         // back: "back",
         // up: "up",
-        refresh: "refresh",
-        upload: "upload",
+        upload: "upload",        
         download: "download",
+        selectDefaultPath: "selectDefaultPath",
+        refresh: "refresh",
         grid : "grid",
         list : "list"
       },
@@ -338,7 +341,7 @@
     function click(e) {
       setTimeout(() => {
         $("div.toolbar ul.labels li.download").toggleClass("disabled", $("div.content li.selected").length < 1);
-        $("div.toolbar ul.labels li.select").toggleClass("disabled", $("div.content li.selected").length !== 1);
+        $("div.toolbar ul.labels li.selectDefaultPath").toggleClass("disabled", $("div.content li.selected").length !== 1 || $("div.content li.selected").hasClass("file"));
       }, 300);
 
       if (!$(e.target).closest("." + cls).length) {
@@ -875,7 +878,9 @@
           $('div.toolbar li.refresh').toggleClass("disabled");
           $('div.toolbar li.grid').toggleClass("disabled");
           $('div.toolbar li.list').toggleClass("disabled");
+          $("div.toolbar ul.labels li.selectDefaultPath").toggleClass("disabled");
           settings.refresh(path, function(){
+            console.log('refreshing from the settings')
             $content.addClass("hidden");
             var timer = $.Deferred();
             var callback = $.Deferred();
@@ -898,7 +903,7 @@
             $('div.toolbar li.refresh').toggleClass("disabled");
             $('div.toolbar li.grid').toggleClass("disabled");
             $('div.toolbar li.list').toggleClass("disabled");
-            
+            $("div.toolbar ul.labels li.selectDefaultPath").toggleClass("disabled", $("div.content li.selected").length !== 1 || $("div.content li.selected").hasClass("file"));
           });
 
         },
@@ -980,6 +985,9 @@
           //   jQuery(".loader").hide();
           //   console.log(error);
           // }
+        },
+        selectDefaultPath:function(){
+          settings.selectDefaultPath($('div.content li.selected'));
         },
         grid: function(){
           settings.view_style = "grid"
@@ -1180,6 +1188,15 @@
               if (!new_path.match(re) && new_path != settings.root) {
                 new_path += settings.separator;
               }
+
+              var myLanguage = Office.context.displayLanguage;
+              var UIText = UIStrings.getLocaleStrings(myLanguage, "filebrowser");
+              Object.keys(UIText).forEach(function(cssSelector){
+                  $(cssSelector).text(UIText[cssSelector]);              
+                });
+              console.log(UIText);
+
+
               $adress.val(new_path);
               settings.change.call(self);
               options.callback();
@@ -1196,6 +1213,7 @@
             $toolbar.find(".back").toggleClass("disabled", paths.length == 1);
             $toolbar.find(".upload").toggleClass("disabled", new_path == settings.root);
             $toolbar.find(".download").toggleClass("disabled", $("div.content li.selected").length < 1);
+            $("div.toolbar ul.labels li.selectDefaultPath").toggleClass("disabled", $("div.content li.selected").length !== 1 || $("div.content li.selected").hasClass("file"));
             path = new_path;
             // don't break old API. promise based and callback should both work
             var result = settings.dir(path, process);
@@ -1207,16 +1225,30 @@
             var run = false;
             $('div.toolbar div.adress-bar div.path-bar').empty();
             var folderArrr = path.split("/");
+            //If root path, then splice one item.
+            if (folderArrr.length == 2 && folderArrr[1] == "") {
+              folderArrr.splice(1, 1);
+            }
+            console.log(folderArrr);
             for ( var i = 0; i< folderArrr.length; i++ ) {
               if ( folderArrr[i] ) {
                 if ( i == folderArrr.length - 1 )
                   $('div.toolbar div.adress-bar div.path-bar').append('<div class="path-button active">' + folderArrr[i]  + '</div><span>></span>');
                 else 
                   $('div.toolbar div.adress-bar div.path-bar').append('<div class="path-button">' + folderArrr[i]  + '</div><span>></span>');
+              } else {
+                if ( folderArrr.length == 1) {
+                  $('div.toolbar div.adress-bar div.path-bar').append('<div class="path-button home active"> My Cloud </div><span>></span>');
+                } else {
+                  $('div.toolbar div.adress-bar div.path-bar').append('<div class="path-button home"> My Cloud </div><span>></span>');
+                }
               }
             }
             $('div.toolbar div.adress-bar div.path-bar div.path-button').on('click', function(){
               console.log('path button clicked');
+              if ( $(this).hasClass("home") ) {
+                self.show("/"); return;
+              }
               folderArrr = self.path().split("/");
               new_path = "";
               for (var i = 0; i< folderArrr.length; i++) {
@@ -1227,7 +1259,6 @@
               }
               self.show(new_path);
             });
-
           }
           return self;
         },

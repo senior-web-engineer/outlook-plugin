@@ -158,12 +158,12 @@ module.exports = async (env, options) => {
       new HtmlWebpackPlugin({
         filename: "login.html",
         template: "./src/settings/login.html",
-        chunks: ["polyfill", "login"],
+        chunks: ["polyfill", "login", ],
       }),
       new HtmlWebpackPlugin({
         filename: "uploadFile.html",
         template: "./src/uploadFile/uploadFile.html",
-        chunks: ["polyfill","filebrowser", "uploadFile",  ],
+        chunks: ["polyfill", "filebrowser",  "uploadFile", ],
       }),
       new HtmlWebpackPlugin({
         filename: "downLoadfile.html",
@@ -173,12 +173,12 @@ module.exports = async (env, options) => {
       new HtmlWebpackPlugin({
         filename: "settings.html",
         template: "./src/settings/settings.html",
-        chunks: ["polyfill", "filebrowser", "settings"],
+        chunks: ["polyfill", "filebrowser", "settings", ],
       }),
       new HtmlWebpackPlugin({
         filename: "selectDefaultPath.html",
         template: "./src/selectDefaultPath/selectDefaultPath.html",
-        chunks: ["polyfill", "filebrowser", "selectDefaultPath"],
+        chunks: ["polyfill", "filebrowser", "selectDefaultPath", ],
       }),
       
     ],

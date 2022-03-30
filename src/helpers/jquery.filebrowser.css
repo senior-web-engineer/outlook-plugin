@@ -1,7 +1,3 @@
-.browser-widget.hidden,
-.browser-widget .hidden {
-  visibility: hidden;
-}
 .browser-widget ul:not(.ui-menu) {
   list-style: none;
   margin: 0;
@@ -247,13 +243,10 @@
   background-position: -96px -192px;
 }
 .browser-widget ul:not(.ui-menu) li.download::before {
-  background: transparent url(assets/download-icon.png) no-repeat;
+  background-position: 0px -192px
 }
 .browser-widget div.toolbar  ul:not(.ui-menu) li.grid::before {
   background-position: -32px -192px;
-}
-.browser-widget .content ul:not(.ui-menu) .directory::before {
-  top: 27px !important;
 }
 .browser-widget div.content ul:not(.ui-menu) > li.grid {
   display: inline-block;
@@ -351,7 +344,7 @@ div.toolbar div.adress-bar div.path-bar div.path-button:hover{
 div.toolbar div.adress-bar div.path-bar div.path-button.active{
   color: #545454;
 }
-div.adress-bar input{
+div.adress-bar input, div.adress-bar button.home{
   display: none;
 }
 div.toolbar div.adress-bar div.path-bar{
@@ -425,4 +418,7 @@ div.global-container div.card-title input.search-box {
 }
 div.global-container div.card-title input.search-box:focus-visible{
   outline-width: 0px;
+}
+.browser-widget ul:not(.ui-menu) li.selectDefaultPath::before {
+  background-position: 0px -288px;
 }

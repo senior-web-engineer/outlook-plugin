@@ -7,6 +7,7 @@ const { getUploadLink, uploadFile, getToken } = require("../helpers/seafile-api"
 const { getConfig, setConfig , getdownloadLinkOption,
    retrieveToken, retriveSeafileEnv ,
     dataurltoFile, getDefaultAttachmentPath, getShareOption,
+    getEmailSetting,
     getLinkText, randomString
   } = require("../helpers/addin-config");
 
@@ -78,7 +79,7 @@ function loadDownloadDialog(event) {
   downloadEvent = event;
 
   var url = new URI("downLoadfile.html").absoluteTo(window.location).toString();
-  var dialogOptions = { width: 60, height: 40, displayInIframe: true };
+  var dialogOptions = { width: 60, height: 55, displayInIframe: true };
 
   Office.context.ui.displayDialogAsync(url, dialogOptions, function (result) {
     downloadDialog = result.value;
@@ -159,11 +160,11 @@ function receiveMessage(message) {
       message.filename = message.filename.substring(pos + 1);
     }
 
-    if (downloadLinkOption == 1) {
+    if (downloadLinkOption == "1") {
       text = `<div><a href=${message.downloadLink}>${message.filename}</a></br></div>`
-    } else if (downloadLinkOption == 2) {
+    } else if (downloadLinkOption == "2") {
       text = `<div><a href=${message.downloadLink}>${link_text}</a></br></div>`
-    } else if (downloadLinkOption == 3) {
+    } else if (downloadLinkOption == "3") {
       text = `<div><a href=${message.downloadLink}>${link_text} : ${message.filename}</a></br></div>`
     } else {
       text = `<div><a href=${message.downloadLink}>${link_text} : ${message.downloadLink}</a></br></div>`
@@ -172,14 +173,12 @@ function receiveMessage(message) {
     addTextToBody(text, "attach-icon-16");
     if (message.action == "close") dialogClosed();
   } else if (message && message.action == "uploadAttach" ) {
-
-
-	selectAttachFolderDialog.close();
-	selectAttachFolderDialog = null;
-	uploadAttachmentFiles(Office.context.mailbox.item, {
-		repo_id : message.repo_id,
-		defaultPathname : message.defaultPathname
-	});
+    selectAttachFolderDialog.close();
+    selectAttachFolderDialog = null;
+    uploadAttachmentFiles(Office.context.mailbox.item, {
+      repo_id : message.repo_id,
+      defaultPathname : message.defaultPathname
+    });
 
   }  else {
     dialogClosed();
@@ -290,20 +289,18 @@ function uploadAttachmentPage(event) {
     var item = Office.context.mailbox.item;
 
     const defaultAttachmentOption = getDefaultAttachmentPath();
-    const shareOption = getShareOption();
 
 	if (Office.context.requirements.isSetSupported('Mailbox', '1.8') && item.attachments.length > 0) {
 		// defaultAttachmentOption.repo_id = undefined;
       
-    	if (defaultAttachmentOption.repo_id && shareOption == "always_default")  {
+    	if (defaultAttachmentOption.repo_id && getEmailSetting("attachment_path") == "always_default")  {
 			  uploadAttachmentFiles(item, defaultAttachmentOption);
     	} else {
-
         var config = getConfig();
         if (config && config.seafile_env) {
           var url = new URI("selectDefaultPath.html").absoluteTo(window.location).toString();
-          var dialogOptions = { width: 60, height: 40, displayInIframe: true };
-          
+          var dialogOptions = { width: 50, height: 55, displayInIframe: true };
+
           Office.context.ui.displayDialogAsync(url, dialogOptions, function (result) {
             selectAttachFolderDialog = result.value;
           
@@ -313,14 +310,13 @@ function uploadAttachmentPage(event) {
         } else {
           login(event);
         }
-
       }
   }
 
   if (item.attachments.length == 0) {
     statusUpdate("attach-icon-16", "There is no attachment in this mail");
-	uploadAttachEvent.completed();
-	uploadAttachEvent = null;
+    uploadAttachEvent.completed();
+    uploadAttachEvent = null;
   }
 
 
