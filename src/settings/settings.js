@@ -40,7 +40,7 @@ Office.initialize = function (reason) {
 	jQuery(document).ready(function(){
 
 		var myLanguage = Office.context.displayLanguage;
-		console.log(myLanguage);
+		console.log('current language code' , myLanguage);
 		var UIText;
 		UIText = UIStrings.getLocaleStrings(myLanguage, "setting");
 		console.log(UIText);
@@ -59,7 +59,12 @@ Office.initialize = function (reason) {
 			$(this).siblings().removeClass('active');
 			$(this).addClass('active');
 		});
-
+		jQuery('div.custom_with_expire').click(function(){
+			// $('div.custom_with_expire input').focus();
+			// if ( $('div.custom_with_expire input').val() ) {
+			// 	$('div.custom_with_expire span.expire-days').show();
+			// } else $('div.custom_with_expire span.expire-days').hide();
+		});
 
 
 		$(".alert").hide();
@@ -192,6 +197,7 @@ Office.initialize = function (reason) {
 		}
 		jQuery('div.custom_without_path').click(function(){
 			$('.custom_with_path input').val("");
+			$('div.filebrowser_container').hide();
 		});
 
 		jQuery("button.update_attachment_path_settings").on("click", function(){
@@ -226,12 +232,27 @@ Office.initialize = function (reason) {
 			});
 		});
 
-		$('#select_attachment_path, div.custom_with_path').click(function(){ 
+		$('div.custom_green_white_select>div div.eye').click(function(){
+			var $password_input = $('#password_content div.custom_green_white_select>div input');
+			var type = $password_input.attr("type");
+			if (type == "password") {
+				$password_input.attr("type", "text");
+			} else {
+				$password_input.attr("type", "password");
+			}
+		});
+		$('div.custom_with_path').click(function(){ 
 			if ($('.ui-dialog').length == 0) {
-				var browse = jQuery("#browser").dialog();
-				$('.ui-dialog').appendTo('.filebrowser_container');
+				var browse = jQuery("#browser").dialog({
+					appendTo: ".filebrowser_container",					
+				});
+				// $('.ui-dialog').appendTo('.filebrowser_container');
+				// $("html, body").animate({ scrollTop: 0 }, "slow");
+				// $(this).animate({ scrollTop: 200 }, "slow");
 			} else {
 				$('.ui-dialog').show();
+				$('.filebrowser_container').show();
+				return;
 			}
 
 		  getSeafileLibraries(token, env, function (repos) {
@@ -252,7 +273,7 @@ Office.initialize = function (reason) {
 		  });
   
 		  function initRepoMap(repo, detail, path, currentEnv) {
-			console.log("here is the detail of repo or directory", detail);
+			if (!Array.isArray(detail)) return;
 			for (let item of detail) {
 				propertymap["/" + repo["name"] + path + item["name"]] = {
 					owner : repo["owner"],

@@ -23,10 +23,7 @@ const {
 
 
 Office.initialize = function (reason) {
-  var token = retrieveToken();
-  var env = retriveSeafileEnv();
-  var username = retriveUserName();
-
+  var token = retrieveToken();  var env = retriveSeafileEnv();  var username = retriveUserName();
   jQuery(document).ready(function () {
     var dirmap = {};
     var propertymap = {};
@@ -43,6 +40,25 @@ Office.initialize = function (reason) {
       width: 600,
       height: 480,
     });
+
+    uploadFilebtn.onchange = function (e) {
+      if (uploadFilebtn.files.length > 0) {
+        $(".loader").show();
+        const selectedFile = uploadFilebtn.files[0];
+        path = browse.path() + "/";
+        repo = getRepofrompath(path);
+        const relativePath = getRelativepath(path);
+
+        getUploadLink(token, env, repo, relativePath, function (uploadPath) {
+          uploadFile(token, env, uploadPath, relativePath, selectedFile, function (response) {
+            $(".loader").hide();
+            path = browse.join(browse.path(), selectedFile.name);
+            browse.create("file", path);
+          });
+        });
+      }
+    };
+    
     window.browse = browse;
     getSeafileLibraries(token, env, function (repos) {
       window.globalrepos = repos;
@@ -64,7 +80,7 @@ Office.initialize = function (reason) {
     });
 
     function initRepoMap(repo, detail, path, currentEnv) {
-
+      if (!Array.isArray(detail)) return;
       for (let item of detail) {
         propertymap["/" + repo["name"] + path + item["name"]] = {
           owner : repo["owner"],
@@ -123,6 +139,7 @@ Office.initialize = function (reason) {
 
     function getRelativepath(path) {
       path = path.substring(1);
+      if ( path.indexOf("/") < 0 ) return "/";
       return path.substring(path.indexOf("/"));
     }
 
@@ -137,11 +154,14 @@ Office.initialize = function (reason) {
 
       function performDownload($li, dblclick) {
 		    let  alertcnt = 0;
+        var alertmessage = [];
         for (let i = 0; i< $li.length; i++) {			
 		      const $element = $($li[i]);
 		      // if ($element.hasClass("directory")) continue;
 
-          filename = $element.find("span.name").text();
+          var filename = $element.find("span.name").text();
+          var filetype = $element.hasClass("directory") ? "d" : "f";
+          var linkname = `${filename}${filetype == 'd' ? "/" : ""}`;
           path = browse.join(browse.path(), filename);
           repo = getRepofrompath(path);
   
@@ -154,57 +174,51 @@ Office.initialize = function (reason) {
           }
 
           console.log('here is the email setting', emailsetting);
-          var password = "", expire_days = "";
-          if ( getEmailSetting("password") == "ask_every_time" || !getDefaultPassword()) {
+          var password = getDefaultPassword(), expire_days = getDefaultExpireDate();
+
+          if (password &&  getEmailSetting("password") == "ask_every_time") {
             password = window.prompt("Please input password");
             if (!password) return;
-            if (getEmailSetting("expire_date") == "ask_every_time" || !getDefaultExpireDate()) {
-              expire_days = parseInt(window.prompt("Please input expire days", "10"));
-              if (isNaN(expire_days)) return;
-              if (expire_days <= 0) expire_days = null;
-
-            } else {
-              expire_days = getDefaultExpireDate();
-            }
-          } else {
-            password = getDefaultPassword();
-            if (getEmailSetting("expire_date") == "ask_every_time" || !getDefaultExpireDate()) {
-              expire_days = parseInt(window.prompt("Please input expire days", "10"));
-              if (isNaN(expire_days)) return;
-              if (expire_days <= 0) expire_days = null;
-
-            } else {
-              expire_days = getDefaultExpireDate();
-            }
           }
-
-          // const shareOption = getShareOption();
-          // if (shareOption === "always_default") {
-          //   password = getDefaultPassword();
-          //   expire_days = getDefaultExpireDate();
-          // } else if (shareOption === "ask_for_password") {
-          //   password = window.prompt("Please input password");
-          //   if (!password) return;
-          //   expire_days = getDefaultExpireDate();
-          // } else {
-          //   password = window.prompt("Please input password");
-          //   if (!password) return;
-          //   expire_days = parseInt(window.prompt("Please input expire days", "10"));
-          //   if (isNaN(expire_days)) return;
-          //   if (expire_days <= 0) expire_days = null;
-          // }
-  
+          if (expire_days && getEmailSetting("expire_date") == "ask_every_time") {
+            expire_days = parseInt(window.prompt("Please input expire days", "10"));
+            if (isNaN(expire_days)) return;
+            if (expire_days <= 0) expire_days = null;
+          }
+ 
           $(".loader").show();
           getSharedLink(token, env, repo, relativePath, function (res) {
+            currentPath = repo.name + relativePath;
+
             if (res.error_msg || res.length <= 0) {
               advancedDownloadFile(token, env, repo, relativePath, password, expire_days, function (response) {
                 $(".loader").hide();
                 if (response.error_msg) {
-                  window.alert(response.error_msg);
+                  console.log(response);
+                  var errmsg = response.error_msg;
+                  if ( errmsg.startsWith("Share link") ) {
+                      var share_id = errmsg.split(" ")[2];
+                      var message = {
+                        downloadLink: `${env}/${filetype}/${share_id}`,
+                        filename : linkname
+                      }
+                      alertmessage.push(`${filename} - A link already exists for this file, existing link has been inserted`);
+                      if (dblclick) message.action = "close";
+                      Office.context.ui.messageParent(
+                        JSON.stringify(message)
+                      );
+
+                  } else {
+                    alertmessage.push(`${filename} - ${response.error_msg}`);                    
+                  }
+                    
                 } else {
+                  alertmessage.push(`${filename} - A link has been inserted`);
+                  if (relativePath == "/" ) currentPath = repo.name;
+
                   var message = {
                     downloadLink: response.link,
-                    filename : relativePath
+                    filename : linkname
                   }
 					        if (dblclick) message.action = "close";
                   Office.context.ui.messageParent(
@@ -214,25 +228,31 @@ Office.initialize = function (reason) {
 
               });
             } else {
-
+              alertmessage.push(`${filename} - A link already exists for this file, existing link has been inserted`);
+              if (relativePath == "/" ) currentPath = repo.name;
               var message = {
                 downloadLink: res[0].link,
-                filename : relativePath
+                filename : linkname
               }
 				      if (dblclick) message.action = "close";
               Office.context.ui.messageParent(
                 JSON.stringify(message)
               );
               $(".loader").hide();
-              if (alertcnt == 0) {				  
-              window.alert(
-                "A download link has already been created for this file. The existing download link has been inserted."
-              );
-              alertcnt++;
-              }		  
+  
             }
           });
 
+        }
+
+        const myInterval = setInterval(checkdownloadCompleted, 500);
+        function checkdownloadCompleted(){
+          if (alertmessage.length == $li.length && !dblclick) {
+            var message = "";
+            alertmessage.forEach((msg)=>{ message = message + msg + "\n"; });
+            window.alert(message);
+            clearInterval(myInterval);
+          } 
         }
       }
       browse.browse({

@@ -60,12 +60,12 @@ if (isset($data) && isset($data['method'])) {
         curl_close($curl);
         echo $response;
 
-        $response = json_encode($response);
+        // $response = json_encode($response);
 
-        $content .= "\nToken is $token\n";
-        $content .= $response + "\n";
+        // $content .= "\nToken is $token\n";
+        // $content .= $response + "\n";
 
-        file_put_contents("/var/www/html/debug.log", $content, FILE_APPEND);
+        // file_put_contents("/var/www/html/debug.log", $content, FILE_APPEND);
     }
 }
 function triggerCurl($data)
@@ -83,7 +83,7 @@ function triggerCurl($data)
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
+        CURLOPT_TIMEOUT => 30,
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => $data['method'],
@@ -102,12 +102,12 @@ function triggerCurl($data)
     curl_close($curl);
     echo $response;
 
-    global $content;
-    $headers = json_encode($headers);
-    $response = json_encode($response);
+    // global $content;
+    // $headers = json_encode($headers);
+    // $response = json_encode($response);
 
-    $content .= "\nHeaders are $headers\n";
-    $content .= $response + "\n";
+    // $content .= "\nHeaders are $headers\n";
+    // $content .= $response + "\n";
 
-    file_put_contents("/var/www/html/debug.log", $content, FILE_APPEND);
+    // file_put_contents("/var/www/html/debug.log", $content, FILE_APPEND);
 }

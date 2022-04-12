@@ -67,7 +67,7 @@ const {UIStrings} = require("../helpers/UIString.js");
                 y[k].removeAttribute("class");
                 }
                 this.setAttribute("class", "same-as-selected");
-                membershipChange(this.innerHTML);
+                membershipChange(i);
                 break;
               }
             }
@@ -113,16 +113,26 @@ const {UIStrings} = require("../helpers/UIString.js");
       then close all select boxes:*/
       document.addEventListener("click", closeAllSelect);
   
-      function membershipChange(membership){
-        if (membership == 'Home') {
-          $('div.seafile_env').hide();
-          $('#seafile_env').val("https://sync.luckycloud.de");
-        } else if (membership == 'Business') {
-          $('div.seafile_env').hide();
-          $('#seafile_env').val("https://storage.luckycloud.de");
-        } else if (membership == "Enterprise") {
-          $('div.seafile_env').show();
-          $('#seafile_env').val("");
+      function membershipChange(selectedIndex){
+        switch (selectedIndex)
+        {
+          case 1:
+            $('div.seafile_env').hide();
+            
+            $('#seafile_env').val("https://sync.luckycloud.de");
+            break;
+          case 2:
+            $('div.seafile_env').hide();
+            $('#seafile_env').val("https://storage.luckycloud.de");
+            break;
+          case 3:
+            $('div.seafile_env').show();
+            $('#seafile_env').val("");
+            break;
+          default:
+            $('div.seafile_env').hide();
+            $('#seafile_env').val("https://storage.luckycloud.de");
+            break;
         }
       }
 
@@ -196,28 +206,23 @@ const {UIStrings} = require("../helpers/UIString.js");
         btn.html(
           `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Wait a moment`
         );
+        const env = $("#seafile_env").val();
+        const username = $("#username").val();
+        const password = $("#password").val();
         getToken($("#seafile_env").val(), $("#username").val(), $("#password").val(), function (config, error) {
           if (error) {
             console.log("error");
             btn.prop("disabled", false);
             $(".alert").hide();
             $(".alert-danger").show();
-            btn.html(
-            `<button type="button" class="" id="seafile_loginbutton">
-              <i class="login-background"></i>
-              Log in
-            </button>`);
+            btn.html(`<i class="login-background"></i>Log in`);
 
           } else {
             $(".alert").hide();
             $(".alert-success").show();
             Office.context.ui.messageParent(JSON.stringify(config));
             btn.prop("disabled", false);
-            btn.html(
-              `<button type="button" class="" id="seafile_loginbutton">
-                <i class="login-background"></i>
-                Log in
-              </button>`);
+            btn.html(`<i class="login-background"></i>Log in`);
           }
         });
       });

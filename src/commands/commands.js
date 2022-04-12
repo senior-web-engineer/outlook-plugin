@@ -14,7 +14,7 @@ const { getConfig, setConfig , getdownloadLinkOption,
 /* global global, Office, self, window */
 
 var config;
-var loginEvent, downloadEvent, uploadEvent, settingsEvent, uploadAttachEvent;
+var loginEvent, logoutEvent, downloadEvent, uploadEvent, settingsEvent, uploadAttachEvent;
 var loginDialog, downloadDialog, uploadFileDialog, settingsDialog, selectAttachFolderDialog;
 
 Office.onReady(() => {
@@ -48,7 +48,7 @@ function login(event) {
   loginEvent = event;
 
   var url = new URI("login.html").absoluteTo(window.location).toString();
-  var dialogOptions = { width: 25, height: 50, displayInIframe: true };
+  var dialogOptions = { width: 25, height: 60, displayInIframe: true };
 
   Office.context.ui.displayDialogAsync(url, dialogOptions, function (result) {
     loginDialog = result.value;
@@ -58,6 +58,23 @@ function login(event) {
   });
 }
 
+function logout(event){
+  logoutEvent = event;
+  setConfig(
+    {
+      seafile_env: "",
+      seafile_username: "",
+      seafile_password: "",
+      seafile_token: "",
+    }, function (result) {
+      if (logoutEvent) {
+        logoutEvent.completed();
+        logoutEvent = null;
+      }
+  });
+
+
+}
 function loadUploadFilePage(event) {
   uploadEvent = event;
 
@@ -155,10 +172,10 @@ function receiveMessage(message) {
     let link_text = getLinkText();
     let text = '';
 
-    while( message.filename.indexOf("/") >=0 ) {
-      let pos = message.filename.indexOf("/");
-      message.filename = message.filename.substring(pos + 1);
-    }
+    // while( message.filename.indexOf("/") >=0 ) {
+    //   let pos = message.filename.indexOf("/");
+    //   message.filename = message.filename.substring(pos + 1);
+    // }
 
     if (downloadLinkOption == "1") {
       text = `<div><a href=${message.downloadLink}>${message.filename}</a></br></div>`
@@ -265,7 +282,7 @@ function loadSettingsPage(event) {
   settingsEvent = event;
 
   var url = new URI("settings.html").absoluteTo(window.location).toString();
-  var dialogOptions = { width: 60, height: 50, displayInIframe: true };
+  var dialogOptions = { width: 48, height: 60, displayInIframe: true };
 
   Office.context.ui.displayDialogAsync(url, dialogOptions, function (result) {
     settingsDialog = result.value;
@@ -332,7 +349,10 @@ function dialogClosed(event) {
     loginEvent.completed();
     loginEvent = null;
   }
-
+  if (logoutEvent) {
+    logoutEvent.completed();
+    logoutEvent = null;
+  }
   if (uploadFileDialog) {
     uploadFileDialog.close();
     uploadFileDialog = null;
@@ -386,8 +406,6 @@ g.uploadfileFromLocal = uploadfileFromLocal;
 g.downLoadfromServer = downLoadfromServer;
 g.login = login;
 g.settingsPage = settingsPage;
+g.logout = logout;
 
 g.uploadAttachmentPage = uploadAttachmentPage;
-
-
-

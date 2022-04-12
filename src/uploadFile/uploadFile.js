@@ -64,6 +64,7 @@ Office.initialize = function (reason) {
 
     function initRepoMap(repo, detail, path, currentEnv) {
       // Adds new direcotry/file to the currentEnv
+      if (!Array.isArray(detail)) return;
       for (let item of detail) {
         propertymap["/" + repo["name"] + path + item["name"]] = {
           owner : repo["owner"],

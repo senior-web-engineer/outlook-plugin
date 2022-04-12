@@ -31,6 +31,6 @@
     left: 0px !important;
   }
 
-  div.toolbar li.upload, div.toolbar li.selectDefaultPath{
+  div.toolbar li.selectDefaultPath{
     display: none;
   }

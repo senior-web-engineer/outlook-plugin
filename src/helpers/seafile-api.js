@@ -2,7 +2,7 @@ export function getToken(env, user, password, callback) {
   $.ajax({
     url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
     method: "POST",
-    timeout: 0,
+    timeout: 10000,
     headers: {
       "Content-Type": "application/json",
     },
@@ -19,6 +19,7 @@ export function getToken(env, user, password, callback) {
     }),
   })
     .done(function (response) {
+      console.log('here is the response while trying login', response);
       if (response.token) {
         callback({
           seafile_env: env,
@@ -26,6 +27,8 @@ export function getToken(env, user, password, callback) {
           seafile_password: password,
           seafile_token: response.token,
         });
+      } else {
+        callback(null, response);  
       }
     })
     .fail(function (error) {
@@ -208,6 +211,17 @@ export function advancedDownloadFile(
   expire_days = null,
   callback = function () {}
 ) {
+
+  var body = {
+    repo_id: repo.id,
+    path: path,
+    permissions: {
+      can_download: true,
+    },
+  }
+  if (password) body['password'] = password;
+  if (expire_days) body['expire_days'] = expire_days;
+  
   var settings = {
     url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
     method: "POST",
@@ -223,15 +237,7 @@ export function advancedDownloadFile(
         Accept: "application/json; charset=utf-8; indent=4",
         "Content-Type": "application/json",
       },
-      body: {
-        repo_id: repo.id,
-        path: path,
-        password,
-        expire_days,
-        permissions: {
-          can_download: true,
-        },
-      },
+      body: body,
     }),
   };
 
@@ -243,6 +249,9 @@ export function advancedDownloadFile(
 }
 
 export function getSharedLink(token, env, repo, path, callback) {
+
+  var url = encodeURI(env + `/api/v2.1/share-links/?repo_id=${repo["id"]}&path=${path}`);
+
   var settings = {
     url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
     method: "POST",
@@ -252,14 +261,15 @@ export function getSharedLink(token, env, repo, path, callback) {
     },
     data: JSON.stringify({
       method: "GET",
-      url: encodeURI(env + `/api/v2.1/share-links/?repo_id=${repo["id"]}&path=${encodeURIComponent(path)}`),
+      // url: encodeURI(env + `/api/v2.1/share-links/?repo_id=${repo["id"]}&path=${encodeURIComponent(path)}`),
+      url: encodeURI(env + `/api/v2.1/share-links/?repo_id=${repo["id"]}&path=${path}`),
       headers: {
         Authorization: "Token " + token,
         Accept: "application/json",
       },
     }),
   };
-
+  console.log('getSharedLink ', url);
   $.ajax(settings)
     .done(function (response) {
       if (callback) callback(response);
@@ -268,4 +278,5 @@ export function getSharedLink(token, env, repo, path, callback) {
       console.log('error while getShareLink')
       if (callback) callback([]);
     });
+    
 }

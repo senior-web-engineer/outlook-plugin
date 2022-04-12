@@ -404,21 +404,33 @@ div.content div.header>span:hover, div.content div.header>span.active{
 div.global-container div.card-title{
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: start;
   padding: 20px 0px;
+}
+div.global-container div.card-title div.logo-image{
+  padding-left: 30px;
+  width: 50%;
 }
 div.global-container div.card-title input.search-box {
   background-color: #F1F3F4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 13px;
+  padding-left: 20px;
   border-radius: 5px;
   border: none;
   height: 35px;
   width: 30%;
-  padding: 5px 20px;
-  font-size: 18px;
+  padding: 5px 35px;
+  font-size: 15px;
 }
 div.global-container div.card-title input.search-box:focus-visible{
   outline-width: 0px;
 }
 .browser-widget ul:not(.ui-menu) li.selectDefaultPath::before {
   background-position: 0px -288px;
+}
+
+div.logo-image img:hover{
+  cursor: pointer;
 }

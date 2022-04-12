@@ -5,7 +5,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const urlDev = "https://localhost:3000/";
-const urlProd = "https://www.contoso.com/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
+const urlProd = "https://outlook.lc-testing.de/addin/"; // CHANGE THIS TO YOUR PRODUCTION DEPLOYMENT LOCATION
 
 async function getHttpsOptions() {
   const httpsOptions = await devCerts.getHttpsServerOptions();
@@ -15,7 +15,7 @@ async function getHttpsOptions() {
 module.exports = async (env, options) => {
   const dev = options.mode === "development";
   const buildType = dev ? "dev" : "prod";
-  const config = {
+  const config = {    
     devtool: "source-map",
     entry: {
       polyfill: ["core-js/stable", "regenerator-runtime/runtime"],
@@ -34,6 +34,9 @@ module.exports = async (env, options) => {
     },
     resolve: {
       extensions: [".html", ".js"],
+      fallback: {
+        "crypto": require.resolve("crypto-browserify"),
+      }
     },
     module: {
       rules: [
@@ -83,6 +86,10 @@ module.exports = async (env, options) => {
           },
           {
             from: "assets/login-icon-*",
+            to: "assets/[name][ext][query]",
+          },
+          {
+            from: "assets/logout-icon-*",
             to: "assets/[name][ext][query]",
           },
           {

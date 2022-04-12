@@ -44,9 +44,9 @@
      inkscape:window-height="1015"
      id="namedview222"
      showgrid="true"
-     inkscape:zoom="3.3339844"
-     inkscape:cx="42.591681"
-     inkscape:cy="216.25776"
+     inkscape:zoom="4.714966"
+     inkscape:cx="13.78589"
+     inkscape:cy="201.91026"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -109,7 +109,7 @@
        inkscape:locked="false"
        inkscape:color="rgb(0,0,255)" />
     <sodipodi:guide
-       position="0,188"
+       position="0,192"
        orientation="0,1"
        id="guide285"
        inkscape:label=""
@@ -187,6 +187,17 @@
          width="25.25"
          data-name="Rectangle 2135"
          id="rect-11" />
+    </clipPath>
+    <clipPath
+       id="clip-path">
+      <rect
+         height="13"
+         width="18.385"
+         data-name="Rectangle 2127"
+         id="Rectangle_2127"
+         x="0"
+         y="0"
+         style="fill:#ffffff" />
     </clipPath>
   </defs>
   <g
@@ -267,7 +278,7 @@
   </g>
   <g
      id="g2536"
-     transform="translate(5.0154,2.660519)">
+     transform="matrix(1,0,0,1.0666667,5.0154,-10.495446)">
     <g
        id="g2252">
       <g
@@ -322,7 +333,7 @@
   </g>
   <g
      id="g2371"
-     transform="translate(-1.81287,-5.44629)">
+     transform="translate(4.18713,2.55371)">
     <g
        id="g-21"
        data-name="Gruppe 601"
@@ -386,7 +397,7 @@
   <g
      id="g-22"
      data-name="Gruppe 599"
-     transform="translate(99.994992,200)">
+     transform="matrix(1.0004335,0,0,0.97070926,99.99499,198)">
     <g
        id="g-23"
        data-name="Gruppe 587"
@@ -509,7 +520,7 @@
   </g>
   <g
      id="g2174"
-     transform="translate(-2.5063779,6.157)">
+     transform="translate(-2.5063779,-3.843)">
     <path
        id="path-77"
        data-name="Path 739"
@@ -1212,4 +1223,84 @@
      height="15.15037"
      width="19.312763"
      transform="matrix(0.99899387,-0.04484704,0.04664359,0.9989116,0,0)" />
+  <g
+     id="g2371-3"
+     transform="translate(-33.81287,92.55371)">
+    <g
+       id="g-21-6"
+       data-name="Gruppe 601"
+       transform="translate(-941.18713,-58.04671)">
+      <circle
+         id="circle-1-7"
+         data-name="Ellipse 1"
+         cx="1"
+         cy="1"
+         r="1"
+         transform="translate(1007,255.493)"
+         style="fill:#ffffff" />
+      <circle
+         id="circle-2-5"
+         data-name="Ellipse 2"
+         cx="1"
+         cy="1"
+         r="1"
+         transform="translate(1007,262.493)"
+         style="fill:#ffffff" />
+      <circle
+         id="circle-3-3"
+         data-name="Ellipse 3"
+         cx="1"
+         cy="1"
+         r="1"
+         transform="translate(1007,269.493)"
+         style="fill:#ffffff" />
+      <rect
+         id="rect-7-5"
+         data-name="Rechteck 2169"
+         width="16"
+         height="2"
+         rx="1"
+         transform="translate(1011,255.493)"
+         style="fill:#ffffff"
+         x="0"
+         y="0" />
+      <rect
+         id="rect-8-6"
+         data-name="Rechteck 2170"
+         width="16"
+         height="2"
+         rx="1"
+         transform="translate(1011,262.493)"
+         style="fill:#ffffff"
+         x="0"
+         y="0" />
+      <rect
+         id="rect-9-2"
+         data-name="Rechteck 2171"
+         width="16"
+         height="2"
+         rx="1"
+         transform="translate(1011,269.493)"
+         style="fill:#ffffff"
+         x="0"
+         y="0" />
+    </g>
+  </g>
+  <path
+     fill="#555555"
+     d="m 83.076922,300.76922 q 0,-1.77883 -1.264422,-3.04326 -1.264423,-1.26443 -3.043269,-1.26443 -1.778845,0 -3.043269,1.26443 -1.264423,1.26443 -1.264423,3.04326 0,1.77885 1.264423,3.04328 1.264424,1.26443 3.043269,1.26443 1.778846,0 3.043269,-1.26443 1.264422,-1.26443 1.264422,-3.04328 z M 88,308.76923 q 0,0.5 -0.36538,0.86539 Q 87.26923,310 86.76923,310 86.25,310 85.90385,309.63462 l -3.298081,-3.28846 q -1.721153,1.1923 -3.836538,1.1923 -1.375,0 -2.629808,-0.53365 -1.254807,-0.53366 -2.16346,-1.44231 -0.908655,-0.90866 -1.442309,-2.16346 Q 72,302.14423 72,300.76922 q 0,-1.37499 0.533654,-2.6298 0.533654,-1.25481 1.442309,-2.16346 0.908653,-0.90865 2.16346,-1.44231 Q 77.394231,294 78.769231,294 q 1.375,0 2.629807,0.53365 1.254808,0.53366 2.163461,1.44231 0.908651,0.90865 1.442311,2.16346 0.53365,1.25481 0.53365,2.6298 0,2.11539 -1.19231,3.83655 l 3.29808,3.29807 Q 88,308.25961 88,308.76923 Z"
+     id="path221-3"
+     style="stroke-width:0.00961539" />
+  <path
+     d="m 112.559,299.346 1.739,-1.739 a 9.518,9.518 0 0 0 -1.49,-0.125 c -3.72,0 -7.033,2.156 -9.193,5.516 a 13.422,13.422 0 0 0 2.452,2.841 l 3.089,-3.086 a 3.656,3.656 0 0 1 3.4,-3.4"
+     data-name="Path 654"
+     id="Path_654"
+     inkscape:connector-curvature="0"
+     style="fill:#ffffff" />
+  <path
+     d="m 118.054,299.05 1.253,-1.253 -1.3,-1.3 -11.7,11.7 1.3,1.3 1.681,-1.681 a 9.563,9.563 0 0 0 3.519,0.7 c 3.72,0 7.033,-2.156 9.193,-5.516 a 12.672,12.672 0 0 0 -3.946,-3.947 m -5.246,7.625 a 3.607,3.607 0 0 1 -1.862,-0.516 l 1.1,-1.1 a 2.131,2.131 0 0 0 0.758,0.149 2.206,2.206 0 0 0 2.21,-2.214 2.131,2.131 0 0 0 -0.149,-0.758 l 1.1,-1.1 a 3.607,3.607 0 0 1 0.516,1.862 3.677,3.677 0 0 1 -3.677,3.677"
+     data-name="Path 655"
+     id="Path_655"
+     inkscape:connector-curvature="0"
+     style="fill:#ffffff" />
 </svg>

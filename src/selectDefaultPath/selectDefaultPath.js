@@ -58,7 +58,7 @@ const {
       });
   
       function initRepoMap(repo, detail, path, currentEnv) {
-        console.log("here is the detail of repo or directory", detail);
+        if (!Array.isArray(detail)) return;
         for (let item of detail) {
           if (item.type == "dir") {
             currentEnv[item["name"]] = {};

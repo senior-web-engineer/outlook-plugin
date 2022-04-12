@@ -8,10 +8,10 @@
   <ProviderName>SmartDev</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="luckycloud">
-    <Override Locale="de-lu" Value="german luckycloud"/>
+    <Override Locale="de-lu" Value="luckycloud"/>
   </DisplayName>
-  <Description DefaultValue="Outlook addin to interact with luckycloud">
-    <Override Locale="de-lu" Value="german Outlook addin to interact with luckycloud"/>
+  <Description DefaultValue="luckycloud Outlook Plugin">
+    <Override Locale="de-lu" Value="luckycloud Outlook Plugin"/>
   </Description>
   <IconUrl DefaultValue="https://localhost:3000/assets/seafile-icon-64.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/seafile-icon-128.png"/>
@@ -102,6 +102,22 @@
                     <bt:Image size="80" resid="seafile-icon-80x80"/>
                   </Icon>
                   <Items>
+                    <Item id="SettingsButton">
+                      <Label resid="menuItem3ReadLabel" />
+                      <Supertip>
+                        <Title resid="menuItem3ReadLabel" />
+                        <Description resid="menuItem3ReadSupertipDescription" />
+                      </Supertip>
+                      <Icon>
+                        <bt:Image size="16" resid="setting-icon-16x16" />
+                        <bt:Image size="32" resid="setting-icon-32x32" />
+                        <bt:Image size="80" resid="setting-icon-80x80" />
+                      </Icon>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>settingsPage</FunctionName>
+                      </Action>
+                    </Item>
+
                     <Item id="LoginButton">
                       <Label resid="menuItem1ReadLabel" />
                       <Supertip>
@@ -132,21 +148,24 @@
                         <FunctionName>uploadfileFromLocal</FunctionName>
                       </Action>
                     </Item> -->
-                    <Item id="SettingsButton">
-                      <Label resid="menuItem3ReadLabel" />
+
+
+                    <Item id="LogoutButton">
+                      <Label resid="menuItem4ReadLabel" />
                       <Supertip>
-                        <Title resid="menuItem3ReadLabel" />
-                        <Description resid="menuItem3ReadSupertipDescription" />
+                        <Title resid="menuItem4ReadLabel" />
+                        <Description resid="menuItem4ReadSupertipDescription" />
                       </Supertip>
                       <Icon>
-                        <bt:Image size="16" resid="setting-icon-16x16" />
-                        <bt:Image size="32" resid="setting-icon-32x32" />
-                        <bt:Image size="80" resid="setting-icon-80x80" />
+                        <bt:Image size="16" resid="logout-icon-16x16" />
+                        <bt:Image size="32" resid="logout-icon-32x32" />
+                        <bt:Image size="80" resid="logout-icon-80x80" />
                       </Icon>
                       <Action xsi:type="ExecuteFunction">
-                        <FunctionName>settingsPage</FunctionName>
+                        <FunctionName>logout</FunctionName>
                       </Action>
                     </Item>
+                    
                   </Items>
                   <!-- <Action xsi:type="ShowTaskpane">
                     <SourceLocation resid="Taskpane.Url"/>
@@ -186,6 +205,22 @@
                     <bt:Image size="80" resid="seafile-icon-80x80"/>
                   </Icon>
                   <Items>
+                    <Item id="SettingsButton_compose">
+                      <Label resid="menuItem3ReadLabel" />
+                      <Supertip>
+                        <Title resid="menuItem3ReadLabel" />
+                        <Description resid="menuItem3ReadSupertipDescription" />
+                      </Supertip>
+                      <Icon>
+                        <bt:Image size="16" resid="setting-icon-16x16" />
+                        <bt:Image size="32" resid="setting-icon-32x32" />
+                        <bt:Image size="80" resid="setting-icon-80x80" />
+                      </Icon>
+                      <Action xsi:type="ExecuteFunction">
+                        <FunctionName>settingsPage</FunctionName>
+                      </Action>
+                    </Item>
+                    
                     <Item id="LoginButton_compose">
                       <Label resid="menuItem1ReadLabel" />
                       <Supertip>
@@ -216,19 +251,20 @@
                         <FunctionName>Attach</FunctionName>
                       </Action>
                     </Item> -->
-                    <Item id="SettingsButton_compose">
-                      <Label resid="menuItem3ReadLabel" />
+
+                    <Item id="LogoutButton_compose">
+                      <Label resid="menuItem4ReadLabel" />
                       <Supertip>
-                        <Title resid="menuItem3ReadLabel" />
-                        <Description resid="menuItem3ReadSupertipDescription" />
+                        <Title resid="menuItem4ReadLabel" />
+                        <Description resid="menuItem4ReadSupertipDescription" />
                       </Supertip>
                       <Icon>
-                        <bt:Image size="16" resid="setting-icon-16x16" />
-                        <bt:Image size="32" resid="setting-icon-32x32" />
-                        <bt:Image size="80" resid="setting-icon-80x80" />
+                        <bt:Image size="16" resid="logout-icon-16x16" />
+                        <bt:Image size="32" resid="logout-icon-32x32" />
+                        <bt:Image size="80" resid="logout-icon-80x80" />
                       </Icon>
                       <Action xsi:type="ExecuteFunction">
-                        <FunctionName>settingsPage</FunctionName>
+                        <FunctionName>logout</FunctionName>
                       </Action>
                     </Item>
                   </Items>
@@ -258,6 +294,9 @@
         <bt:Image id="login-icon-16x16" DefaultValue="https://localhost:3000/assets/login-icon-16.png"/>
         <bt:Image id="login-icon-32x32" DefaultValue="https://localhost:3000/assets/login-icon-32.png"/>
         <bt:Image id="login-icon-80x80" DefaultValue="https://localhost:3000/assets/login-icon-80.png"/>
+        <bt:Image id="logout-icon-16x16" DefaultValue="https://localhost:3000/assets/logout-icon-16.png"/>
+        <bt:Image id="logout-icon-32x32" DefaultValue="https://localhost:3000/assets/logout-icon-32.png"/>
+        <bt:Image id="logout-icon-80x80" DefaultValue="https://localhost:3000/assets/logout-icon-80.png"/>
         <bt:Image id="share-icon-16x16" DefaultValue="https://localhost:3000/assets/share-icon-16.png"/>
         <bt:Image id="share-icon-32x32" DefaultValue="https://localhost:3000/assets/share-icon-32.png"/>
         <bt:Image id="share-icon-80x80" DefaultValue="https://localhost:3000/assets/share-icon-80.png"/>
@@ -273,12 +312,13 @@
         <bt:String id="GroupLabel" DefaultValue="luckycloud"/>
         <bt:String id="UploadFile.Label" DefaultValue="Upload File"/>
         <bt:String id="UploadAttachment.Label" DefaultValue="Upload Attachment"/>
-        <bt:String id="Attach.Label" DefaultValue="Attach"/>
+        <bt:String id="Attach.Label" DefaultValue="Attach Files/Folder"/>
 
-        <bt:String id="Options.Label" DefaultValue="Options"/>
+        <bt:String id="Options.Label" DefaultValue="Preferences"/>
         <bt:String id="menuItem1ReadLabel" DefaultValue="Login"/>
         <!-- <bt:String id="menuItem2ReadLabel" DefaultValue="Shares"/> -->
         <bt:String id="menuItem3ReadLabel" DefaultValue="Settings"/>
+        <bt:String id="menuItem4ReadLabel" DefaultValue="Logout"/>
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="UploadFile.Tooltip" DefaultValue="Upload files from local machine to luckycloud"/>
@@ -288,6 +328,7 @@
         <bt:String id="menuItem1ReadSupertipDescription" DefaultValue="Login to your luckycloud server"/>
         <!-- <bt:String id="menuItem2ReadSupertipDescription" DefaultValue="Share files"/> -->
         <bt:String id="menuItem3ReadSupertipDescription" DefaultValue="Config your settings"/>
+        <bt:String id="menuItem4ReadSupertipDescription" DefaultValue="Log out from your luckycloud server"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
