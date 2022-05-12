@@ -57,8 +57,7 @@ Office.initialize = function (reason) {
       }
 
       $(".loader").hide();
-      console.log("here is the directory map", dirmap);
-      console.log("here is the property map", propertymap);
+
       drawRootDirectory();
     });
 
@@ -198,7 +197,7 @@ Office.initialize = function (reason) {
           return typeof get(path) != "undefined";
         },
         error: function (message) {
-          console.log(message);
+
         },
         create: function (type, path) {
           var m = path.match(/(.*)\/(.*)/);
@@ -232,7 +231,7 @@ Office.initialize = function (reason) {
           $("#path").val(this.path());
         },
         refresh: function(path, callback) {
-          console.log(path);
+
           $('.loader').show();
           if (path == "/") {
             getSeafileLibraries(token, env, function (repos) {
@@ -257,8 +256,7 @@ Office.initialize = function (reason) {
                 }
                 if (!flag) dirmap[key] = undefined;
               }
-              console.log('dir map', dirmap);
-              console.log('property map', propertymap);
+
               $('.loader').hide();
               if (callback) callback();
             });

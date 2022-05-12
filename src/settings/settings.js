@@ -40,10 +40,10 @@ Office.initialize = function (reason) {
 	jQuery(document).ready(function(){
 
 		var myLanguage = Office.context.displayLanguage;
-		console.log('current language code' , myLanguage);
+
 		var UIText;
 		UIText = UIStrings.getLocaleStrings(myLanguage, "setting");
-		console.log(UIText);
+
 		Object.keys(UIText).forEach(function(cssSelector){
 			if (cssSelector == 'placeholder') {
 			  Object.keys(UIText[cssSelector]).forEach(function(key){
@@ -172,8 +172,7 @@ Office.initialize = function (reason) {
 
 		///////////////////////Attachment Path Setting//////////////////////////
 		var defaultAttachmentOption = getDefaultAttachmentPath();
-		console.log('default attachmentPath ');
-		console.log(defaultAttachmentOption);
+
         var currentAttachmentPath = "";
 		if ( defaultAttachmentOption["defaultLibraryname"] && defaultAttachmentOption["defaultPathname"] ){
 			currentAttachmentPath = "/" + defaultAttachmentOption["defaultLibraryname"] + defaultAttachmentOption["defaultPathname"];
@@ -208,7 +207,7 @@ Office.initialize = function (reason) {
 				return;
 			}
 			emailsetting["attachment_path"] = $('#attachment_path_content div.ask_every_time').hasClass("active") ? "ask_every_time": "always_default";
-			console.log('here is the email setting', emailsetting);
+
 			if ( $('.custom_without_path').hasClass("active") ) {
 				defaultAttachmentOption = {
 					defaultLibraryname : "",
@@ -384,7 +383,7 @@ Office.initialize = function (reason) {
 				return typeof get(path) != "undefined";
 			  },
 			  error: function (message) {
-				console.log(message);
+
 			  },
 			  create: function (type, path) {
 				var m = path.match(/(.*)\/(.*)/);
@@ -408,15 +407,14 @@ Office.initialize = function (reason) {
 				parent[dest.replace(/.*\//, "")] = content;
 			  },
 			  downloadfrommenu: function($li){
-				  console.log('clicked download button from menu');
+
 			  },
 			  selectDefaultPath: function($li){
-				console.log($li);
-				console.log('clicked selectDefaultPath button');
+
 				//Disable Button until the user select the path.
 				$('#select_attachment_path').addClass('disabled')
 
-				console.log('total li length', $li.length);
+
 				filename = $($li).find("span.name").text();
 				path = browse.join(browse.path(), filename);
 				repo = getRepofrompath(path);
@@ -425,8 +423,7 @@ Office.initialize = function (reason) {
 				defaultAttachmentOption["defaultLibraryname"] = repo.name;
 				defaultAttachmentOption["defaultPathname"] = relativePath;
 				defaultAttachmentOption["repo_id"]  = repo.id;
-				console.log('new defaultAttachmentOption');
-				console.log(defaultAttachmentOption);
+
 				$('.filebrowser_container').css('margin-top', '0px');
 				$('.custom_with_path').find("div.error span").hide();
 				// $('#defaultLibraryname').val(repo.name);
@@ -475,7 +472,7 @@ Office.initialize = function (reason) {
 					  }
 					  if (!flag) dirmap[key] = undefined;
 					}
-					console.log('dir map', dirmap);
+
 					$('.loader').hide();
 					if (callback) callback();
 				  });
@@ -495,7 +492,6 @@ Office.initialize = function (reason) {
 
 		///////////////////////Link Text Setting//////////////////////////
 		var defaultdownloadLinkoption = getdownloadLinkOption();
-		console.log('defaultdownloadLinkOption', defaultdownloadLinkoption);
 
 		switch(defaultdownloadLinkoption) {
 			case "1":
@@ -517,7 +513,6 @@ Office.initialize = function (reason) {
 
 		var link_text = getLinkText();
 		
-		console.log('link_text', link_text);
 		$('.download_link_text input').val(link_text);
 		$('.download_link_text input').on('keyup', function(){
 			$('label.option_text span.text').text($(this).val());

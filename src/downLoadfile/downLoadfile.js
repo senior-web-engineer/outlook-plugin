@@ -74,8 +74,7 @@ Office.initialize = function (reason) {
         getItemsInDirectory(token, env, repo, "/", dirmap[repo["name"]], initRepoMap);
       }
       $(".loader").hide();
-      console.log("here is the directory map", dirmap);
-      console.log("here is the property map", propertymap);
+
       drawRootDirectory();
     });
 
@@ -159,9 +158,9 @@ Office.initialize = function (reason) {
 		      const $element = $($li[i]);
 		      // if ($element.hasClass("directory")) continue;
 
-          var filename = $element.find("span.name").text();
-          var filetype = $element.hasClass("directory") ? "d" : "f";
-          var linkname = `${filename}${filetype == 'd' ? "/" : ""}`;
+          const filename = $element.find("span.name").text();
+          const filetype = $element.hasClass("directory") ? "d" : "f";
+          const linkname = `${filename}${filetype == 'd' ? "/" : ""}`;
           path = browse.join(browse.path(), filename);
           repo = getRepofrompath(path);
   
@@ -173,7 +172,7 @@ Office.initialize = function (reason) {
             emailsetting = {};
           }
 
-          console.log('here is the email setting', emailsetting);
+
           var password = getDefaultPassword(), expire_days = getDefaultExpireDate();
 
           if (password &&  getEmailSetting("password") == "ask_every_time") {
@@ -187,14 +186,15 @@ Office.initialize = function (reason) {
           }
  
           $(".loader").show();
-          getSharedLink(token, env, repo, relativePath, function (res) {
+           getSharedLink(token, env, repo, relativePath, filetype, linkname,  function (res) {
             currentPath = repo.name + relativePath;
 
             if (res.error_msg || res.length <= 0) {
-              advancedDownloadFile(token, env, repo, relativePath, password, expire_days, function (response) {
+              advancedDownloadFile(token, env, repo, relativePath, filetype, linkname,  password, expire_days, function (response) {
                 $(".loader").hide();
+                console.log(relativePath);
                 if (response.error_msg) {
-                  console.log(response);
+
                   var errmsg = response.error_msg;
                   if ( errmsg.startsWith("Share link") ) {
                       var share_id = errmsg.split(" ")[2];
@@ -324,13 +324,13 @@ Office.initialize = function (reason) {
           parent[dest.replace(/.*\//, "")] = content;
         },
         downloadfrommenu: function($li){
-          console.log('clicked download button from menu');
+
           performDownload($li);
         },
         open: function ($li, filename) {
           var file = get(filename);
           if (typeof file == "string") {
-            console.log('file double clicked here');
+
             performDownload($li, true);
 
           } else {
@@ -341,7 +341,7 @@ Office.initialize = function (reason) {
           $("#path").val(this.path());
         },
         refresh: function(path, callback) {
-          console.log(path);
+
           $('.loader').show();
           if (path == "/") {
             getSeafileLibraries(token, env, function (repos) {
@@ -366,8 +366,7 @@ Office.initialize = function (reason) {
                 }
                 if (!flag) dirmap[key] = undefined;
               }
-              console.log('dir map', dirmap);
-              console.log('property map', propertymap);
+
               $('.loader').hide();
               if (callback) callback();
 

@@ -110,11 +110,11 @@ function loadDownloadDialog(event) {
 // to the info bar.
 function addTextToBody(text, icon, event) {
   Office.context.mailbox.item.body.setSelectedDataAsync(
-    text,
+    text + "<br>",
     { coercionType: Office.CoercionType.Html },
     function (asyncResult) {
       if (asyncResult.status == Office.AsyncResultStatus.Succeeded) {
-        Office.context.mailbox.item.body.setSelectedDataAsync("\r\n");
+        //Office.context.mailbox.item.body.setSelectedDataAsync("\r\n");
       } else {
         Office.context.mailbox.item.notificationMessages.addAsync("addTextError", {
           type: "errorMessage",
@@ -187,7 +187,9 @@ function receiveMessage(message) {
       text = `<div><a href=${message.downloadLink}>${link_text} : ${message.downloadLink}</a></br></div>`
     }
     statusUpdate("attach-icon-16", "Link has been inserted.");
-    addTextToBody(text, "attach-icon-16");
+    setTimeout(() => {
+      addTextToBody(text, "attach-icon-16");      
+    }, 200);
     if (message.action == "close") dialogClosed();
   } else if (message && message.action == "uploadAttach" ) {
     selectAttachFolderDialog.close();

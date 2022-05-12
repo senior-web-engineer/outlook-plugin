@@ -135,27 +135,7 @@ const {
           page_name: "settings",
           menu: function (type) {
             if (type == "li") {
-              // return {
-              //   "Upload Attachments here": function($li){
-      
-              //     console.log('total li length', $li.length);
-              //     filename = $($li).find("span").text();
-              //     path = browse.join(browse.path(), filename);
-              //     repo = getRepofrompath(path);
-              //     relativePath = getRelativepath(path + "/");
-      
-              //     var message = {
-              //       defaultLibraryname: repo.name,
-              //       defaultPathname : relativePath,
-              //       repo_id : repo.id,
-              //       action : "uploadAttach"
-              //     }
-              //     Office.context.ui.messageParent(
-              //       JSON.stringify(message)
-              //     );
 
-              //   },
-              // };
             }
           },
           dir: function (path) {
@@ -209,10 +189,10 @@ const {
             parent[dest.replace(/.*\//, "")] = content;
           },
           downloadfrommenu: function($li){
-              console.log('clicked download button from menu');
+
           },
           selectDefaultPath: function($li){
-            console.log('total li length', $li.length);
+
             filename = $($li).find("span.name").text();
             path = browse.join(browse.path(), filename);
             repo = getRepofrompath(path);
@@ -231,7 +211,7 @@ const {
           open: function ($li, filename) {
             var file = get(filename);
             if (typeof file == "string") {
-              console.log('file double clicked here');  
+
             } else {
               throw new Error("Invalid filename");
             }
@@ -240,7 +220,7 @@ const {
             $("#path").val(this.path());
           },
           refresh: function(path, callback) {
-            console.log(path);
+
             $('.loader').show();
             if (path == "/") {
               getSeafileLibraries(token, env, function (repos) {
@@ -265,7 +245,6 @@ const {
                   }
                   if (!flag) dirmap[key] = undefined;
                 }
-                console.log('dir map', dirmap);
 
                 $('.loader').hide();
                 if (callback) callback();

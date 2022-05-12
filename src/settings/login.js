@@ -15,7 +15,7 @@ const {UIStrings} = require("../helpers/UIString.js");
   Office.initialize = function (reason) {
     jQuery(document).ready(function () {
       var myLanguage = Office.context.displayLanguage;
-      console.log(myLanguage);
+
       var UIText;
       UIText = UIStrings.getLocaleStrings(myLanguage, "login");
       Object.keys(UIText).forEach(function(cssSelector){
@@ -183,7 +183,7 @@ const {UIStrings} = require("../helpers/UIString.js");
 
       $(document).on('change','#membership_option', function(){
         var selected = $(this).val();
-        console.log('clicked');
+
         if (selected == "home") {
           $('div.seafile_env').hide();
           $('#seafile_env').val("https://sync.luckycloud.de");
@@ -198,7 +198,7 @@ const {UIStrings} = require("../helpers/UIString.js");
 
       $("#seafile_loginbutton").click(function () {
         if (validator && validator.form() !== true) return false;
-        console.log("login button clicked");
+
         // disable button
         var btn = $(this);
         btn.prop("disabled", true);
@@ -211,7 +211,7 @@ const {UIStrings} = require("../helpers/UIString.js");
         const password = $("#password").val();
         getToken($("#seafile_env").val(), $("#username").val(), $("#password").val(), function (config, error) {
           if (error) {
-            console.log("error");
+
             btn.prop("disabled", false);
             $(".alert").hide();
             $(".alert-danger").show();

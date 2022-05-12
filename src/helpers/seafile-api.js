@@ -19,7 +19,7 @@ export function getToken(env, user, password, callback) {
     }),
   })
     .done(function (response) {
-      console.log('here is the response while trying login', response);
+
       if (response.token) {
         callback({
           seafile_env: env,
@@ -32,7 +32,7 @@ export function getToken(env, user, password, callback) {
       }
     })
     .fail(function (error) {
-      console.log('error while get token')
+
       callback(null, error);
     });
 }
@@ -57,7 +57,7 @@ export function getSeafileLibraries(token, env, callback) {
       if (callback) callback(response);
     })
     .fail(function (error) {
-      console.log("error while getting libraries ", error);
+
     });
 }
 export function getDirectoryDetail(token, env, repo, path, callback){
@@ -88,15 +88,22 @@ export function getDirectoryDetail(token, env, repo, path, callback){
     }
   })
   .fail(function (error) {
-    console.log("error while getting directory detail", repo["name"], path, error);
+
   });
 
 }
 export function getItemsInDirectory(token, env, repo, path, currentEnv, callback1, callback2=null) {
-  // if (path == "/") console.log("getting info for repo ", repo["name"]);
+
   if (path !="/") {
     if (path[path.length-1] !="/") path = path + "/";
   }
+  var encodedPath = "";
+  for (var i=0; i<path.length; i++) {
+    if (path[i] !=='/') encodedPath = encodedPath + encodeURIComponent(path[i]);
+    else encodedPath = encodedPath + path[i];
+  }
+
+
   var settings = {
     url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
     method: "POST",
@@ -106,23 +113,34 @@ export function getItemsInDirectory(token, env, repo, path, currentEnv, callback
     },
     data: JSON.stringify({
       method: "GET",
-      url: encodeURI(env + "/api2/repos/" + repo["id"] + "/dir/" + (path !== "/" ? "?p=" + path : "")),
+      url: env + "/api2/repos/" + repo["id"] + "/dir/" + (path !== "/" ? "?p=" + encodedPath : ""),
       headers: {
         Authorization: "Token " + token,
         Accept: "application/json; indent=4",
+        "Content-Type": "application/x-www-form-urlencoded"
       },
     }),
   };
 
   $.ajax(settings)
-    .done(function (response) {      
+    .done(function (response) {    
+      if (path.indexOf("testdir") >= 0)   {
+        console.log(token);
+        const uri_original  = env + "/api2/repos/" + repo["id"] + "/dir/" + (path !== "/" ? "?p=" + encodedPath : "");
+        console.log('here is the path', path);
+        console.log(uri_original);
+        const uri_final = encodeURI(env + "/api2/repos/" + repo["id"] + "/dir/" + (path !== "/" ? "?p=" + encodedPath : ""));
+        console.log(uri_final);
+        console.log(response);
+      }
       if (callback1) {
         if (callback2) callback1(repo, response, path, currentEnv, callback2);
         else callback1(repo, response, path, currentEnv);
       }
     })
-    .fail(function (error) {
-      console.log("error while getting items in direcotry ", repo["name"], path, error);
+    .fail(function (error) {      
+      console.log('error while getting directory', error);
+      
     });
 }
 
@@ -144,10 +162,10 @@ export function getUploadLink(token, env, repo, path, callback) {
   };
 
   $.ajax(settings).done(function (response) {
-    console.log("upload Link", response);
+
     if (callback) callback(response);
   }).fail((err) => {
-    console.log('error while getUploadLink');
+
   });
 }
 
@@ -198,7 +216,7 @@ export function downloadFile(token, env, repo, path, callback) {
   $.ajax(settings).done(function (response) {
     if (callback) callback(response);
   }).fail((err) => {
-    console.log('error while getting downloadFile');
+
   });;
 }
 
@@ -207,6 +225,8 @@ export function advancedDownloadFile(
   env,
   repo,
   path,
+  filetype, 
+  linkname, 
   password = null,
   expire_days = null,
   callback = function () {}
@@ -244,11 +264,11 @@ export function advancedDownloadFile(
   $.ajax(settings).done(function (response) {
     if (callback) callback(response);
   }).fail((err) => {
-    console.log('error while advancedDownloadFile');
+
   });;
 }
 
-export function getSharedLink(token, env, repo, path, callback) {
+export function getSharedLink(token, env, repo, path, filetype, linkname,  callback) {
 
   var url = encodeURI(env + `/api/v2.1/share-links/?repo_id=${repo["id"]}&path=${path}`);
 
@@ -269,13 +289,13 @@ export function getSharedLink(token, env, repo, path, callback) {
       },
     }),
   };
-  console.log('getSharedLink ', url);
+
   $.ajax(settings)
     .done(function (response) {
       if (callback) callback(response);
     })
     .fail((err) => {
-      console.log('error while getShareLink')
+
       if (callback) callback([]);
     });
     
