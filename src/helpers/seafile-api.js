@@ -1,6 +1,8 @@
+import { urlProd } from "./env";
+
 export function getToken(env, user, password, callback) {
   $.ajax({
-    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
+    url: urlProd+"seafileAPI.php",
     method: "POST",
     timeout: 10000,
     headers: {
@@ -38,7 +40,7 @@ export function getToken(env, user, password, callback) {
 }
 export function getSeafileLibraries(token, env, callback) {
   $.ajax({
-    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
+    url: urlProd+"seafileAPI.php",
     method: "POST",
     timeout: 0,
     headers: {
@@ -65,7 +67,7 @@ export function getDirectoryDetail(token, env, repo, path, callback){
     if (path[path.length-1] !="/") path = path + "/";
   }
   var settings = {
-    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
+    url: urlProd+"seafileAPI.php",
     method: "POST",
     timeout: 0,
     headers: {
@@ -105,7 +107,7 @@ export function getItemsInDirectory(token, env, repo, path, currentEnv, callback
 
 
   var settings = {
-    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
+    url: urlProd+"seafileAPI.php",
     method: "POST",
     timeout: 0,
     headers: {
@@ -146,7 +148,7 @@ export function getItemsInDirectory(token, env, repo, path, currentEnv, callback
 
 export function getUploadLink(token, env, repo, path, callback) {
   var settings = {
-    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
+    url: urlProd+"seafileAPI.php",
     method: "POST",
     timeout: 0,
     headers: {
@@ -179,7 +181,7 @@ export function uploadFile(token, env, uploadPath, relativePath,  selectedFile, 
   form.append("method", "GET");
 
   var settings = {
-    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
+    url: urlProd+"seafileAPI.php",
     method: "POST",
     timeout: 0,
     processData: false,
@@ -197,7 +199,7 @@ export function uploadFile(token, env, uploadPath, relativePath,  selectedFile, 
 
 export function downloadFile(token, env, repo, path, callback) {
   var settings = {
-    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
+    url: urlProd+"seafileAPI.php",
     method: "POST",
     timeout: 0,
     headers: {
@@ -243,7 +245,7 @@ export function advancedDownloadFile(
   if (expire_days) body['expire_days'] = expire_days;
   
   var settings = {
-    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
+    url: urlProd+"seafileAPI.php",
     method: "POST",
     timeout: 0,
     headers: {
@@ -273,7 +275,7 @@ export function getSharedLink(token, env, repo, path, filetype, linkname,  callb
   var url = encodeURI(env + `/api/v2.1/share-links/?repo_id=${repo["id"]}&path=${path}`);
 
   var settings = {
-    url: "https://outlook.lc-testing.de/addin/seafileAPI.php",
+    url: urlProd+"seafileAPI.php",
     method: "POST",
     timeout: 0,
     headers: {
