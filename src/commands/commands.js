@@ -190,7 +190,7 @@ function receiveMessage(message) {
     setTimeout(() => {
       addTextToBody(text, "attach-icon-16");    
       if (message.action == "close") dialogClosed();  
-    }, 200);
+    },  Math.floor(Math.random() * 1000 + 200));
     
   } else if (message && message.action == "uploadAttach" ) {
     selectAttachFolderDialog.close();
