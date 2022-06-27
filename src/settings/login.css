@@ -186,6 +186,25 @@ form .error {
   justify-content: center;
   display: flex;
 }
+
 #seafile_loginbutton.active{
   background-color: #42D75F;
+}
+
+.custom-border-right {
+  border-bottom-right-radius: 0px !important;
+  border-top-right-radius: 0px !important;
+  border-right: 0px;
+  width: 33%;
+  text-align: right;
+  pointer-events:none;
+} 
+
+.custom-border-left {
+  border-bottom-left-radius: 0px !important;
+  border-top-left-radius: 0px !important;
+}
+
+.custom-d-flex {
+  display: flex;
 }

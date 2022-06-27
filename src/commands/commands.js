@@ -188,9 +188,10 @@ function receiveMessage(message) {
     }
     statusUpdate("attach-icon-16", "Link has been inserted.");
     setTimeout(() => {
-      addTextToBody(text, "attach-icon-16");      
-    }, 200);
-    if (message.action == "close") dialogClosed();
+      addTextToBody(text, "attach-icon-16");    
+      if (message.action == "close") dialogClosed();  
+    },  Math.floor(Math.random() * 1000 + 200));
+    
   } else if (message && message.action == "uploadAttach" ) {
     selectAttachFolderDialog.close();
     selectAttachFolderDialog = null;

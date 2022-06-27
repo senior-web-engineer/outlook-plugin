@@ -31,7 +31,7 @@ export function setConfig(config, callback) {
     localStorage.setItem("seafile_username", encryptKey(config.seafile_username));
     localStorage.setItem("seafile_password", encryptKey(config.seafile_password));
     localStorage.setItem("seafile_token", encryptKey(config.seafile_token));
-    callback();
+    callback({status:"succeeded"});
   }
   else {
   Office.context.roamingSettings.set("seafile_env", encryptKey(config.seafile_env));
@@ -62,7 +62,7 @@ export function getDefaultPassword() {
 export function setDefaultPassword(password = "", callback = function () {}) {
   if (useStorage){
     localStorage.setItem("default_password", encryptKey(password));
-    callback();
+    callback({status:"succeeded"});
   }
   else {
   Office.context.roamingSettings.set("default_password", encryptKey(password));
@@ -78,7 +78,7 @@ export function getDefaultExpireDate() {
 export function setDefaultExpireDate(expire_date = "", callback = function () {}) {
   if (useStorage){
     localStorage.setItem("default_expire_date", encryptKey(expire_date));
-    callback();
+    callback({status:"succeeded"});
   }
   else {
   Office.context.roamingSettings.set("default_expire_date", encryptKey(expire_date));
@@ -98,7 +98,7 @@ export function getEmailSetting(key = "" ){
 export function setEmailSetting(val = "", callback = function () {}) {
   if (useStorage){
     localStorage.setItem('email_setting',val);
-    callback();
+    callback({status:"succeeded"});
   }
   else {
   Office.context.roamingSettings.set("email_setting", val);
@@ -119,7 +119,7 @@ export function getShareOption(key = "") {
 export function setShareOption(val = "", callback = function () {}) {
   if (useStorage){
     localStorage.setItem('share_option',val);
-    callback();
+    callback({status:"succeeded"});
   }
   else {
   Office.context.roamingSettings.set("share_option", val);
@@ -135,7 +135,7 @@ export function getdownloadLinkOption() {
 export function setdownloadLinkOption(val = 1, callback = function () {}) {
   if (useStorage){
     localStorage.setItem("downloadlink_option", val);
-    callback();
+    callback({status:"succeeded"});
   }
   else {
   Office.context.roamingSettings.set("downloadlink_option", val);
@@ -169,7 +169,7 @@ export function setDefaultAttachmentPath(defaultLibraryname, defaultPathname = "
     localStorage.setItem("defaultLibraryname", defaultLibraryname);
     localStorage.setItem("defaultPathname", defaultPathname);
     localStorage.setItem("repo_id", repo_id);
-    callback();
+    callback({status:"succeeded"});
   }
   else {Office.context.roamingSettings.set("defaultLibraryname", defaultLibraryname);
   Office.context.roamingSettings.set("defaultPathname", defaultPathname);
@@ -186,7 +186,7 @@ export function getLinkText(){
 export function setLinkText(text, callback=function(){} ) {
   if (useStorage){
     localStorage.setItem('link_text',text);
-    callback();
+    callback({status:"succeeded"});
   }
   else {
   Office.context.roamingSettings.set("link_text", text);

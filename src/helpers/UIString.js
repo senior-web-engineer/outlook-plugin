@@ -17,6 +17,7 @@ export var UIStrings = (function ()
             '#membership_option option[value="business"]': "Business",
             '#membership_option option[value="enterprise"]': "Enterprise",
             "placeholder" : {
+                '#seafile_protocol' : 'https://',
                 '#seafile_env' : 'Server address',
                 '#username' : 'Your Email Address',
                 '#password' : 'Password',
@@ -88,6 +89,7 @@ export var UIStrings = (function ()
             '#membership_option option[value="business"]': "Business",
             '#membership_option option[value="enterprise"]': "Enterprise",
             "placeholder" : {
+                '#seafile_protocol' : 'https://',
                 '#seafile_env' : 'Server Adresse',
                 '#username' : 'Deine E-Mail Adresse',
                 '#password' : 'Passwort',
