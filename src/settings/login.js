@@ -119,11 +119,11 @@ const {UIStrings} = require("../helpers/UIString.js");
           case 1:
             $('div.seafile_env').hide();
             
-            $('#seafile_env').val("https://sync.luckycloud.de");
+            $('#seafile_env').val("sync.luckycloud.de");
             break;
           case 2:
             $('div.seafile_env').hide();
-            $('#seafile_env').val("https://storage.luckycloud.de");
+            $('#seafile_env').val("storage.luckycloud.de");
             break;
           case 3:
             $('div.seafile_env').show();
@@ -131,7 +131,7 @@ const {UIStrings} = require("../helpers/UIString.js");
             break;
           default:
             $('div.seafile_env').hide();
-            $('#seafile_env').val("https://storage.luckycloud.de");
+            $('#seafile_env').val("storage.luckycloud.de");
             break;
         }
       }
@@ -186,10 +186,10 @@ const {UIStrings} = require("../helpers/UIString.js");
 
         if (selected == "home") {
           $('div.seafile_env').hide();
-          $('#seafile_env').val("https://sync.luckycloud.de");
+          $('#seafile_env').val("sync.luckycloud.de");
         } else if (selected == "business") {
           $('div.seafile_env').hide();
-          $('#seafile_env').val("https://storage.luckycloud.de");
+          $('#seafile_env').val("storage.luckycloud.de");
         } else if (selected == "enterprise") {
           $('div.seafile_env').show();
           $('#seafile_env').val("");
@@ -206,10 +206,10 @@ const {UIStrings} = require("../helpers/UIString.js");
         btn.html(
           `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Wait a moment`
         );
-        const env = $("#seafile_env").val();
+        const env = 'https://' + $("#seafile_env").val();
         const username = $("#username").val();
         const password = $("#password").val();
-        getToken($("#seafile_env").val(), $("#username").val(), $("#password").val(), function (config, error) {
+        getToken(env, username, password, function (config, error) {
           if (error) {
 
             btn.prop("disabled", false);
