@@ -72,7 +72,7 @@ Office.initialize = function (reason) {
 		$('.field-group button span.spinner-border').hide();
 		var emailsetting = getEmailSetting();
 
-		if ( typeof emailsetting !== 'object' ) {
+		if ( typeof emailsetting !== 'object' || emailsetting === null ) {
 			emailsetting = {};
 		}
 

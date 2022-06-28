@@ -168,7 +168,7 @@ Office.initialize = function (reason) {
   
           var emailsetting = getEmailSetting();
 
-          if ( typeof emailsetting !== 'object' ) {
+          if ( typeof emailsetting !== 'object' || emailsetting === null ) {
             emailsetting = {};
           }
 
