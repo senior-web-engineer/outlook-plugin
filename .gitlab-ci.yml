@@ -23,7 +23,7 @@ stage_deploy:
   #    - build/
   script:
     # build
-    - npm install
+    - npm install --production
     - npm run build
     - ls -la
     # push to server
