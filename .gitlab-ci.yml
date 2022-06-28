@@ -8,7 +8,7 @@ image: node:latest
 
 variables:
     USER: root
-    SERVER_IP: 78.47.35.181
+    SERVER_IP: 116.203.220.63
 
 before_script:
   - apt-get update
