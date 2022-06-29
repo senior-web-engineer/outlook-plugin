@@ -1,4 +1,4 @@
-import { useStorage } from "./env";
+import { useStorage } from "./env.dev";
 
 const encryptKey = (str) => {
   return btoa(str);
