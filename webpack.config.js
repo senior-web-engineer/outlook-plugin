@@ -155,6 +155,10 @@ module.exports = async (env, options) => {
               }
             },
           },
+          {
+            from: "res/**",
+            to: "",
+          }
         ],
       }),
       new HtmlWebpackPlugin({

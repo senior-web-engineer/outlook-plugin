@@ -10,7 +10,7 @@ const { getConfig, setConfig , getdownloadLinkOption,
     getEmailSetting,
     getLinkText, randomString
   } = require("../helpers/addin-config");
-
+const URI = require("urijs");
 /* global global, Office, self, window */
 
 var config;

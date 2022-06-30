@@ -28,7 +28,8 @@
   "dependencies": {
     "crypto-browserify": "^3.12.0",
     "core-js": "^3.23.3",
-    "jquery": "^3.6.0"
+    "jquery": "^3.6.0",
+    "urijs": "^1.19.11"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
