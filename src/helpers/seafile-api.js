@@ -1,4 +1,4 @@
-import { urlProd } from "./env.dev";
+import { urlProd } from "./env";
 
 export function getToken(env, user, password, callback) {
   $.ajax({
