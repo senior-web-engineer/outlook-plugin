@@ -28,7 +28,7 @@ Office.onReady(() => {
 function uploadfileFromLocal(event) {
   config = getConfig();
 
-  if (config && config.seafile_env) {
+  if (checkConfig(config)) {
     loadUploadFilePage(event);
   } else {
     login(event);
@@ -37,7 +37,7 @@ function uploadfileFromLocal(event) {
 
 function downLoadfromServer(event) {
   config = getConfig();
-  if (config && config.seafile_env) {
+  if (checkConfig(config) ) {
     loadDownloadDialog(event);
   } else {
     login(event);
@@ -297,7 +297,7 @@ function loadSettingsPage(event) {
 
 function settingsPage(event) {
   config = getConfig();
-  if (config && config.seafile_env) {
+  if (checkConfig(config)) {
     loadSettingsPage(event);
   } else {
     login(event);
@@ -317,7 +317,7 @@ function uploadAttachmentPage(event) {
 			  uploadAttachmentFiles(item, defaultAttachmentOption);
     	} else {
         var config = getConfig();
-        if (config && config.seafile_env) {
+        if (checkConfig(config)) {
           var url = new URI("selectDefaultPath.html").absoluteTo(window.location).toString();
           var dialogOptions = { width: 50, height: 55, displayInIframe: true };
 
@@ -400,6 +400,18 @@ function getGlobal() {
     : typeof global !== "undefined"
     ? global
     : undefined;
+}
+
+function checkConfig(config) {
+  if (!config) return false;
+  if (!config.seafile_env) return false;
+
+  var expression = /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi;
+  var regex = new RegExp(expression);
+  var t = config.seafile_env;
+  if (!t.match(regex)) return false;
+
+  return true;
 }
 
 var g = getGlobal();
