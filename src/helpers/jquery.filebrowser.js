@@ -1199,6 +1199,9 @@
               }
               self.show(new_path);
             });
+
+            $('.refresh').click();
+
           }
           return self;
         },

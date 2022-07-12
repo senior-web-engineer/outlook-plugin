@@ -71,7 +71,7 @@ Office.initialize = function (reason) {
           size  : repo["size"],
           mtime : repo["mtime"]
         }
-        getItemsInDirectory(token, env, repo, "/", dirmap[repo["name"]], initRepoMap);
+        // getItemsInDirectory(token, env, repo, "/", dirmap[repo["name"]], initRepoMap);
       }
       $(".loader").hide();
 
