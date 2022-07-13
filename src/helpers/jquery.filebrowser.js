@@ -1126,6 +1126,10 @@
                     Object.keys(UIText[cssSelector]).forEach(function(key){
                       $(key).attr('placeholder', UIText[cssSelector][key]);
                     });
+                  } else if(cssSelector == 'hovertext') {
+                    Object.keys(UIText[cssSelector]).forEach(function(key){
+                      $(key).attr('title', UIText[cssSelector][key]);
+                    });
                   } else {
                     $(cssSelector).text(UIText[cssSelector]);
                   }

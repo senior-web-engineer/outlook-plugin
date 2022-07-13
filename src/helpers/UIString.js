@@ -74,6 +74,14 @@ export var UIStrings = (function ()
             "placeholder" : {
                 'input.search-box' : 'Type text to search',
             },
+            "hovertext":{
+                'li.upload':'Upload',
+                'li.download':'Download',
+                'li.refresh':'Refresh',
+                'li.selectDefaultPath':'Select',
+                'li.grid':'Grid View',
+                'li.list':'List View',
+            },
         }
 
     };
@@ -145,6 +153,14 @@ export var UIStrings = (function ()
             'div.content div.header span.size span' : 'Größe',
             "placeholder" : {
                 'input.search-box' : 'Type text to search',
+            },
+            "hovertext":{
+                'li.upload':'Upload',
+                'li.download':'Download',
+                'li.refresh':'Refresh',
+                'li.selectDefaultPath':'Select',
+                'li.grid':'Grid View',
+                'li.list':'List View',
             },
         }
     };
