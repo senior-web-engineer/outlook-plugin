@@ -75,12 +75,12 @@ export var UIStrings = (function ()
                 'input.search-box' : 'Type text to search',
             },
             "hovertext":{
-                'li.upload':'Upload',
-                'li.download':'Download Link',
-                'li.refresh':'Refresh',
-                'li.selectDefaultPath':'Select',
-                'li.grid':'Grid View',
-                'li.list':'List View',
+                'div.toolbar li.upload':'Upload',
+                'div.toolbar li.download':'Download Link',
+                'div.toolbar li.refresh':'Refresh',
+                'div.toolbar li.selectDefaultPath':'Select',
+                'div.toolbar li.grid':'Grid View',
+                'div.toolbar li.list':'List View',
             },
         }
 
@@ -155,12 +155,12 @@ export var UIStrings = (function ()
                 'input.search-box' : 'Type text to search',
             },
             "hovertext":{
-                'li.upload':'Hochladen',
-                'li.download':'Download Link',
-                'li.refresh':'Aktualisieren',
-                'li.selectDefaultPath':'Auswählen',
-                'li.grid':'Symbole',
-                'li.list':'Liste',
+                'div.toolbar li.upload':'Hochladen',
+                'div.toolbar li.download':'Download Link',
+                'div.toolbar li.refresh':'Aktualisieren',
+                'div.toolbar li.selectDefaultPath':'Auswählen',
+                'div.toolbar li.grid':'Symbole',
+                'div.toolbar li.list':'Liste',
             },
         }
     };
