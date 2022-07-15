@@ -328,7 +328,16 @@
   left: 0px;
   position: absolute;
 }
-
+div.toolbar li.grid.selected::before {
+  background-image: url(assets/icons_white.svg);
+  background-position: -32px -192px;
+  background-color: #0b93d5 !important;
+}
+div.toolbar li.list.selected::before {
+  background-image: url(assets/icons_white.svg);
+  background-position: -64px -192px;
+  background-color: #0b93d5 !important;
+}
 div.toolbar li.list:before {
   background-position: -64px -192px;
 }

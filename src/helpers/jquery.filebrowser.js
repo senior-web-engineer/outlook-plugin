@@ -924,6 +924,10 @@
           $("div.content li").removeClass("list");
           $("div.content li").addClass("grid");
           $("div.content div.header").hide();
+
+          $('div.toolbar li.grid').addClass("selected");
+          $('div.toolbar li.list').removeClass("selected");
+
           self.show(path);
         },
         list: function(){
@@ -931,6 +935,10 @@
           $("div.content li").removeClass("grid");
           $("div.content li").addClass("list");
           $("div.content div.header").show();
+
+          $('div.toolbar li.grid').removeClass("selected");
+          $('div.toolbar li.list').addClass("selected");
+
           self.show(path);
         },
         show: function (new_path, options) {
@@ -1204,9 +1212,10 @@
               self.show(new_path);
             });
 
-            $('.refresh').click();
+              $('.refresh').click();
 
           }
+          if(!$('div.toolbar li.grid').hasClass('selected') && !$('div.toolbar li.list').hasClass('selected')) $('div.toolbar li.list').addClass('selected');
           return self;
         },
         join: function () {
