@@ -16,11 +16,14 @@ export var UIStrings = (function ()
             '#membership_option option[value="home"]' : 'Home / Team',
             '#membership_option option[value="business"]': "Business",
             '#membership_option option[value="enterprise"]': "Enterprise",
+            '.enterprise' : 'Enterprise Login?',
+            '.tfatoken' : 'Please enter your 2FA token',
             "placeholder" : {
                 '#seafile_protocol' : 'https://',
                 '#seafile_env' : 'Server address',
                 '#username' : 'Your Email Address',
                 '#password' : 'Password',
+                '#tfatoken' : '2FA token',
 
             },
             'div.alert-success' : 'You logged in successfully',
@@ -96,11 +99,14 @@ export var UIStrings = (function ()
             '#membership_option option[value="home"]' : 'Home / Team',
             '#membership_option option[value="business"]': "Business",
             '#membership_option option[value="enterprise"]': "Enterprise",
+            '.enterprise' : 'Enterprise Login?',
+            '.tfatoken' : 'Please enter your 2FA token',
             "placeholder" : {
                 '#seafile_protocol' : 'https://',
                 '#seafile_env' : 'Server Adresse',
                 '#username' : 'Deine E-Mail Adresse',
                 '#password' : 'Passwort',
+                '#tfatoken' : '2FA token',
 
             },
             'div.alert-success' : 'Login erfolgreich',

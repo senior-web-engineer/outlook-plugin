@@ -38,6 +38,47 @@ export function getToken(env, user, password, callback) {
       callback(null, error);
     });
 }
+
+export function getTokenWithTFA(env, user, password, secret, callback) {
+  $.ajax({
+    url: urlProd+"seafileAPI.php",
+    method: "POST",
+    timeout: 10000,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: JSON.stringify({
+      url: env + "/api2/auth-token/",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-SEAFILE-OTP": secret,
+      },
+      data: {
+        username: user,
+        password: password,
+      },
+    }),
+  })
+    .done(function (response) {
+
+      if (response.token) {
+        callback({
+          seafile_env: env,
+          seafile_username: user,
+          seafile_password: password,
+          seafile_token: response.token,
+        });
+      } else {
+        callback(null, response);  
+      }
+    })
+    .fail(function (error) {
+
+      callback(null, error);
+    });
+}
+
 export function getSeafileLibraries(token, env, callback) {
   $.ajax({
     url: urlProd+"seafileAPI.php",

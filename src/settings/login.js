@@ -5,6 +5,7 @@ const {
   getItemsInDirectory,
   getSeafileLibraries,
   downloadFile,
+  getTokenWithTFA,
 } = require("../helpers/seafile-api");
 const { getConfig, setConfig, retriveSeafileEnv, retrieveToken } = require("../helpers/addin-config");
 const {UIStrings} = require("../helpers/UIString.js");
@@ -136,6 +137,10 @@ const {UIStrings} = require("../helpers/UIString.js");
         }
       }
 
+      $('div.seafile_env').hide();
+      $('#seafile_env').val("storage.luckycloud.de");
+      $("#tfatoken").val("");
+
       $(".alert").hide();
       var validator = $("#regForm").validate({
         // Validate only visible fields
@@ -166,9 +171,9 @@ const {UIStrings} = require("../helpers/UIString.js");
         },
         // Validation rules
         rules: {
-          membership_option : {
-            required: true,
-          },
+          // membership_option : {
+          //   required: true,
+          // },
           seafile_env: {
             required: true,
           },
@@ -178,23 +183,26 @@ const {UIStrings} = require("../helpers/UIString.js");
           password: {
             required: true,
           },
+          tfatoken: {
+            required: true,
+          },
         },
       });
 
-      $(document).on('change','#membership_option', function(){
-        var selected = $(this).val();
+      // $(document).on('change','#membership_option', function(){
+      //   var selected = $(this).val();
 
-        if (selected == "home") {
-          $('div.seafile_env').hide();
-          $('#seafile_env').val("sync.luckycloud.de");
-        } else if (selected == "business") {
-          $('div.seafile_env').hide();
-          $('#seafile_env').val("storage.luckycloud.de");
-        } else if (selected == "enterprise") {
-          $('div.seafile_env').show();
-          $('#seafile_env').val("");
-        }
-      });
+      //   if (selected == "home") {
+      //     $('div.seafile_env').hide();
+      //     $('#seafile_env').val("sync.luckycloud.de");
+      //   } else if (selected == "business") {
+      //     $('div.seafile_env').hide();
+      //     $('#seafile_env').val("storage.luckycloud.de");
+      //   } else if (selected == "enterprise") {
+      //     $('div.seafile_env').show();
+      //     $('#seafile_env').val("");
+      //   }
+      // });
 
       $("#seafile_loginbutton").click(function () {
         if (validator && validator.form() !== true) return false;
@@ -209,23 +217,135 @@ const {UIStrings} = require("../helpers/UIString.js");
         const env = 'https://' + $("#seafile_env").val();
         const username = $("#username").val();
         const password = $("#password").val();
-        getToken(env, username, password, function (config, error) {
-          if (error) {
+        const secret = $("#tfatoken").val();
+        const tfatoken = $('div.seafile_tfa').css("display");
 
-            btn.prop("disabled", false);
-            $(".alert").hide();
-            $(".alert-danger").show();
-            btn.html(`<i class="login-background"></i>Log in`);
-
-          } else {
-            $(".alert").hide();
-            $(".alert-success").show();
-            Office.context.ui.messageParent(JSON.stringify(config));
-            btn.prop("disabled", false);
-            btn.html(`<i class="login-background"></i>Log in`);
-          }
-        });
+        if(tfatoken != 'none') {
+          getTokenWithTFA(env, username, password, secret, function (config, error) {
+            if(error) {
+              console.log(error,'%%%%%%%%%%%%%%%')
+              btn.prop("disabled", false);
+              $(".alert").hide();
+              $(".alert-danger").show();
+              btn.html(`<i class="login-background"></i>Log in`);
+            } else {
+              $(".alert").hide();
+              $(".alert-success").show();
+              Office.context.ui.messageParent(JSON.stringify(config));
+              btn.prop("disabled", false);
+              btn.html(`<i class="login-background"></i>Log in`);
+            }
+          });
+        } else {
+          getToken(env, username, password, function (config, error) {
+            if (error) {
+              console.log(error,'#######')
+              // invalid url
+              if(!error['non_field_errors']) {
+                btn.prop("disabled", false);
+                $(".alert").hide();
+                $(".alert-danger").show();
+                btn.html(`<i class="login-background"></i>Log in`);
+                return false;
+              }
+              
+              switch (error['non_field_errors'][0]) {
+                case "Unable to login with provided credentials.":
+                  const ele = $('#seafile_env');
+                  if(ele.val() == "storage.luckycloud.de"){
+                    ele.val("sync.luckycloud.de");
+                    getToken('https://'+ele.val(), username, password, function (config, error) {
+                      console.log(error,'$$$$$$$$$$')
+                      if(error){
+                        switch (error['non_field_errors'][0]) {
+                          case "Unable to login with provided credentials.":
+                            ele.val("storage.luckycloud.de");
+                            $(".alert").hide();
+                            $(".alert-danger").show();
+                            break;
+                          case "Two factor auth token is invalid.":
+                            console.log('Two factor auth token is invalid.') 
+                            $(".alert").hide();
+                            $(".alert-danger").show();
+                            break;
+            
+                          case "Two factor auth token is missing." :
+                            console.log('Two factor auth token is missing.')
+                            $('div.seafile_tfa').show();
+                            break;
+    
+                          default:
+                            break;
+                        }
+                        btn.prop("disabled", false);
+                        btn.html(`<i class="login-background"></i>Log in`);
+                      } else {
+                        $(".alert").hide();
+                        $(".alert-success").show();
+                        Office.context.ui.messageParent(JSON.stringify(config));
+                        btn.prop("disabled", false);
+                        btn.html(`<i class="login-background"></i>Log in`);
+                      }
+                      
+                    });
+                  } else  {
+                    btn.prop("disabled", false);
+                    $(".alert").hide();
+                    $(".alert-danger").show();
+                    btn.html(`<i class="login-background"></i>Log in`);
+                  }
+                  break;
+                  
+                case "Two factor auth token is invalid.":
+                  console.log('Two factor auth token is invalid.')
+                  btn.prop("disabled", false);
+                  $(".alert").hide();
+                  $(".alert-danger").show();
+                  btn.html(`<i class="login-background"></i>Log in`);
+                  break;
+  
+                case "Two factor auth token is missing." :
+                  console.log('Two factor auth token is missing.')
+                  $('div.seafile_tfa').show();
+                  btn.prop("disabled", false);
+                  btn.html(`<i class="login-background"></i>Log in`);
+                  break;
+  
+                default:
+                  break;
+              }
+  
+              // btn.prop("disabled", false);
+              // $(".alert").hide();
+              // $(".alert-danger").show();
+              // btn.html(`<i class="login-background"></i>Log in`);
+  
+            } else {
+              $(".alert").hide();
+              $(".alert-success").show();
+              Office.context.ui.messageParent(JSON.stringify(config));
+              btn.prop("disabled", false);
+              btn.html(`<i class="login-background"></i>Log in`);
+            }
+          });
+        }
+        
       });
+
+      $("#enterprise_chb").change(function () {
+     
+          var is_enterprise = $("#enterprise_chb").prop('checked');
+          if(is_enterprise){
+            $('div.seafile_env').show();
+            $('#seafile_env').val("");
+            $('div.seafile_tfa').hide();
+          } else {
+            $('div.seafile_env').hide();
+            $('#seafile_env').val("storage.luckycloud.de");
+          }
+  
+      });
+
     });
   };
 })();

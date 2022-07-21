@@ -34,25 +34,38 @@
 				<div class="card-text">
 
 					<form id="regForm">
-						<div class="custom-select">
+						<!-- <div class="custom-select">
 							<select id ="membership_option"name="membership_option" onchange="membershipChange(this)" > 
 								<option selected disabled></option>
 								<option value="home"></option>
 								<option value="business"></option>
 								<option value="enterprise"></option>
 							</select>
-						</div>
-						<div class="form-group seafile_env custom-d-flex" style="display: none;">
-							<input type="text" class="form-control form-control-sm custom-border-right"  id="seafile_protocol"  name="seafile_protocol" aria-describedby="emailHelp">
-							<input type="text" class="form-control form-control-sm custom-border-left"  id="seafile_env"  name="seafile_env" aria-describedby="emailHelp">
-						</div>
-
+						</div> -->
 						<div class="form-group">
 							<input type="email" class="form-control form-control-sm" id="username" name="username" aria-describedby="emailHelp">
 						</div>
 						<div class="form-group">
 							<input type="password" class="form-control form-control-sm" id="password" name="password">
 						</div>
+
+						<div class="form-group custom-center">
+							<label id="enterprise" for="enterprise_chb">
+								<input type="checkbox" class="enterprise-chb" id="enterprise_chb" name="enterprise_chb"/> 
+								<span class="enterprise"></span>
+							</label>
+						</div>
+
+						<div class="form-group seafile_env custom-d-flex" style="display: none;">
+							<input type="text" class="form-control form-control-sm custom-border-right"  id="seafile_protocol"  name="seafile_protocol" aria-describedby="emailHelp">
+							<input type="text" class="form-control form-control-sm custom-border-left"  id="seafile_env"  name="seafile_env" aria-describedby="emailHelp">
+						</div>
+
+						<div class="form-group seafile_tfa custom-center" style="display: none;">
+							<span class="tfatoken"></span>
+							<input type="text" class="form-control form-control-sm" id="tfatoken" name="tfatoken">
+						</div>
+
 						<div class="alert alert-success" role="alert" style="display: none;">
 						</div>
 						<div class="alert alert-danger" role="alert" style="display: none;">

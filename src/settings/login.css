@@ -208,3 +208,11 @@ form .error {
 .custom-d-flex {
   display: flex;
 }
+
+.custom-center {
+  text-align: center;
+}
+
+.enterprise-chb {
+  height: auto !important;
+}
