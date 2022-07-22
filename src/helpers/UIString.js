@@ -27,7 +27,7 @@ export var UIStrings = (function ()
 
             },
             'div.alert-success' : 'You logged in successfully',
-            'div.alert-danger' : 'Your credential is not incorrect, please try again',
+            'div.alert-danger' : 'Your credentials are incorrect, please try again',
             '#seafile_loginbutton span' : ' Log in '
         },
         "setting" : {
