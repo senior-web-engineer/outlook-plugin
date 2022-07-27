@@ -90,18 +90,18 @@
                   </Action>
                 </Control>
 
-                <Control xsi:type="Menu" id="OptionMenuButton">
-                  <Label resid="Options.Label"/>
+                <Control xsi:type="Button" id="SettingsButton">
+                  <Label resid="menuItem3ReadLabel"/>
                   <Supertip>
-                    <Title resid="Options.Label"/>
-                    <Description resid="OptionButton.Tooltip"/>
+                    <Title resid="menuItem3ReadLabel"/>
+                    <Description resid="menuItem3ReadSupertipDescription"/>
                   </Supertip>
                   <Icon>
-                    <bt:Image size="16" resid="seafile-icon-16x16"/>
-                    <bt:Image size="32" resid="seafile-icon-32x32"/>
-                    <bt:Image size="80" resid="seafile-icon-80x80"/>
+                    <bt:Image size="16" resid="setting-icon-16x16"/>
+                    <bt:Image size="32" resid="setting-icon-32x32"/>
+                    <bt:Image size="80" resid="setting-icon-80x80"/>
                   </Icon>
-                  <Items>
+                  <!-- <Items>
                     <Item id="SettingsButton">
                       <Label resid="menuItem3ReadLabel" />
                       <Supertip>
@@ -133,22 +133,6 @@
                         <FunctionName>login</FunctionName>
                       </Action>
                     </Item>
-                    <!-- <Item id="ShareButton">
-                      <Label resid="menuItem2ReadLabel" />
-                      <Supertip>
-                        <Title resid="menuItem2ReadLabel" />
-                        <Description resid="menuItem2ReadSupertipDescription" />
-                      </Supertip>
-                      <Icon>
-                        <bt:Image size="16" resid="share-icon-16x16" />
-                        <bt:Image size="32" resid="share-icon-32x32" />
-                        <bt:Image size="80" resid="share-icon-80x80" />
-                      </Icon>
-                      <Action xsi:type="ExecuteFunction">
-                        <FunctionName>uploadfileFromLocal</FunctionName>
-                      </Action>
-                    </Item> -->
-
 
                     <Item id="LogoutButton">
                       <Label resid="menuItem4ReadLabel" />
@@ -166,10 +150,10 @@
                       </Action>
                     </Item>
                     
-                  </Items>
-                  <!-- <Action xsi:type="ShowTaskpane">
-                    <SourceLocation resid="Taskpane.Url"/>
-                  </Action> -->
+                  </Items> -->
+                  <Action xsi:type="ExecuteFunction">
+                        <FunctionName>settingsPage</FunctionName>
+                  </Action>
                 </Control>
               </Group>
             </OfficeTab>
@@ -193,18 +177,18 @@
                     <FunctionName>downLoadfromServer</FunctionName>
                   </Action>
                 </Control>
-                <Control xsi:type="Menu" id="OptionMenuButton_compose">
-                  <Label resid="Options.Label"/>
+                <Control xsi:type="Button" id="SettingsButton_compose">
+                  <Label resid="menuItem3ReadLabel"/>
                   <Supertip>
-                    <Title resid="Options.Label"/>
-                    <Description resid="OptionButton.Tooltip"/>
+                    <Title resid="menuItem3ReadLabel"/>
+                    <Description resid="menuItem3ReadSupertipDescription"/>
                   </Supertip>
                   <Icon>
-                    <bt:Image size="16" resid="seafile-icon-16x16"/>
-                    <bt:Image size="32" resid="seafile-icon-32x32"/>
-                    <bt:Image size="80" resid="seafile-icon-80x80"/>
+                    <bt:Image size="16" resid="setting-icon-16x16"/>
+                    <bt:Image size="32" resid="setting-icon-32x32"/>
+                    <bt:Image size="80" resid="setting-icon-80x80"/>
                   </Icon>
-                  <Items>
+                  <!-- <Items>
                     <Item id="SettingsButton_compose">
                       <Label resid="menuItem3ReadLabel" />
                       <Supertip>
@@ -236,21 +220,6 @@
                         <FunctionName>login</FunctionName>
                       </Action>
                     </Item>
-                    <!-- <Item id="ShareButton_compose">
-                      <Label resid="menuItem2ReadLabel" />
-                      <Supertip>
-                        <Title resid="menuItem2ReadLabel" />
-                        <Description resid="menuItem2ReadSupertipDescription" />
-                      </Supertip>
-                      <Icon>
-                        <bt:Image size="16" resid="share-icon-16x16" />
-                        <bt:Image size="32" resid="share-icon-32x32" />
-                        <bt:Image size="80" resid="share-icon-80x80" />
-                      </Icon>
-                      <Action xsi:type="ExecuteFunction">
-                        <FunctionName>Attach</FunctionName>
-                      </Action>
-                    </Item> -->
 
                     <Item id="LogoutButton_compose">
                       <Label resid="menuItem4ReadLabel" />
@@ -267,10 +236,10 @@
                         <FunctionName>logout</FunctionName>
                       </Action>
                     </Item>
-                  </Items>
-                  <!-- <Action xsi:type="ShowTaskpane">
-                    <SourceLocation resid="Taskpane.Url"/>
-                  </Action> -->
+                  </Items> -->
+                  <Action xsi:type="ExecuteFunction">
+                        <FunctionName>settingsPage</FunctionName>
+                  </Action>
                 </Control>
               </Group>
             </OfficeTab>

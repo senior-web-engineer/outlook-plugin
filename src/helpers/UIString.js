@@ -27,7 +27,7 @@ export var UIStrings = (function ()
 
             },
             'div.alert-success' : 'You logged in successfully',
-            'div.alert-danger' : 'Your credentials are incorrect, please try again',
+            'div.alert-danger' : 'Your credential is not incorrect, please try again',
             '#seafile_loginbutton span' : ' Log in '
         },
         "setting" : {
@@ -35,6 +35,7 @@ export var UIStrings = (function ()
             'div.sidebar ul li:nth-child(2) a span.item' : 'Expire date',
             'div.sidebar ul li:nth-child(3) a span.item' : 'Attachments Path',
             'div.sidebar ul li:nth-child(4) a span.item' : 'Link Text',
+            'div.sidebar ul li:nth-child(5) a span.item' : 'Account',
             '#password_content div.field-group:first-child h5.green': 'Default',
             '#password_content div.field-group:first-child h5:not(.green)' : 'password',
             'div.custom_without_password span' : ' without password ',
@@ -67,6 +68,8 @@ export var UIStrings = (function ()
             '#expire_date_content p.byline' : 'Set expired date for shared links',
             '#attachment_path_content p.byline' : 'Set a default path to upload attachment files',
             '#link_text_content p.byline' : 'Set download link text',
+            '#account_content div.field-group button.change_account span:not(.spinner-border)' : 'Change Account',
+            '#account_content div.field-group button.logout_account span:not(.spinner-border)' : 'Logout',
         },
         "filebrowser" : {
             'div.path-bar div.home' : ' My Cloud ',
@@ -118,6 +121,7 @@ export var UIStrings = (function ()
             'div.sidebar ul li:nth-child(2) a span.item' : 'Ablaufdatum',
             'div.sidebar ul li:nth-child(3) a span.item' : 'Upload Pfad für E-Mail Anhänge',
             'div.sidebar ul li:nth-child(4) a span.item' : 'Link Text',
+            'div.sidebar ul li:nth-child(5) a span.item' : 'Account',
             '#password_content div.field-group:first-child h5.green': 'Default',
             '#password_content div.field-group:first-child h5:not(.green)' : 'Passwort',
             'div.custom_without_password span' : ' mit Passwort',
@@ -150,6 +154,8 @@ export var UIStrings = (function ()
             '#expire_date_content p.byline' : 'Ablaufdatum für Download Link festlegen',
             '#attachment_path_content p.byline' : 'Standard Pfad für hochgeladene E-Mail Anhänge festlegen',
             '#link_text_content p.byline' : 'Download Link Text festlegen',
+            '#account_content div.field-group button.change_account span:not(.spinner-border)' : 'Change Account',
+            '#account_content div.field-group button.logout_account span:not(.spinner-border)' : 'Logout',
         },
         "filebrowser" : {
             'div.path-bar div.home' : ' Meine Cloud ',

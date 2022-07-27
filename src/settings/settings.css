@@ -120,6 +120,17 @@ body {
 .sidebar a:hover:not(.active) span.icon{
   background-image: url(assets/icons_white.svg);
 }
+
+a.sidebar-item .account_icon {
+  background-image: url(assets/account.png) !important;
+}
+a.sidebar-item.active .account_icon {
+  background-image: url(assets/account_white.png) !important;
+}
+.sidebar a:hover:not(.active) .account_icon {
+  background-image: url(assets/account_white.png) !important;
+}
+
 div.main {
   margin-left: 200px;
   padding: 70px 16px 10px 25px;
@@ -316,6 +327,12 @@ button.apply {
   background: #42D75F;
   color: white;
   border: none;
+}
+.change_account {
+  width: 45% !important;
+}
+.logout_account {
+  width: 45% !important;
 }
 .custom_without_expire_date:before, .custom_without_path:before {
   background-position: -32px -288px;
